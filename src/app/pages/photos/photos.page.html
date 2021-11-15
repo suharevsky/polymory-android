@@ -16,16 +16,16 @@
         </ion-toolbar>
     </ion-header>
 
-<!--
-    <input type="file" accept="image/*" (change)="fileChangeEvent($event)"/>
--->
+
+    <input style="display: none;" type="file" accept="image/*" (change)="fileChangeEvent($event)"/>
+
     <div *ngIf="imgLoaded" class="cropped-box">
         <div *ngIf="segment === 1" class="edit-photo">
-<!--
-                        <image-cropper [imageChangedEvent]="imageChangedEvent" ></image-cropper>
--->
 
-            <image-cropper
+                        <image-cropper [imageChangedEvent]="imageChangedEvent" ></image-cropper>
+
+
+            <!-- <image-cropper
                     [imageBase64]="imageBase64"
                     [maintainAspectRatio]="true"
                     [containWithinAspectRatio]="containWithinAspectRatio"
@@ -43,7 +43,7 @@
                     (imageCropped)="imageCropped($event)"
                     (imageLoaded)="imageLoaded()"
                     (loadImageFailed)="loadImageFailed()"
-            ></image-cropper>
+            ></image-cropper> -->
         </div>
         <div *ngIf="segment === 2" class="blur-photo">
             <img [src]="croppedImage" alt=""/>

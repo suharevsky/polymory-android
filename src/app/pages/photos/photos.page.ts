@@ -115,9 +115,9 @@ export class PhotosPage implements OnInit {
 
         } else if (segment === 2) {
 
-            setTimeout(() => {
-                this.setBlur();
-            });
+            // setTimeout(() => {
+            //     this.setBlur();
+            // });
         }
         this.segment = segment;
     }
@@ -128,16 +128,10 @@ export class PhotosPage implements OnInit {
         this.croppedImage = null;
     }
 
-
-    /***
-     * ONLY FOR A WEB USAGE
-     */
-
-    /*fileChangeEvent(event: any): void {
+    fileChangeEvent(event: any): void {
         const _URL = window.URL || window.webkitURL;
         let file, img;
 
-        console.log(event.target.files[0]);
         // tslint:disable-next-line:no-conditional-assignment
         if ((file = event.target.files[0])) {
             img = new Image();
@@ -153,8 +147,9 @@ export class PhotosPage implements OnInit {
                 this.presentToast('not a valid file: ' + file.type);
             };
             img.src = _URL.createObjectURL(file);
+            
         }
-    }*/
+    }
 
     imageCropped(event: ImageCroppedEvent) {
         this.croppedImage = event.base64;
@@ -183,6 +178,7 @@ export class PhotosPage implements OnInit {
     }
 
     imgErrorHandler(e, src) {
+        console.error(e.target.src);
         e.target.src = src;
     }
 
@@ -194,7 +190,6 @@ export class PhotosPage implements OnInit {
         } else {
             src = this.croppedImage;
         }
-
         this.uploadFile(src);
     }
 
@@ -204,15 +199,14 @@ export class PhotosPage implements OnInit {
         this.uploadingProcess = true;
         // create a random id
         const randomId = Math.random().toString(36).substring(2);
+
         // create a reference to the storage bucket location
         this.ref = this.afStorage.ref('/images/' + randomId);
         // the put method creates an AngularFireUploadTask
         // and kicks off the upload
-        const base64result = src.split(',')[1];
+        const file = this.imageChangedEvent.target.files[0];
         // console.log(base64result);
-        this.task = this.ref.putString(base64result, 'base64', {
-            contentType: 'image/jpeg'
-        });
+        this.task = this.ref.put(file);
 
         // AngularFireUploadTask provides observable
         // to get uploadProgress value
@@ -230,9 +224,6 @@ export class PhotosPage implements OnInit {
                 let newImage = {status: 0, id: randomId, main: mainPhoto.length !== 1, url: randomId, isPrivate: this.isPrivateSelectedImage}
                 photos.push(newImage);
 
-                this.isPrivateSelectedImage ?
-                    this.privatePhotos.push(newImage): this.publicPhotos.push(newImage)
-       
                 this.userService.user.photos = photos;
 
                 this.userService.user.allPhotosApproved = this.userService.allPhotosApproved();
@@ -240,18 +231,34 @@ export class PhotosPage implements OnInit {
                 this.userService.update(this.userService.user).subscribe(() => {},
                 err => console.log(err),
                 () => {
-                    setTimeout(() =>{
                         this.uploadingProcess = false;
                         this.userService.user.photos = photos;
-                        this.cancelUpload();
-                    },900)
+                        setTimeout(()=> {
+                            console.log('checkImageValidation');
+                            console.log(newImage);
+                            
+                            if(this.imageExists(this.fileUploadService.getBaseUrl(newImage.url))) {
+                                this.isPrivateSelectedImage ?
+                                this.privatePhotos.push(newImage): this.publicPhotos.push(newImage);
+                                this.cancelUpload();
+                                //clearInterval(checkImageValidation);
+                            }
+                        }, 100)
                 });
-
-                // this.downloadURL = this.ref.getDownloadURL();
-
+                 this.downloadURL = this.ref.getDownloadURL();
             })
         ).subscribe();
-        // this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
+         this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
+    }
+
+    imageExists(image_url){
+
+        var http = new XMLHttpRequest();
+    
+        http.open('HEAD', image_url, false);
+        http.send();
+    
+        return http.status != 404;
     }
 
     public addFigure(figure) {
@@ -275,10 +282,10 @@ export class PhotosPage implements OnInit {
         };
     }
 
-    setBlur() {
-        const imageBlur = document.querySelector('.blur-photo').querySelector('img');
-        imageBlur.style.filter = `blur(${this.blur}px)`;
-    }
+    // setBlur() {
+    //     const imageBlur = document.querySelector('.blur-photo').querySelector('img');
+    //     imageBlur.style.filter = `blur(${this.blur}px)`;
+    // }
 
     pickImage(sourceType) {
         const options: CameraOptions = {
@@ -305,7 +312,7 @@ export class PhotosPage implements OnInit {
 
     base64ToImage(dataURI) {
         const fileDate = dataURI.split(',');
-        // const mime = fileDate[0].match(/:(.*?);/)[1];
+        //const mime = fileDate[0].match(/:(.*?);/)[1];
         const byteString = atob(fileDate[1]);
         const arrayBuffer = new ArrayBuffer(byteString.length);
         const int8Array = new Uint8Array(arrayBuffer);
@@ -352,16 +359,16 @@ export class PhotosPage implements OnInit {
         this.isPrivateSelectedImage = isPrivate;
 
         if (event.target.classList.contains('select-image')) {
-            //  image upload
-            /*const element: HTMLElement = document.querySelector('input[type=file]') as HTMLElement;
-            element.click();*/
+          
             if (addNew) {
                 const actionSheet = await this.actionSheetController.create({
                     header: 'העלאת תמונה מ...',
                     buttons: [{
                         text: 'גלריה',
                         handler: () => {
-                            this.pickImage(this.camera.PictureSourceType.PHOTOLIBRARY);
+                            //this.pickImage(this.camera.PictureSourceType.PHOTOLIBRARY);
+                            const element: HTMLElement = document.querySelector('input[type=file]') as HTMLElement;
+                            element.click();
                         }
                     },
                         {
