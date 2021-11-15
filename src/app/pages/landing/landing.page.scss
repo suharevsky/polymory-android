@@ -1,0 +1,115 @@
+
+.link {
+  text-decoration: underline;
+}
+
+.phone-notice {
+  font-weight: 600;
+}
+
+.landing-page {
+  --color: #fff;
+}
+
+ion-input {
+  background: #6d656547;
+  border-radius: 50px;
+}
+
+.phone-form {
+  &>.form-group {
+    display: flex;
+    align-items: center;
+    direction: ltr;
+  }
+  .country-code {
+    margin-right: 18px;
+  }
+}
+
+
+ion-button {
+  &.close {
+    width: 54px;
+    height: 54px;
+
+    ion-icon {
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+  img {
+    width: 1.25em;
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.bg-video {
+  opacity: .25;
+  background-color: #000;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin: 0!important;
+  padding: 0!important;
+  outline: 0!important;
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 100%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  z-index: -100;
+}
+
+.bg-gradient {
+  //--background: linear-gradient(to top right, var(--color-tinder-stop1) 0%, var(--color-tinder-stop2) 100%);
+}
+
+.section-brand {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-buttons {
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.title.logo {
+  margin-top: 30vh;
+  font-size: 54px;
+}
+.subtitle {
+  font-size: 22px;
+  --ion-font-family: 'Open Sans Hebrew', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Roboto', sans-serif !important;
+  font-family: var(--ion-font-family) !important;
+  font-weight: 400;
+}
+
+.logo-icon {
+  width: auto;
+  height: 100px;
+  vertical-align: middle;
+}
+
+.button-clear {
+  max-width: 400px;
+  margin: 6px auto;
+}
+
+ion-button {
+  ion-icon {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}

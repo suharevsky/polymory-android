@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap');
+
+.title {
+  font-size: 2em;
+}
+
+ion-label {
+  margin-top: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #fff;
+}
+
+ion-toggle {
+  //--background: #000;
+  --background-checked: #7a49a5;
+
+  --handle-background: #7a49a5;
+  --handle-background-checked: #7a49a5 !important;
+}
+
+.logo-text {
+  font-family: "Dosis", sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+.cards-wrapper {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.grid-half {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.card-custom {
+  margin: 12px;
+  background-color: var(--ion-color-white);
+
+  &.card-custom-half {
+    margin: 6px;
+    margin-top: 0;
+  }
+}
+
+.plan-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+}
+
+.color-gold {
+  color: var(--color-button-gold);
+}
+
+.color-blue {
+  color: var(--color-button-star);
+}
+
+.color-purple {
+  color: var(--color-button-boost);
+}
+
+.padding-reduced {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.text-sm {
+  font-size: var(--font-size-sm);
+}

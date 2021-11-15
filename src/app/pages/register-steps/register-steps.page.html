@@ -1,0 +1,169 @@
+<ion-header *ngIf="currentIndexSlide !== 8">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="back()">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="ion-slides"
+         #slides>
+        <!-- {{myForm.value | json}} -->
+        <div class="ion-slide" *ngIf="currentIndexSlide === 0">
+            <form [formGroup]="registrationForm"
+                  (ngSubmit)="submit()">
+                <input type="text" name="gender" formControlName="gender"/>
+                <input type="text" name="preference" formControlName="preference"/>
+                <div class="options">
+                    <div class="option">
+                        <h2>{{userService.getGender().label}}</h2>
+                        <div class="gender smileys-items">
+                            <div *ngFor="let gender of genders; let i = index" (click)="chooseGender(i)"
+                                 [ngClass]="{'active': gender.chosen}" class="smile-item">
+                                <div class="smile">
+                                    <ion-icon name="{{userService.getGender().icons[i]}}"></ion-icon>
+                                </div>
+                                <span>{{gender.title}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="option">
+                        <h2>{{userService.getPreference().label}}</h2>
+                        <div class="preference smileys-items">
+                            <div *ngFor="let preference of preferences; let i = index" (click)="choosePreference(i)"
+                                 [ngClass]="{'active': preference.chosen}" class="smile-item">
+                                <div class="smile">
+                                    <ion-icon name="{{userService.getPreference().icons[i]}}"></ion-icon>
+                                </div>
+                                <span>{{preference.title}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 1">
+            <form [formGroup]="registrationForm">
+                <ion-item>
+                    <ion-label position="stacked"><h2>{{userService.getUsername().label}}</h2></ion-label>
+                    <ion-input #focusable
+                            [value]="user?.username"
+                            formControlName="username"
+                            class="name-input"
+                            name="username"
+                            type="text"
+                    ></ion-input>
+                </ion-item>
+            </form>
+        </div>
+
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 2">
+            <form [formGroup]="registrationForm">
+
+                <ion-item>
+                    <ion-label position="stacked"><h2>
+                        {{ user?.gender == 'זוג' ? userService.getBirthday().label3 :
+                        userService.getBirthday().label}}
+                    </h2></ion-label>
+                    <ion-datetime #focusable cancel-text="ביטול" done-text="בוצע" name="birthday" formControlName="birthday"></ion-datetime>
+                </ion-item>
+                <ion-item *ngIf="user?.gender === 'זוג'">
+                    <ion-label position="stacked"><h2>{{userService.getBirthday1().label3}}</h2></ion-label>
+                    <ion-datetime cancel-text="ביטול" done-text="בוצע" name="birthday1" formControlName="birthday1"></ion-datetime>
+                </ion-item>
+            </form>
+        </div>
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 3">
+            <form [formGroup]="registrationForm">
+                <input name="area" formControlName="area">
+                <div class="options">
+                    <h2>{{ userService.getArea().label}}</h2>
+                    <ion-list class="{{userService.getArea().class}}">
+                        <div
+                                *ngFor="let area of areas; let i = index"
+                                [attr.data-id]="i"
+                                (click)="selectArea(i)"
+                                [ngClass]="{'active': area.chosen}"
+                                class="item-option">
+                            {{area.title}}
+                        </div>
+                    </ion-list>
+                </div>
+            </form>
+        </div>
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 4">
+            <form [formGroup]="registrationForm">
+                <div class="options">
+                    <h2>{{ userService.getCities().label}}</h2>
+                </div>
+                <ion-searchbar #focusable placeholder="חפש" (ionInput)="searchCity($event.target)" name="city"
+                               formControlName="city"></ion-searchbar>
+                <ion-list class="cities-list">
+                    <ion-item (click)="chooseCity(city)" *ngFor="let city of filteredCities">{{ city.title }}</ion-item>
+                </ion-list>
+            </form>
+        </div>
+        <div class="{{userService.getLookingFor().class}} input-slide ion-slide" *ngIf="currentIndexSlide === 5">
+            <form [formGroup]="registrationForm">
+                <input name="lookingFor" formControlName="lookingFor">
+                <div class="options">
+                    <h2>
+                        {{ userService.getArea().value == 3 ? userService.getLookingFor().label3 :
+                        userService.getLookingFor().label}}
+                    </h2>
+                    <ion-list>
+                        <div *ngFor="let lookingFor of lookingFor; let i = index"
+                             [attr.data-id]="lookingFor.title"
+                             [ngClass]="{'active': lookingFor.chosen}"
+                             class="item-option"
+                             (click)="chooseLookingFor(i)">
+                            {{lookingFor.title}}
+                        </div>
+                    </ion-list>
+                </div>
+            </form>
+        </div>
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 6">
+            <form [formGroup]="registrationForm">
+                <ion-item>
+                    <ion-label position="stacked"><h2>
+                        {{ userService.getGender().value == 3 ? userService.getAbout().label3 : userService.getAbout().label}}
+                    </h2></ion-label>
+                    <ion-textarea #focusable name="about" formControlName="about"
+                                  placeholder="{{userService.getAbout().placeholder}}"></ion-textarea>
+                </ion-item>
+            </form>
+        </div>
+        <div class="register-success ion-slide" *ngIf="currentIndexSlide === 7">
+            <div class="done-icon">
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+            </div>
+            <h1>אנא אמת את כתובת המייל שלך</h1>
+            <p>על מנת להמשיך את תהליך ההרשמה יש לאמת את כתובת המייל שלך.</p>
+            <p>
+                <strong>שלחנו מייל עם הוראות לאימות לכתובת הדוא״ל שאיתה נרשמת.</strong>
+            </p>
+            <p>במידה ואינך רואה את המייל אנא בדוק את תיבת הספאם.</p>
+            <p>
+                אם בכל זאת לא קיבלת את המייל, אנא צור קשר עם תמיכת האתר בכתובת
+                <a href="mailto:contact@joyme.co.il">contact@joyme.co.il</a>
+            </p>
+            <ion-button
+                    expand="block"
+                    fill="outline"
+                    shape="round"
+                    (click)="goToPhotos()"
+            >
+                המשך
+            </ion-button>
+        </div>
+    </div>
+</ion-content>
+
+<ion-footer *ngIf="currentIndexSlide != 7">
+    <ion-button [disabled]="registrationForm.errors" type="submit" (click)="submit()" class="btn-form">שמור</ion-button>
+</ion-footer>

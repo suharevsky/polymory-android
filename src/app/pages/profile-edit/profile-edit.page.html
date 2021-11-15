@@ -1,0 +1,110 @@
+<ion-header class="header-custom">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button color="primary" (click)="cancel()"> ביטול </ion-button>
+        </ion-buttons>
+        <ion-title> ערוך פרופיל </ion-title>
+        <ion-buttons slot="end">
+            <ion-button color="primary" (click)="save()"> שמור </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+
+    <!--<ion-toolbar class="toolbar-no-border">
+        <ion-segment class="segment-custom" [(ngModel)]="segmentView" mode="md">
+            <ion-segment-button value="0">
+                <ion-label> Edit </ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="1">
+                <ion-label> Preview </ion-label>
+            </ion-segment-button>
+        </ion-segment>
+    </ion-toolbar>-->
+</ion-header>
+
+<ion-content class="bg-light">
+    <ion-header collapse="condense">
+        <ion-toolbar>
+            <ion-title size="large"> ערוך פרופיל </ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <div [ngSwitch]="segmentView" class="full-height">
+        <!-- EDIT -->
+
+            <div class="segment-view" *ngSwitchCase="'0'">
+
+                <form [formGroup]="editUser">
+
+                <ion-list class="list-custom">
+                    <ion-list-header>
+                        <ion-label>אזור</ion-label>
+                    </ion-list-header>
+                    <ion-item lines="none" detail="true" (click)="openAreasList()">
+                        <ion-label>{{userService.user?.area}}</ion-label>
+                    </ion-item>
+                </ion-list>
+
+                <ion-list class="list-custom">
+                    <ion-list-header>
+                        <ion-label>עיר</ion-label>
+                    </ion-list-header>
+                    <ion-item lines="none" detail="true" (click)="openCitiesList()">
+                        <ion-label>{{userService.user.city}}</ion-label>
+                    </ion-item>
+                </ion-list>
+
+                <ion-list class="list-custom">
+                    <ion-list-header>
+                        <ion-label>רוצה להכיר</ion-label>
+                    </ion-list-header>
+                        <ion-item lines="none" detail="true" (click)="openPreferenceList()">
+                            <ion-label>{{userService.user.preference.join()}}</ion-label>
+                        </ion-item>
+                </ion-list>
+                <ion-list class="list-custom">
+                    <ion-list-header>
+                        <ion-label>מעט עלי/נו</ion-label>
+                    </ion-list-header>
+                    <ion-item lines="none">
+                        <ion-textarea name="about" formControlName="about" [(ngModel)]="userService.user.about" [value]="userService.user.about" rows="3"></ion-textarea>
+                    </ion-item>
+                    <ion-item lines="none">
+                        <ion-note slot="end"> {{ 500 - userService.user.about.length }} </ion-note>
+                    </ion-item>
+                </ion-list>
+
+                <ion-list class="list-custom">
+                    <ion-list-header>
+                        <ion-label>מחפש/ת</ion-label>
+                    </ion-list-header>
+                    <ion-item lines="none" (click)="openLookingFor()">
+                        <ion-label>{{userService.user.lookingFor.join()}}</ion-label>
+                    </ion-item>
+                </ion-list>
+                </form>
+            </div>
+        <!-- PREVIEW -->
+        <div class="segment-view preview-container full-height" *ngSwitchCase="'1'">
+            <div class="card-border full-height" *ngIf="showSlides">
+                <swipe-card
+                        [data]=""
+                        [isPreview]="true"
+                        (onNoMoreSlide)="onNoMoreSlide($event)"
+                >
+                </swipe-card>
+            </div>
+        </div>
+    </div>
+</ion-content>
+<!--
+<ion-footer>
+    <ion-button (click)="save()"
+            expand="block"
+            fill="outline"
+            type="submit"
+            shape="round"
+            class="button-landing">
+        <span>שמור</span>
+    </ion-button>
+</ion-footer>
+-->
+

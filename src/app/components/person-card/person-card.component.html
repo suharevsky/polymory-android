@@ -1,0 +1,20 @@
+<div
+  class="person-card background-img"
+  [style.backgroundImage]="'url(' + userService.getMainPhoto(data,'m') + ')'">
+  <span *ngIf="userService.isOnline(data.lastTimeActive)" class="online-status active"></span>
+  <div class="card-caption">
+    <ion-row class="ion-align-items-end">
+      <ion-col class="caption-text">
+        <div class="caption-title">
+          {{data.username}} <span *ngIf="data.birthday">{{userService.getAge(data.birthday)}}</span>
+          <span *ngIf="data.birthday1">,{{userService.getAge(data.birthday1)}}</span>
+        </div>
+      </ion-col>
+     <!-- <ion-col size="auto">
+        <ion-button color="white" class="button-custom button-icon button-xs button-star">
+          <ion-icon slot="icon-only" name="star"></ion-icon>
+        </ion-button>
+      </ion-col>-->
+    </ion-row>
+  </div>
+</div>

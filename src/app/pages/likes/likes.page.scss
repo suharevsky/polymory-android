@@ -1,0 +1,40 @@
+.boost-promotion {
+  margin: 12px 24px 8px;
+  padding: 16px;
+  background: linear-gradient(
+                  var(--ion-color-white) 0%,
+                  rgba(var(--ion-color-boost-rgb), 0.3) 100%
+  );
+  text-align: center;
+  border-radius: 0 0 36px 36px;
+
+  ion-button {
+    background: var(--ion-color-boost-gradient);
+    border-radius: 25px;
+  }
+}
+
+.offer-message {
+  text-align: center;
+  padding: 24px;
+}
+
+ion-badge {
+  --ion-color-base: var(--color-button-boost) !important;
+  background: var(--color-button-boost) !important;
+}
+
+.segment-custom ion-segment-button {
+  color: #fff;
+
+  &.segment-button-checked {
+    color: var(--color-button-boost);
+  }
+
+}
+
+.online-status {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+}

@@ -1,0 +1,23 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom" class="tab-bar-no-border">
+    <ion-tab-button tab="likes" class="color-gold">
+      <!-- <img class="tab-icon-inactive" src="assets/img/logo_small_bw.png" width="24" alt="">
+      <img class="tab-icon-active" src="assets/img/logo_small.png" width="24" alt=""> -->
+      <ion-icon name="heart"></ion-icon>
+      <ion-badge color="primary">{{ counter?.views > 0 ? counter?.views : ''}}</ion-badge>
+    </ion-tab-button>
+
+    <ion-tab-button tab="highlights" class="color-gold">
+      <ion-icon name="grid-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="matches">
+      <ion-icon name="chatbubbles"></ion-icon>
+      <ion-badge color="primary">{{counter?.newMessages > 0 ? counter?.newMessages : ''}}</ion-badge>
+    </ion-tab-button>
+
+    <ion-tab-button tab="me">
+      <ion-icon name="person"></ion-icon>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

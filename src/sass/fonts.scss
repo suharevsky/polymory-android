@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap');
+/*
+@import url(//fonts.googleapis.com/earlyaccess/opensanshebrew.css);
+*/
+
+:root, :root[mode="md"], :root[mode="ios"] {
+  --ion-font-family: 'Open Sans Hebrew', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Roboto', sans-serif !important;
+  font-family: var(--ion-font-family) !important;
+}

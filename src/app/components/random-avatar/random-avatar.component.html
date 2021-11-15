@@ -1,0 +1,9 @@
+<div
+  class="avatar"
+  [ngClass]="'avatar-' + size"
+  [style.backgroundImage]="'url(' + photo + ')'"
+  [style.width]="customSize + 'px'"
+  [style.height]="customSize + 'px'"
+>
+    <span *ngIf="userService.isOnline(user?.lastTimeActive)" class="online-status active"></span>
+</div>

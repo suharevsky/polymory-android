@@ -1,0 +1,231 @@
+@import '../../../sass/helper.scss';
+
+:host {
+  --border-color-rgb: rgba(var(--ion-color-medium-rgb), 0.1);
+}
+
+ion-buttons {
+  top: 0;
+  right: 0;
+  position: absolute;
+}
+
+.heart {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: url(https://cssanimation.rocks/images/posts/steps/heart.png) no-repeat;
+  background-position: 0 0;
+  cursor: pointer;
+  animation: fave-heart 1s steps(28);
+}
+
+.online-status{
+  margin-left: 8px;
+}
+
+.heart:hover {
+  background-position: -2800px 0;
+  transition: background 1s steps(28);
+}
+
+@keyframes fave-heart {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -2800px 0;
+  }
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.border-bottom {
+  border-bottom: 1px solid var(--border-color-rgb);
+}
+
+.profile-header {
+  height: 70vh;
+  min-height: 400px;
+  position: relative;
+}
+
+.profile-info {
+  padding: 16px;
+
+  .profile-title {
+    margin-bottom: 8px;
+  }
+
+  .profile-user-name {
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  .profile-user-age {
+    font-size: 24px;
+  }
+
+  .profile-user-info {
+    line-height: 1.4em;
+    color: var(--ion-color-medium-shade);
+
+    .info-item {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 4px;
+
+      /*ion-icon {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        font-size: 12px;
+      }*/
+    }
+  }
+}
+
+.profile-anthem {
+  padding: 16px;
+  line-height: 1.4em;
+}
+
+.report-btn div {
+  color: #f95266;
+}
+
+.section-title {
+  font-weight: 700;
+  margin: 12px 0;
+  font-size: 18px;
+}
+
+.album-artwork {
+  position: relative;
+
+  .album-cover {
+    width: 64px;
+    height: 64px;
+    border-radius: 4px;
+  }
+
+  .album-artwork-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    ion-button {
+      width: 20px;
+      height: 20px;
+      font-size: 7px;
+      opacity: .8;
+    }
+  }
+}
+
+.profile-share, .profile-footer {
+  text-align: center;
+  padding: 8px;
+
+  ion-button {
+    height: 2.5em;
+  }
+
+  .button-label {
+    letter-spacing: 1px;
+    line-height: 1.4em;
+
+    div:nth-child(2) {
+      font-size: 12px;
+    }
+  }
+}
+
+.profile-footer {
+  margin-bottom: 140px;
+
+  ion-button {
+    margin: 28px 0;
+  }
+}
+
+.dismiss {
+  border-radius: 50%;
+  background: #201f39;
+  color: #ffffff;
+  margin: 18px 18px;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #6f7075;
+}
+
+.bottom-actions {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin-inline-start: 0;
+  text-align: center;
+  width: 100%;
+  padding-bottom: calc(16px + var(--ion-safe-area-bottom));
+  background-image: linear-gradient(to top, rgba(40, 50, 60, 0.3) 0%, rgba(40, 50, 60, 0) 80%);
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in 0.5s forwards;
+
+  .button-custom {
+    margin: 0 12px;
+  }
+
+  .button-lg ion-icon {
+    font-size: 36px;
+  }
+
+  ion-button {
+
+    &.button-favorite {
+      span {
+        color: #ffffff;
+      //  color: var(--color-button-star);
+      }
+    }
+
+    &.button-dislike ion-icon {
+      color: var(--color-button-dislike);
+    }
+
+    &.button-star ion-icon {
+      color: #ffffff;
+
+      //  color: var(--color-button-star);
+    }
+
+    &.button-like ion-icon {
+      color: var(--color-button-like);
+    }
+  }
+}
+
+.passion-list {
+  ion-button {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --border-width: 2px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+}

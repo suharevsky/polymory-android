@@ -1,0 +1,60 @@
+<div class="swipe-card">
+  <profile-image-slides
+    [images]="profileImages"
+    [isClickable]="true"
+    (onNoMoreSlide)="handleNoMoreSlide($event)"
+    (onChange)="handleSlideChange($event)">
+  </profile-image-slides>
+
+  <div class="card-caption">
+    <ion-row class="ion-justify-content-center ion-align-items-center">
+      <ion-col>
+        <div class="card-title">
+          <span class="card-user-name">
+            {{data.name}}
+          </span>
+          <span class="card-user-age">{{data.age}}</span>
+          <span class="icon-verified">
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </span>
+        </div>
+
+        <div class="card-user-info" *ngIf="currentIndex === 0">
+          <div><ion-icon name="ellipse" color="success"></ion-icon>Recently active</div>
+          <div><ion-icon name="briefcase-outline"></ion-icon>{{data.job_title}}</div>
+          <div><ion-icon name="location-outline"></ion-icon>71 kilometers away</div>
+        </div>
+
+        <div class="card-user-info" *ngIf="currentIndex === 1">
+          <div class="passion-list">
+            <ion-button fill="outline" shape="round" color="white" size="small">
+              Netflix
+            </ion-button>
+            <ion-button fill="outline" shape="round" color="white" size="small">
+              Foodie
+            </ion-button>
+            <ion-button fill="outline" shape="round" color="white" size="small">
+              Instagram
+            </ion-button>
+            <ion-button fill="outline" shape="round" color="white" size="small">
+              Photography
+            </ion-button>
+            <ion-button fill="outline" shape="round" color="white" size="small">
+              Travel
+            </ion-button>
+          </div>
+        </div>
+
+        <div class="card-user-info" *ngIf="currentIndex > 1">
+          <p>Grew up on Earth. Want to dance on Mars.</p>
+          <p>Deeply in love with making Ionic prototypes, in my spare time. Always challenge myself
+            to...
+          </p>
+        </div>
+      </ion-col>
+      <ion-col size="auto" *ngIf="!isPreview">
+        <ion-icon class="button-info" name="information-circle" (click)="handleViewInfo()"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+.person-card {
+  height: 0;
+  padding-top: 120%;
+  box-shadow: var(--card-box-shadow);
+  border-radius: var(--swipe-card-border-radius);
+  position: relative;
+
+  .card-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, .8), transparent);
+    border-radius: 0 0 var(--swipe-card-border-radius) var(--swipe-card-border-radius);
+
+    ion-row {
+      width: 100%;
+    }
+  }
+
+  .caption-text {
+    line-height: 1.4em;
+  }
+
+  .button-star ion-icon {
+    color: var(--color-button-star);
+    font-size: 20px;
+  }
+
+  .online-status {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+}

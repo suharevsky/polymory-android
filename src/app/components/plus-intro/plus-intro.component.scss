@@ -1,0 +1,53 @@
+:host {
+  ion-slides {
+    --bullet-background: var(--ion-color-medium-shade) !important;
+  }
+}
+
+.plus-intro {
+  &.swiper-container {
+    padding-bottom: 32px;
+  }
+
+  .slide-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+
+    ion-icon {
+      display: block;
+      margin: 0 auto;
+      position: relative;
+      top: 4px;
+      font-size: 28px;
+
+      &.icon-slide-1 {
+        color: #daa04a;
+      }
+      &.icon-slide-2 {
+        color: #f44336;
+      }
+      &.icon-slide-3 {
+        color: #4fa1e2;
+      }
+      &.icon-slide-4 {
+        // color: #3553b3;
+        color: #daa04a;
+
+      }
+      &.icon-slide-5 {
+        color: #ea9e77;
+      }
+      &.icon-slide-6 {
+        color: #f1be42;
+      }
+      &.icon-slide-7 {
+        color: #76e2b4;
+      }
+    }
+  }
+
+  .slide-body {
+    font-size: 16px;
+  }
+}

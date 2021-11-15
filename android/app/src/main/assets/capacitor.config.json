@@ -1,0 +1,14 @@
+{
+	"plugins": {
+		"PushNotifications": {
+			"presentationOptions": [
+				"badge",
+				"sound",
+				"alert"
+			]
+		}
+	},
+	"server": {
+		"url": "http://192.168.43.181:8100"
+	}
+}

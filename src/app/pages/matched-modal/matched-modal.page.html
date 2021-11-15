@@ -1,0 +1,136 @@
+<!--
+<ion-header class="header-custom">
+  <ion-toolbar class="toolbar-no-border toolbar-no-safe-area">
+    <ion-segment class="segment-custom" [(ngModel)]="segmentView" mode="md">
+      <ion-segment-button value="0">
+        <ion-label>
+          Messages
+          <div class="segment-badge">6</div>
+        </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="1">
+        <ion-label>
+          Matches
+          <div class="segment-badge">3</div>
+        </ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div [ngSwitch]="segmentView" class="safe-area-bottom">
+    &lt;!&ndash; MESSAGES &ndash;&gt;
+    <div *ngSwitchCase="'0'">
+      <div class="border-bottom">
+        <ion-searchbar placeholder="Search Matches" class="search-bar"></ion-searchbar>
+      </div>
+
+      <div>
+        <div class="list-header">
+          <ion-text color="primary">
+            <strong>New matches</strong>
+          </ion-text>
+        </div>
+
+        <div class="scroll-horizontal matches-list">
+          <div class="scroll-item matches-item matches-item-likes">
+            <div class="profile-image">
+              <div class="profile-image-inner">
+                <random-avatar [size]="'lg'"></random-avatar>
+              </div>
+
+              <div class="likes-count">
+                99+
+              </div>
+              <div class="like-gold">
+                <ion-icon name="heart"></ion-icon>
+              </div>
+            </div>
+            <div class="scroll-item-title text-ellipsis">Likes</div>
+          </div>
+          <div class="scroll-item matches-item" *ngFor="let name of messages" (click)="goToChat()">
+            <div class="profile-image">
+              <random-avatar [size]="'lg'"></random-avatar>
+              <div class="online-status"></div>
+            </div>
+            <div class="scroll-item-title text-ellipsis">{{ name }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="list-header">
+          <ion-text color="primary">
+            <strong>Messages</strong>
+          </ion-text>
+        </div>
+        <div class="message-list">
+          <ion-row class="ion-align-items-center" *ngFor="let name of messages" (click)="goToChat()">
+            <ion-col size="auto">
+              <random-avatar [size]="'lg'"></random-avatar>
+            </ion-col>
+            <ion-col class="message-item-text">
+              <div>
+                <div class="user-name">{{ name }}</div>
+                <ion-text color="medium">Sent you a GIPHY</ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+    </div>
+
+    &lt;!&ndash; FEED &ndash;&gt;
+    <div *ngSwitchCase="'1'">
+      <div class="feed-item" *ngFor="let item of feedItems; let i = index">
+        <ion-row class="feed-item-header ion-align-items-center">
+          <ion-col size="auto">
+            <random-avatar [size]="'md'"></random-avatar>
+          </ion-col>
+          <ion-col>
+            <div>
+              <div class="user-name">Tinder Man</div>
+              <div class="secondary-info">New match!</div>
+            </div>
+          </ion-col>
+          <ion-col size="auto">
+            <ion-icon name="ellipsis-horizontal" color="medium"></ion-icon>
+          </ion-col>
+        </ion-row>
+
+        <div class="feed-item-cover">
+          <div [style.backgroundImage]="'url(' + item.url + ')'" class="background-img"></div>
+
+          <div class="matched-overlay">
+            <label-matched></label-matched>
+          </div>
+        </div>
+
+        <div class="feed-item-footer">
+          <div class="feed-item-buttons">
+            <ion-button color="white" class="button-custom button-icon button-xs">
+              <ion-icon slot="icon-only" name="heart" class="color-green"></ion-icon>
+            </ion-button>
+            <ion-button color="white" class="button-custom button-icon button-xs">
+              <ion-icon slot="icon-only" name="chatbubbles" class="color-blue"></ion-icon>
+            </ion-button>
+          </div>
+          <div class="profile-user-info">
+            <div class="info-item">
+              <ion-icon name="briefcase-outline"></ion-icon>Front-End, UX/UI lover
+            </div>
+            <div class="info-item">
+              <ion-icon name="location-outline"></ion-icon>less than a kilometer away
+            </div>
+            <div class="secondary-info">
+              February 14
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ion-content>
+-->

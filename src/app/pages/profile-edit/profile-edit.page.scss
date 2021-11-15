@@ -1,0 +1,56 @@
+form {
+  padding-bottom: 48px;
+}
+
+.list-custom.last-child {
+  margin-bottom: 200px;
+}
+
+.preview-container {
+  padding: 8px 8px 36px;
+}
+
+.list-custom {
+  border-top: 1px solid #3f3f48;
+}
+
+.text-sm {
+  font-size: var(--font-size-sm);
+}
+
+.card-border {
+  border-radius: var(--swipe-card-border-radius);
+  overflow: hidden;
+
+  &.rotate-right {
+    animation: rotateRight 250ms ease-in-out;
+  }
+
+  &.rotate-left {
+    animation: rotateLeft 250ms ease-in-out;
+  }
+}
+
+ion-footer {
+  ion-button {
+    margin: 18px;
+  }
+}
+
+@keyframes rotateRight {
+  from {
+    transform: perspective(1000px) rotateY(4deg);
+  }
+  to {
+    transform: perspective(1000px) rotateY(0deg);
+  }
+}
+
+@keyframes rotateLeft {
+  from {
+    transform: perspective(1000px) rotateY(-4deg);
+  }
+  to {
+    transform: perspective(1000px) rotateY(0deg);
+  }
+}

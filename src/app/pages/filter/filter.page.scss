@@ -1,0 +1,54 @@
+ion-toolbar {
+  ion-icon {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+}
+
+ion-item {
+  width: 100%;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  margin: 24px 0;
+}
+
+.genders {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  .gender {
+    border-radius: 20px;
+    border: 1px solid #fff;
+    width: 25%;
+    text-align: center;
+    padding: 8px 0;
+
+    &.active {
+      border: 1px solid #9f4cda;
+      color: #9f4cda;
+    }
+  }
+}
+
+ion-content ion-button {
+  width: 90%;
+  margin: 18px auto;
+}
+
+.hidden-input {
+  display: none;
+}
+
+ion-checkbox {
+  --checkmark-color	: #0c0d34 !important;
+}
+
+ion-label {
+  font-size: 1rem;
+  color: #fff;
+}
+
+ion-range {
+  padding: 0;
+}

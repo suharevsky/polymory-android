@@ -1,0 +1,35 @@
+ion-tab-button {
+  .tab-icon-active {
+    display: none;
+  }
+
+  .tab-icon-inactive {
+    display: block;
+  }
+
+  &.tab-selected {
+    .tab-icon-active {
+      display: block;
+    }
+
+    .tab-icon-inactive {
+      display: none;
+    }
+  }
+
+  ion-badge {
+    --ion-color-base: var(--color-button-boost) !important;
+  }
+
+    &.tab-selected {
+      color: var(--color-button-boost) !important;
+    }
+
+  .rotate-45 {
+    transform: rotate(45deg);
+  }
+}
+
+ion-tabs {
+  padding-top: var(--ion-safe-area-top);
+}

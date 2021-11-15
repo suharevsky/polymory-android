@@ -1,0 +1,29 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>דווח על משתמש/ת</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="closeModal()">
+                בוצע
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <form [formGroup]="reportForm">
+        <ion-item>
+            <ion-label>סיבה *</ion-label>
+            <ion-select formControlName="subject" placeholder="בחר" value="notifications" cancel-text="ביטול" interface="action-sheet">
+                <ion-select-option value="תוכן לא הולם">תוכן לא הולם</ion-select-option>
+                <ion-select-option value="מידע פרופיל חשוד">מידע פרופיל חשוד</ion-select-option>
+                <ion-select-option value="משתמש לא אמיתי">משתמש לא אמיתי</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">תגובות (אופציונאלי)</ion-label>
+            <ion-textarea formControlName="message" rows="6"></ion-textarea>
+        </ion-item>
+        <ion-button color="boost-bg" expand="block" (click)="send()"><ion-spinner *ngIf="loading"></ion-spinner>
+            <span *ngIf="!loading">שלח</span></ion-button>
+    </form>
+</ion-content>

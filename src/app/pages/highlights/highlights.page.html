@@ -1,0 +1,60 @@
+<ion-header  #header class="header-custom">
+
+    <div class="segment" (click)="filterModal()">
+        <ion-icon name="options-outline"></ion-icon>
+    </div>
+    <div class="logo title">JoyMe</div>
+    <!-- <ion-toolbar class="toolbar-no-border toolbar-no-safe-area">
+        <ion-segment class="segment-custom" mode="md">
+            <div class="segment">
+                <ion-select cancel-text="ביטול" (ionChange)="onChangeFilter($event)" [(ngModel)]="filterData.status">
+                    <ion-select-option [value]="0">אונליין</ion-select-option>
+                    <ion-select-option [value]="1">עם תמונה בלבד</ion-select-option>
+                </ion-select>
+            </div>
+        </ion-segment>
+    </ion-toolbar> -->
+</ion-header>
+      <!-- Loading screen -->
+      <div *ngIf="isLoading" class="full-height safe-area-bottom">
+        <ion-row class="full-height ion-justify-content-center ion-align-items-center">
+          <ripple-loader [imageUrl]="userService.getMainPhoto(userService.user, 'm', false)"></ripple-loader>
+        </ion-row>
+      </div>
+<!--
+<ion-content ion-content [fullscreen]="true" [appHideHeader]="header" scrollEvents="true">
+-->
+<ion-content [fullscreen]="true" scrollEvents="true">
+    <!--<div class="boost-promotion">
+      <ion-text color="boost">קבל עד 100 צפיות נוספות</ion-text>
+
+      <ion-button expand="block" shape="round" color="boost-bg">
+        סופר בוסט עכשיו
+      </ion-button>
+    </div>-->
+
+    <div class="safe-area-bottom">
+        <!-- USERS -->
+        <div class="segment-view">
+            <div (click)="getPhotos()" *ngIf="warningMsg.active" class="warning message"
+                 [innerHTML]="warningMsg.message">
+            </div>
+
+            <div [hidden]="isLoading" class="no-results" *ngIf="users?.length==0">
+                אין תוצאות
+            </div>
+            <ion-row>
+                <ion-col size="6" *ngFor="let user of users">
+                    <person-card (click)="viewProfile(user)" [data]="user"></person-card>
+                </ion-col>
+            </ion-row>
+            <ion-infinite-scroll *ngIf="!userService.highlights.finishLoad" disabled="false" threshold="100px"
+                                 (ionInfinite)="loadData($event)">
+                <ion-infinite-scroll-content
+                        loadingSpinner="bubbles"
+                        loadingText="טוען נתונים...">
+                </ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+        </div>
+    </div>
+</ion-content>

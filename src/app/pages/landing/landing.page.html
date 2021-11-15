@@ -1,0 +1,113 @@
+<ion-content force-overscroll="false" class="landing-page bg-gradient">
+    <div class="vertical-layout safe-area-bottom">
+        <div class="section-brand">
+            <div class="logo title">
+                JoyMe
+                <div class="subtitle">אפליקציה להחלפת זוגות</div>
+            </div>
+        </div>
+
+        <div class="section-buttons ion-padding">
+            <div *ngIf="showCodeFormStatus === 0" class="ion-padding">
+                לחיצה על כפתור כניסה או הרשמה מהווה את הסכמתך <span (click)="getPage('terms-and-conditions')" class="link">לתנאים</span> שלנו
+            </div>
+            <div *ngIf="showCodeFormStatus === 0">
+                <ion-button
+                        expand="block"
+                        fill="outline"
+                        color="white"
+                        shape="round"
+                        class="button-landing ion-margin-bottom"
+                        (click)="codeFormStatus(1)"
+                >
+
+                    הרשמה חינם
+                </ion-button>
+                <ion-button
+                        expand="block"
+                        fill="outline"
+                        color="white"
+                        shape="round"
+                        class="button-landing ion-margin-bottom"
+                        (click)="codeFormStatus(1)"
+                >
+                    כניסה
+                </ion-button>
+                <!--<ion-button
+                        expand="block"
+                        fill="outline"
+                        color="white"
+                        shape="round"
+                        class="button-landing ion-margin-bottom"
+                        appGoogleSignin>
+                    <img src="/assets/img/google-logo.svg"/>
+                    כניסה באמצעות גוגל
+                </ion-button>-->
+            </div>
+        
+            <form class="phone-form" *ngIf="showCodeFormStatus === 1" [formGroup]="phoneForm"
+                  (ngSubmit)="logIn(phoneForm)">
+                  <span class="phone-notice">למספר הזה ישלח הודע לאישור החשבון</span>
+                <div class="form-group">
+                    <div class="country-code">+972</div>
+                    <ion-input type="number" #phone placeholder="הכנס מספר טלפון" formControlName="phone"
+                               class="form-control ion-margin-vertical" id="phone"></ion-input>
+                </div>
+
+                    <ion-button
+                            expand="block"
+                            fill="outline"
+                            color="white"
+                            type="submit"
+                            shape="round"
+                            class="button-landing ion-margin-bottom">
+                        <ion-spinner *ngIf="loadingSpinner"></ion-spinner>
+                        <span *ngIf="!loadingSpinner">קבל קוד</span>
+                    </ion-button>
+            </form>
+            <form *ngIf="showCodeFormStatus === 2" [formGroup]="codeForm" (ngSubmit)="verifyCode(codeForm)">
+                <div class="form-group">
+                    <ion-input placeholder="הזן את הקוד כאן" formControlName="code"
+                               class="form-control ion-margin-bottom"
+                               id="code"></ion-input>
+                </div>
+                <div class="form-group">
+                    <ion-button
+                            expand="block"
+                            fill="outline"
+                            color="white"
+                            type="submit"
+                            shape="round"
+                            class="button-landing ion-margin-bottom">
+                        <ion-spinner *ngIf="loadingSpinner"></ion-spinner>
+                        <span *ngIf="!loadingSpinner">אמת קוד</span>
+                    </ion-button>
+                </div>
+            </form>
+            <ion-button
+                    *ngIf="showCodeFormStatus !== 0"
+                    (click)="codeFormStatus(0)"
+                    fill="outline"
+                    color="white"
+                    type="submit"
+                    shape="round"
+                    class="button-landing close ion-margin-bottom">
+                <ion-icon name="close"></ion-icon>
+            </ion-button>
+            <!-- <ion-button fill="clear" color="white" class="button-clear">
+              Trouble logging in?
+            </ion-button> -->
+        </div>
+    </div>
+    <video
+            id="video"
+            autoplay="autoplay"
+            preload="auto"
+            muted="muted"
+            loop="true"
+            class="bg-video"
+    >
+        <source src="assets/video/video.mov" type="video/mp4"/>
+    </video>
+    <span id="sign-in-button"></span>
+</ion-content>

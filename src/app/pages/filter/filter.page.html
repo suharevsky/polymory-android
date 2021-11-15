@@ -1,0 +1,91 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>סיונן</ion-title>
+        <ion-buttons slot="end">
+            <ion-button color="primary" (click)="close()">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-header collapse="condense">
+        <ion-toolbar>
+            <ion-title size="large">סיונן</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-list class="list-custom">
+        <form [formGroup]="filterForm" (ngSubmit)="submit()">
+            <input formControlName="preferences" class="hidden-input">
+            <ion-list class="list-custom">
+                <ion-list-header>
+                    <ion-label>גילאים</ion-label>
+                </ion-list-header>
+                <ion-item lines="none">
+                    <ion-range formControlName="ageRange" min="18" max="75" id="dual-range" dual-knobs pin color="dark">
+                        <ion-label slot="start">{{f.ageRange.value.lower}}</ion-label>
+                        <ion-label slot="end">{{f.ageRange.value.upper}}</ion-label>
+                    </ion-range>
+                </ion-item>
+                <ion-list-header>
+                    <ion-label>מחפש/ת</ion-label>
+                </ion-list-header>
+                <ion-item lines="none">
+                    <div class="genders">
+                        <div *ngFor="let preference of preferences; let i = index" (click)="selectPreference(i)"
+                             [ngClass]="{'active': preference.chosen}" class="gender">
+                            {{preference.title}}
+                        </div>
+                    </div>
+                </ion-item>
+                <!--<ion-list class="list-custom">
+                    <ion-list-header>
+                        <ion-label>PASSIONS</ion-label>
+                    </ion-list-header>
+                    <ion-item lines="none" detail="true" (click)="openSelection()">
+                        <ion-label>Travel, Instagram, Music</ion-label>
+                    </ion-item>
+                </ion-list>-->
+                <ion-list-header>
+                    <ion-label>איזור</ion-label>
+                </ion-list-header>
+                <ion-item>
+                    <div lines="none" detail="true" (click)="openAreasList()">
+                        <ion-label>{{this.filterData.area ? this.filterData.area :'כל האזורים'}}</ion-label>
+                    </div>
+                </ion-item>
+
+                <!--<ion-item detail="true" lines="none">
+                    <ion-label>הכל</ion-label>
+                </ion-item>-->
+                <!--<ion-item>
+                    <ion-label>עם תמונה בלבד</ion-label>
+                    <ion-checkbox slot="end" formControlName="withImages"></ion-checkbox>
+                </ion-item>
+                <ion-item>
+                    <ion-label>אונליין בלבד</ion-label>
+                    <ion-checkbox slot="end" formControlName="online"></ion-checkbox>
+                </ion-item>-->
+                <ion-button
+                        expand="block"
+                        fill="outline"
+                        type="submit"
+                        shape="round"
+                        class="button-landing">
+                    <span>חיפוש</span>
+                </ion-button>
+                <ion-button
+                        (click)="reset()"
+                        expand="block"
+                        fill="outline"
+                        type="button"
+                        shape="round"
+                        class="button-landing">
+                    אפס סינון
+                </ion-button>
+            </ion-list>
+        </form>
+    </ion-list>
+</ion-content>

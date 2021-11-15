@@ -1,0 +1,77 @@
+<ion-content force-overscroll="false" class="me-page bg-light">
+    <div class="vertical-layout safe-area-bottom">
+        <div class="section-upper">
+            <div class="me-header" (click)="viewProfile(userService.user)">
+                <ion-avatar class="avatar">
+                    <img (error)="imgErrorHandler($event, userService.getMainPhoto(userService.user, 'm', false))"
+                         [src]="userService.getMainPhoto(userService.user, 'm', false)"/>
+                </ion-avatar>
+                <div>
+                    <div class="me-title">{{userService.user?.username}} {{userService.getAge(userService.user?.birthday)}}
+                        <span *ngIf="userService.getAge(userService.user?.birthday1)">,{{userService.getAge(userService.user?.birthday1)}}</span>
+                    </div>
+                    <!--<span class="icon-verified">
+                      <ion-icon name="checkmark-outline"></ion-icon>
+                    </span>-->
+                </div>
+                <div class="me-level">{{userService.user?.area}}</div>
+            </div>
+            <ion-row class="ion-justify-content-center ion-align-items-center">
+                <ion-col size="auto">
+                    <ion-row class="me-button-group">
+                        <ion-col class="ion-text-center">
+                            <ion-button
+                                    color="white"
+                                    class="button-custom button-icon"
+                                    (click)="viewSettings()"
+                            >
+                                <ion-icon name="settings-sharp" slot="icon-only"></ion-icon>
+                            </ion-button>
+                            <div class="button-label">הגדרות</div>
+                        </ion-col>
+                        <ion-col class="ion-text-center">
+                            <div class="button-stack primary">
+                                <ion-button
+                                        color="white"
+                                        class="button-custom button-lg button-icon button-brand"
+                                        (click)="photosProfile()"
+                                >
+                                    <ion-icon name="camera" slot="icon-only"></ion-icon>
+                                </ion-button>
+                                <div class="button-addon add-icon">
+                                    <ion-icon name="add"></ion-icon>
+                                </div>
+                            </div>
+                            <div class="button-label">תמונות</div>
+                        </ion-col>
+                        <ion-col class="ion-text-center">
+                            <ion-button
+                                    color="white"
+                                    class="button-custom button-icon"
+                                    (click)="viewEditProfile()"
+                            >
+                                <ion-icon name="pencil-sharp" slot="icon-only"></ion-icon>
+                            </ion-button>
+                            <div class="button-label">הפרופיל שלי</div>
+                        </ion-col>
+                    </ion-row>
+                </ion-col>
+            </ion-row>
+        </div>
+        <div class="section-lower has-oval">
+            <!--
+                    <div class="section-lower has-oval" (click)="viewSubscriptionGold()">
+
+                        <div class="slide-intro">
+                            <plus-intro *ngIf="showSlides"></plus-intro>
+                        </div>
+                        <div class="ion-text-center">
+                            <ion-button
+                                    color="white"
+                                    class="button-custom text-primary button-tinder-plus">
+                                רכוש מנוי כעת
+                            </ion-button>
+                        </div>-->
+        </div>
+    </div>
+</ion-content>

@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Passions</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        בוצע
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-light">
+  <div class="ion-padding">
+    <ion-text color="medium">Select passions that you'd like to share. Choose a minimum of 3.</ion-text>
+  </div>
+
+  <ion-list class="list-custom selection-list">
+    <ion-list-header>
+      <ion-label>Passions</ion-label>
+      <ion-text color="medium" size="small" class="tag-count">(5/5)</ion-text>
+    </ion-list-header>
+
+    <div class="ion-padding">
+      <ion-button *ngFor="let item of tagList" shape="round" fill="outline" [attr.color]="item.active ? 'primary' : 'medium'" size="small">
+        {{ item.label }}
+      </ion-button>
+    </div>
+
+  </ion-list>
+
+</ion-content>

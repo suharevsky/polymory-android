@@ -1,0 +1,133 @@
+/* Chat UI v2.0.0 */
+.chat-list {
+  padding: 0 18px;
+
+  .chat-timestamp {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+
+    &.center {
+      text-align: center;
+      margin: 8px 0;
+    }
+  }
+
+  .chat-item {
+    margin-bottom: 12px;
+
+    &.chat-item-outgoing {
+      text-align: right;
+
+      .chat-item-inner {
+        flex-direction: row-reverse;
+      }
+
+      .chat-item-bubble .chat-text {
+        border-radius: 20px 20px 20px 0;
+        background: #8a50ff;
+        color: #fff;
+      }
+    }
+
+    .chat-item-inner {
+      display: flex;
+    }
+
+    .chat-avatar {
+      align-self: flex-end;
+      margin-right: 8px;
+      margin-bottom: 16px;
+      width: 40px;
+      height: 40px;
+
+      img {
+        display: inline-block;
+        border-radius: 50%;
+      }
+    }
+
+    .chat-body {
+      max-width: 75%;
+    }
+
+    .chat-item-status {
+      font-size: 12px;
+      color: var(--ion-color-medium);
+
+      ion-icon {
+        position: relative;
+        top: 2px;
+      }
+    }
+
+    .chat-item-bubble {
+      position: relative;
+      margin-bottom: 4px;
+
+      .chat-text {
+        display: inline-block;
+        padding: 12px 16px;
+        white-space: normal;
+        max-width: 100%;
+        text-align: right;
+        border-radius: 20px 20px 0 20px;
+        background: rgb(17 17 43);
+
+        img {
+          width: 100%;
+          max-width: 480px;
+          border-radius: 16px;
+        }
+      }
+
+      &.bubble-image {
+        font-size: 0;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+    }
+
+    .chat-item-reaction {
+      margin-left: 8px;
+      margin-bottom: 16px;
+      font-size: 24px;
+      color: var(--ion-color-medium);
+      align-self: flex-end;
+    }
+  }
+}
+
+ion-footer {
+  .form {
+    position: relative;
+    margin: 0 12px;
+
+    button {
+      position: absolute;
+      right: 12px;
+      bottom: 10px;
+      background: transparent;
+      font-size: 17px;
+      outline: none;
+      color: #fff;
+    }
+
+    input {
+      border-radius: 17px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      background: var(--dark-color-foreground) !important;
+      --padding-start: 12px;
+      --padding-end: 64px;
+      --padding-top: 6px;
+      --padding-bottom: 8px;
+      padding-left: var(--padding-start);
+      padding-right: var(--padding-end);
+      padding-top: var(--padding-top);
+      padding-bottom: var(--padding-bottom);
+      outline: none;
+      width: 100%;
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+}

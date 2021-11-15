@@ -1,0 +1,83 @@
+:host {
+  --bullet-background: var(--ion-color-medium-shade);
+}
+
+.spotify-highlights {
+  padding: 16px;
+  position: relative;
+
+  .section-title {
+    font-weight: 700;
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+
+  .custom-pagination {
+    position: absolute;
+    right: 8px;
+    top: 20px;
+    height: 8px;
+    z-index: 10;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 8px;
+
+    .pagination-bullet {
+      height: 8px;
+      width: 8px;
+      display: block;
+      background-color: rgba(0, 0, 0, .1);
+      border-radius: 999em;
+      margin: 0 2px;
+      &.pagination-bullet-active {
+        background-color: var(--ion-color-primary);
+      }
+    }
+  }
+
+  .highlight-slide {
+    width: 100%;
+  }
+
+  .highlight-item {
+    .item-caption {
+      margin-top: 8px;
+    }
+  }
+
+  .album-artwork {
+    position: relative;
+
+    .album-cover {
+      height: 0;
+      padding-top: 100%;
+      border-radius: 4px;
+    }
+
+    .album-artwork-overlay {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      ion-button {
+        width: 36px;
+        height: 36px;
+        font-size: 10px;
+        opacity: .8;
+      }
+    }
+  }
+
+  .item-artist, .item-title {
+    font-size: 12px;
+  }
+
+  .spotify-connect {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,145 @@
+<!--<ion-header>
+  <ion-toolbar class="toolbar-reduced toolbar-no-border" color="light">
+    <ion-button color="white" class="button-custom button-icon button-sm button-brand" >
+      <ion-icon name="arrow-down" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>-->
+
+<!--
+<ion-content [scrollEvents]="true" (ionScroll)="handleScroll($event)" class="profile-page">
+-->
+<ion-content class="profile-page">
+    <div class="profile-header">
+        <profile-image-slides *ngIf="showSlides" [user]="profile"></profile-image-slides>
+        <ion-buttons slot="start">
+            <ion-button class="dismiss" color="primary" (click)="close()">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </div>
+
+    <div class="profile-info border-bottom">
+        <div class="profile-title">
+      <span class="profile-user-name">
+        <span *ngIf="userService.isOnline(profile.lastTimeActive)" class="online-status active"></span>{{profile?.username}}
+      </span>
+            <span class="profile-user-age">
+        <span *ngIf="profile.birthday">{{userService.getAge(profile.birthday)}}</span>
+        <span *ngIf="profile.birthday1">,{{userService.getAge(profile.birthday1)}}</span>
+      </span>
+            <!--<span class="icon-verified">
+              <ion-icon name="checkmark-outline"></ion-icon>
+            </span>-->
+        </div>
+
+        <div class="profile-user-info">
+            <!--<div class="info-item">
+              <ion-icon name="briefcase-outline"></ion-icon>job_title
+            </div>-->
+            <div class="info-item">
+                <ion-icon name="location-outline"></ion-icon>
+                {{profile?.area + ', ' + profile?.city}}
+            </div>
+        </div>
+        <div class="section-title">אני מחפש/ת</div>
+        <div class="passion-list">
+            <div *ngIf="profile?.lookingFor?.length > 1">
+                <ion-button *ngFor="let lookingFor of profile?.lookingFor" fill="outline" shape="round" color="medium"
+                            size="small">
+                    {{lookingFor}}
+                </ion-button>
+            </div>
+        </div>
+        <div class="section-title">רוצה להכיר</div>
+        <div class="passion-list">
+      <span *ngFor="let preference of profile?.preference">
+        {{preference}}
+      </span>
+        </div>
+        <div class="section-title">מעט עלי/נו</div>
+        <div class="border-bottom">
+            {{profile?.about}}
+        </div>
+    </div>
+
+
+
+    <!--<div class="profile-anthem border-bottom">
+      <div class="section-title">My Anthem</div>
+
+      <ion-row class="grid-no-padding">
+        <ion-col class="ion-align-self-center">
+          <div>
+            <strong>Fake ID</strong>
+          </div>
+          <div>
+            <ion-icon name="musical-note" color="medium"></ion-icon>
+            <ion-text color="medium">Riton & Kah-Lo</ion-text>
+          </div>
+        </ion-col>
+        <ion-col size="auto">
+          <div class="album-artwork">
+            <div class="album-cover background-img" [style.backgroundImage]="'url(assets/img/album.png)'"></div>
+            <ion-row class="ion-justify-content-center ion-align-items-center">
+              <div class="album-artwork-overlay">
+                <ion-button color="white" class="button-custom button-icon text-primary">
+                  <ion-icon slot="icon-only" name="play"></ion-icon>
+                </ion-button>
+              </div>
+            </ion-row>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+
+    <div class="profile-spotify border-bottom">
+      <spotify-highlights *ngIf="showSlides"></spotify-highlights>
+    </div>
+
+    <div class="profile-share border-bottom">
+      <ion-button fill="clear" expand="block" color="primary" size="small">
+        <div class="button-label">
+          <div>SHARE HIEU PHAM'S PROFILE</div>
+          <div>SEE WHAT A FRIEND THINKS</div>
+        </div>
+      </ion-button>
+    </div>-->
+
+    <div *ngIf="userService.user.id !== profile.id" class="profile-footer border-bottom">
+
+        <!--<ion-button (click)="favorite(true)" fill="clear" expand="block" size="small">
+            <div class="button-label">
+                {{profileFavoriteLabel}}
+            </div>
+        </ion-button>-->
+        <ion-button (click)="setList('blockList')" class="report-btn" fill="clear" expand="block" color="medium"
+                    size="small">
+            <div class="button-label">
+                {{profileBlockLabel}}
+            </div>
+        </ion-button>
+        <ion-button (click)="getReportForm()" class="report-btn" fill="clear" expand="block" color="medium"
+                    size="small">
+            <div class="button-label">
+                דווח על משתמש/ת
+            </div>
+        </ion-button>
+    </div>
+
+    <ion-fab *ngIf="userService.user.id !== profile.id" class="bottom-actions" vertical="bottom" horizontal="center"
+             slot="fixed">
+        <!--<ion-button color="white" class="button-custom button-icon button-dislike button-lg">
+            <ion-icon slot="icon-only" name="close-sharp"></ion-icon>
+        </ion-button>-->
+        <ion-button (click)="getChat()" color="white" class="button-custom button-icon button-star">
+            <ion-icon slot="icon-only" name="chatbubble-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="setList('favorites')" color="white" class="button-custom button-favorite button-lg">
+            <span>{{profileFavoriteLabel}}</span>
+        </ion-button>
+        <!--<ion-button color="white" class="button-custom button-icon button-like button-lg">
+            <div class="heart"></div>
+        </ion-button>-->
+    </ion-fab>
+</ion-content>

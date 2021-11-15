@@ -1,0 +1,50 @@
+.header-title {
+  text-align: center;
+  margin: 24px auto 16px;
+  font-size: 20px;
+}
+
+.slides-intro {
+  min-height: 100px;
+}
+
+ion-content.bg-image {
+  //--background-image: url('../assets/img/subscription-bg.jpg');
+  // background: url("../../../assets/img/subscription-bg.jpg") no-repeat;
+  // --background: url("../../../assets/img/subscription-bg.jpg") no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.bg-color {
+  //background: var(--ion-color-boost-gradient);
+  // height: 100%;
+  //background: linear-gradient(#085078, #85d8ce); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.price-tag {
+  text-align: center;
+  margin: 16px;
+  border: 1px solid var(--ion-color-gold);
+  padding: 16px;
+  border-radius: var(--swipe-card-border-radius);
+  background-color: rgba(var(--ion-color-gold-rgb), 0.1);
+
+  .plan-name {
+    font-size: 12px;
+    margin-bottom: 24px;
+  }
+
+  .number-big {
+    font-size: 36px;
+  }
+}
+
+.button-group {
+  width: 240px;
+  margin: 0 auto;
+}
+
+.text-lg {
+  font-size: 20px;
+}
