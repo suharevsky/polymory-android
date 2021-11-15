@@ -26,6 +26,7 @@ import { File } from '@ionic-native/file/ngx';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Market } from '@ionic-native/market/ngx';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [AppComponent],
@@ -51,6 +52,7 @@ import { Market } from '@ionic-native/market/ngx';
     ProfileEditPageModule,
     MatchedModalPageModule,
     TinderGoldPageModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [
     StatusBar,

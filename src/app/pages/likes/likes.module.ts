@@ -8,7 +8,6 @@ import {LikesPageRoutingModule} from './likes-routing.module';
 
 import {LikesPage} from './likes.page';
 import {SharedModule} from '../../components/sharedModule';
-import {RippleLoaderComponent} from '../../components/ripple-loader/ripple-loader.component';
 
 @NgModule({
     imports: [
@@ -18,7 +17,7 @@ import {RippleLoaderComponent} from '../../components/ripple-loader/ripple-loade
         LikesPageRoutingModule,
         SharedModule,
     ],
-    declarations: [LikesPage, RippleLoaderComponent]
+    declarations: [LikesPage]
 })
 export class LikesPageModule {
 }
