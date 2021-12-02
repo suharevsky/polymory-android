@@ -72,11 +72,7 @@ export class AuthService implements OnDestroy {
             return of(undefined);
         }
 
-        console.log(auth);
-
         this.userService.setUser(auth);
-
-
         // this.isLoadingSubject.next(true);
         return this.authHttpService.getUserByToken(auth.accessToken).pipe(
             map((user: UserModel) => {

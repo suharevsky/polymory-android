@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {IonSlides, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
-import {SelectService} from '../../services/form/select/select.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UserModel} from '../../models/user.model';
 import {UserService} from '../../services/user/user.service';

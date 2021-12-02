@@ -372,7 +372,7 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
             } else {
                 let photos = user.photos.map((photo, index) => {
                     //user.photos[index].url = this.photoParam.baseUrl + photo.id + '_600x600' + this.photoParam.token;
-                    photo = {photo, url: this.photoParam.baseUrl + photo.id + '_600x600' + this.photoParam.token};                    console.log(photo);
+                    photo = {photo, url: this.photoParam.baseUrl + photo.id + '_600x600' + this.photoParam.token};
                     return photo;
                 });
                 return photos;
