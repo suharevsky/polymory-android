@@ -1,0 +1,38 @@
+.form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    ion-input {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        color: #fff;
+        width: 320px;
+        margin: 20px auto;
+        padding: 4px 8px !important;
+    }
+
+    &__title {
+        font-size: 1.25rem;
+    }
+
+    &__submit {
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+.error-message {
+    color: rgb(212, 44, 44)
+}
+
+.success-message {
+    color: #fff;
+    font-size: 2rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

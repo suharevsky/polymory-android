@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+  </ion-buttons>
+    <ion-title>קבל את האפליקציה ב-SMS</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="success-message" *ngIf="response.status === 'success'">{{response.message}}</div>
+  <div class="form" *ngIf="response.status !== 'success'">
+    <div class="form__title">הזן את מספר הטלפון שלך כדי לקבל את הקישור לאפליקציה</div>
+    <ion-input #phoneNumberElement [(ngModel)]="phoneNumber" aria-placeholder="הכנס מספר טלפון" type="tel"></ion-input>
+    <div class="error-message" *ngIf="response.status === 'error'">{{response.message}}</div>
+    <ion-button (click)="send()" fill="outline" class="form__submit" size="large">שלח</ion-button>
+  </div>
+</ion-content>
