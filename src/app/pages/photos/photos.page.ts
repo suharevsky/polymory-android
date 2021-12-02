@@ -107,17 +107,10 @@ export class PhotosPage implements OnInit {
 
     setSegment(segment) {
         if (segment === 3) {
-
             setTimeout(() => {
                 const element: HTMLElement = document.querySelector('.add-image-on-canvas') as HTMLElement;
                 element.click();
             });
-
-        } else if (segment === 2) {
-
-            // setTimeout(() => {
-            //     this.setBlur();
-            // });
         }
         this.segment = segment;
     }
@@ -241,7 +234,6 @@ export class PhotosPage implements OnInit {
                                 this.isPrivateSelectedImage ?
                                 this.privatePhotos.push(newImage): this.publicPhotos.push(newImage);
                                 this.cancelUpload();
-                                //clearInterval(checkImageValidation);
                             }
                         }, 100)
                 });
@@ -282,10 +274,6 @@ export class PhotosPage implements OnInit {
         };
     }
 
-    // setBlur() {
-    //     const imageBlur = document.querySelector('.blur-photo').querySelector('img');
-    //     imageBlur.style.filter = `blur(${this.blur}px)`;
-    // }
 
     pickImage(sourceType) {
         const options: CameraOptions = {
@@ -324,6 +312,7 @@ export class PhotosPage implements OnInit {
     }
 
     async delete(photo) {
+        console.log(photo);
         const alert = await this.alertController.create({
             header: 'מחיקת תמונה',
             message: 'האם למחוק את התמונה?',
@@ -355,7 +344,6 @@ export class PhotosPage implements OnInit {
     }
 
     async selectImage(event, addNew = false, photo: any = '', isPrivate: boolean = false) {
-
         this.isPrivateSelectedImage = isPrivate;
 
         if (event.target.classList.contains('select-image')) {
@@ -371,12 +359,7 @@ export class PhotosPage implements OnInit {
                             element.click();
                         }
                     },
-                        {
-                            text: 'מצלמה',
-                            handler: () => {
-                                this.pickImage(this.camera.PictureSourceType.CAMERA);
-                            }
-                        },
+
                         {
                             text: 'ביטול',
                             role: 'cancel'
@@ -386,7 +369,7 @@ export class PhotosPage implements OnInit {
 
                 await actionSheet.present();
 
-            } else {
+            } /* else {
                 const buttonOptions = {
                     header: 'העלאת תמונה מ...',
                     buttons: [{
@@ -395,12 +378,7 @@ export class PhotosPage implements OnInit {
                             this.delete(photo);
                         }
                     },
-                        {
-                            text: 'מצלמה',
-                            handler: () => {
-                                this.pickImage(this.camera.PictureSourceType.CAMERA);
-                            }
-                        },
+      
                         {
                             text: 'ביטול',
                             role: 'cancel'
@@ -418,7 +396,7 @@ export class PhotosPage implements OnInit {
                 }
                 const actionSheet = await this.actionSheetController.create(buttonOptions);
                 await actionSheet.present();
-            }
+            }*/
         }
     }
 
