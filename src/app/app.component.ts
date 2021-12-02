@@ -5,7 +5,6 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {ThemeService} from './services/theme/theme.service';
 import {RouterService} from './services/router.service';
 import {UserService} from './services/user/user.service';
-import {AuthService} from './services/auth/auth.service';
 import { UpdateAppService } from './services/update-app/update-app.service';
 
 @Component({
@@ -23,7 +22,6 @@ export class AppComponent {
         private statusBar: StatusBar,
         private themeService: ThemeService,
         private routerService: RouterService,
-        private authService: AuthService,
         public userService: UserService,
         public updateAppService: UpdateAppService
        // private ngZone: NgZone,
@@ -37,10 +35,8 @@ export class AppComponent {
     }
 
     async initializeApp() {
-        const user = await this.authService.getUserByToken().pipe().toPromise();
        // this.userService.setUser(user);
        // alert(this.userService.user.id);
-
         this.platform.ready().then(() => {
             if(this.platform.is('android') || this.platform.is('ios')) {
                 this.updateAppService.checkForUpdate();

@@ -11,6 +11,7 @@ import {UserModel} from '../../models/user.model';
 import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from '@angular/fire/storage';
 import {Observable} from 'rxjs';
 import {finalize, map} from 'rxjs/operators';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
     selector: 'app-photos',
@@ -63,6 +64,7 @@ export class PhotosPage implements OnInit {
         private afStorage: AngularFireStorage,
         private camera: Camera,
         private crop: Crop,
+        private authService: AuthService,
         private file: File,
         private navCtrl: NavController,
         public toastController: ToastController,

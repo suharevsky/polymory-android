@@ -4,8 +4,8 @@
   (ionSlideReachStart)="onReachStart()"
   (ionSlideReachEnd)="onReachEnd()">
     <ion-slide  *ngFor="let item of images">
-      <div *ngIf="(!item.isPrivate || imageRequest.result?.accepted) || user.id === userService.user.id" class="slide-img background-img" [style.backgroundImage]="'url(' + item.url + ')'"></div>
-      <div *ngIf="((item.isPrivate && !imageRequest.result?.accepted) || (item.isPrivate && imageRequest.empty)) && user.id !== userService.user.id" class="slide-img background-img">
+      <div *ngIf="(!item.photo?.isPrivate || imageRequest.result?.accepted) || user.id === userService.user.id" class="slide-img background-img" [style.backgroundImage]="'url(' + item.url + ')'"></div>
+      <div *ngIf="((item.photo?.isPrivate && !imageRequest.result?.accepted) || (item.photo?.isPrivate && imageRequest.empty)) && user.id !== userService.user.id" class="slide-img background-img">
         <div class="box">
           <h2>התמונה הזו פרטית</h2>
           <div (click)="sendImageRequest()" *ngIf="imageRequest.empty" class="btn">בקש גישה לתמונות פרטיות</div>

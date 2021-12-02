@@ -7,6 +7,7 @@ import {UserService} from '../../services/user/user.service';
 import {ChatPage} from '../chat/chat.page';
 import { ParamsService } from 'src/app/services/params/params.service';
 import { ProfilePage } from '../profile/profile.page';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
     selector: 'app-matches',
@@ -26,6 +27,7 @@ export class MatchesPage implements OnInit, OnDestroy {
     constructor(private navCtrl: NavController,
                 public modalCtrl: ModalController,
                 private routerService: RouterService,
+                private authService: AuthService,
                 public chatService: ChatService,
                 public paramsService: ParamsService,
                 public userService: UserService) {

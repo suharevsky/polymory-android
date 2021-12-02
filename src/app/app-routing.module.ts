@@ -71,6 +71,10 @@ const routes: Routes = [
         path: 'page/:slug',
         loadChildren: () => import('./pages/page/page.module').then(m => m.PagePageModule)
     },
+  {
+    path: 'sms-app-link-modal',
+    loadChildren: () => import('./pages/sms-app-link-modal/sms-app-link-modal/sms-app-link-modal.module').then( m => m.SmsAppLinkModalPageModule)
+  },
 ];
 
 @NgModule({

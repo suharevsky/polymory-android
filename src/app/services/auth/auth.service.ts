@@ -6,7 +6,6 @@ import {AuthHTTPService} from '../auth-http';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import {AuthModel} from '../../models/auth.model';
-import {AngularFirestore} from '@angular/fire/firestore';
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -26,7 +25,6 @@ export class AuthService implements OnDestroy {
         private userService: UserService,
         private fireAuth: AngularFireAuth,
         private router: Router,
-        private afs: AngularFirestore
     ) {
         this.isLoadingSubject = new BehaviorSubject<boolean>(false);
         this.currentUserSubject = new BehaviorSubject<UserModel>(undefined);
@@ -71,6 +69,8 @@ export class AuthService implements OnDestroy {
         if (!auth || !auth.accessToken) {
             return of(undefined);
         }
+
+        console.log(auth);
 
         this.userService.setUser(auth);
         // this.isLoadingSubject.next(true);

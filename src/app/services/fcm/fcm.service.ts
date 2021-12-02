@@ -1,18 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Capacitor} from '@capacitor/core';
 import {Router} from '@angular/router';
-import {
-    ActionPerformed,
-    PushNotificationSchema,
-    PushNotifications,
-    Token,
-  } from '@capacitor/push-notifications';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserService} from '../user/user.service';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {take} from 'rxjs/operators';
+import {take, tap} from 'rxjs/operators';
 import {SettingsService} from '../user/settings/settings.service';
 import { ParamsService } from '../params/params.service';
+import { AngularFireMessaging } from '@angular/fire/messaging';
 
 
 @Injectable({
@@ -23,7 +18,7 @@ export class FcmService {
     public data;
     public options;
 
-    constructor(private router: Router, public db: AngularFirestore, public userService: UserService,
+    constructor(public afMessaging: AngularFireMessaging, private router: Router, public db: AngularFirestore, public userService: UserService,
                 public http: HttpClient, public settingsService: SettingsService, public paramsService: ParamsService
     ) {}
 
@@ -35,8 +30,23 @@ export class FcmService {
         );
     }
 
+    requestPermission() {
+        return this.afMessaging.requestToken.pipe(
+            tap(token => {
+                console.log('You should store the token ', token);
+                //alert(token);
+                this.setToken(token);
+            })
+        )
+    }
+
+    getMessages() {
+        return this.afMessaging.messages;
+    }
+
     public initPush() {
-        if (Capacitor.getPlatform() !== 'web') {
+       // alert(Capacitor.getPlatform());
+        if (Capacitor.getPlatform() === 'web') {
             this.registerPush();
         }
     }
@@ -47,7 +57,6 @@ export class FcmService {
             .get().subscribe(res => {
         });
     }
-
 
     // How many times user would receive notification
     // Ex. once a day
@@ -61,7 +70,6 @@ export class FcmService {
     public setToken(id) {
         // Minus one day in order to get push today
         const time = Date.now() - 86400000;
-
         const data = {user_id: this.userService.getId(), token: id, lastTimeUse: time};
 
         try {
@@ -78,27 +86,24 @@ export class FcmService {
         }
     }
 
-    public resetBadgeCount() {
-        PushNotifications.removeAllDeliveredNotifications();
-    }
-
     sendPushMessage(data) {
         try {
             this.data = data;
 
+            console.log(data);
             this.db.collection('push', ref => ref
                 .where('user_id', '==', data.receiver.id))
                 .snapshotChanges().pipe(take(1)).subscribe(changes => {
 
                 changes.map((a: any) => {
                     const id = a.payload.doc.id;
-
-                    if (this.frequency(a.payload.doc.data().lastTimeUse) && this.options.push.active && this.options.push.messages) {
+                    //if (this.frequency(a.payload.doc.data().lastTimeUse) && this.options.push.active && this.options.push.messages) {
                         this.exec(a.payload.doc.data().token);
+                        console.log(a.payload.doc.data().token);
                         this.db.collection('push').doc(id).set({
                             lastTimeUse: Date.now()
                         },{merge: true});
-                    }
+                    //}
                 });
             });
         } catch (e) {
@@ -112,7 +117,8 @@ export class FcmService {
                 title: this.data.title,
                 body: this.data.body,
                 sound: 'default',
-                icon: 'fcm_push_icon'
+                icon: 'fcm_push_icon',
+                click_action: "https://joyme.co.il/tabs/matches"
             },
             data: {
                 page: this.data.page,
@@ -141,46 +147,7 @@ export class FcmService {
     }
 
     private registerPush() {
-        PushNotifications.requestPermissions().then((result) => {
-            if (result.receive === 'granted') {
-                PushNotifications.register();
-            }
-        });
-
-
-        // On success, we should be able to receive notifications
-        PushNotifications.addListener('registration',
-            (token: Token) => {
-                // token.value
-                this.setToken(token.value);
-            }
-        );
-
-        // Some issue with our setup and push will not work
-        PushNotifications.addListener('registrationError',
-            (error: any) => {
-                console.log('Error on registration: ' + JSON.stringify(error));
-            }
-        );
-
-        // Show us the notification payload if the app is open on our device
-        PushNotifications.addListener('pushNotificationReceived',
-            async (notification: PushNotificationSchema) => {
-                console.log('Push received: ' + JSON.stringify(notification));
-            }
-        );
-
-        // Method called when tapping on a notification
-        PushNotifications.addListener(
-            'pushNotificationActionPerformed',
-            async (notification: ActionPerformed) => {
-                 const data = notification.notification.data;
-                 data.sender = JSON.parse(data.sender);
-                 this.paramsService.set(data);
-                 
-                this.router.navigateByUrl('/tabs/matches').then(_ => {});
-            }
-        );
+        this.requestPermission().subscribe();
     }
 }
 

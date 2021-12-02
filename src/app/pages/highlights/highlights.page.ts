@@ -1,7 +1,6 @@
 import {Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {UserService} from '../../services/user/user.service';
 import {GroupingState, PaginatorState, SortState} from '../../crud-table';
-import {FormBuilder} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {IonContent, IonInfiniteScroll, ModalController, NavController, ToastController} from '@ionic/angular';
 import {FilterPage} from '../filter/filter.page';
@@ -11,7 +10,6 @@ import {FilterService} from '../../services/filter/filter.service';
 import {PhotosPage} from '../photos/photos.page';
 import {ProfilePage} from '../profile/profile.page';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'app-highlights',
@@ -47,7 +45,6 @@ export class HighlightsPage implements OnInit, OnDestroy {
 
     constructor(
         public userService: UserService,
-        private fb: FormBuilder,
         private authService: AuthService,
         private modalCtrl: ModalController,
         public navCtrl: NavController,
@@ -62,11 +59,10 @@ export class HighlightsPage implements OnInit, OnDestroy {
     ngOnInit() {
 
         this.filterData = this.filterService.get(this.filterData);
-    
-        setTimeout(_ => {
-            this.fcmService.initPush();
-            this.userService.setOnline();
+        this.fcmService.initPush();
 
+        setTimeout(_ => {
+            this.userService.setOnline();
             this.loadHighlights().subscribe(users => {
                 this.isLoading = false;
                 users.forEach((user: any) => this.users.push(user));
@@ -152,7 +148,6 @@ export class HighlightsPage implements OnInit, OnDestroy {
     }
 
     filter() {
-        //this.userService.highlights.lastKey = this.users[0];
         this.userService.highlights.lastKey = 0;
         this.userService.highlights.finishLoad = false;
         this.filterService.set(this.filterData);
@@ -188,7 +183,6 @@ export class HighlightsPage implements OnInit, OnDestroy {
 
         });
         return await modal.present();
-        // this.navCtrl.navigateForward(`/profile/${user.id}`, user);
     }
 
     ngOnDestroy(): void {

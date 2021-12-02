@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ReportPage} from '../report/report.page';
 import {ChatService} from '../../services/chat/chat.service';
 import {ChatPage} from '../chat/chat.page';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
     selector: 'app-profile',
@@ -29,6 +30,7 @@ export class ProfilePage implements OnInit {
         private route: ActivatedRoute,
         public chatService: ChatService,
         public toastController: ToastController,
+        private authService: AuthService,
         public userService: UserService) {
 
         this.profile = this.navParams.get('profile');

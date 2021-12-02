@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {IonSlides} from '@ionic/angular';
 import {TapticEngine} from '@ionic-native/taptic-engine/ngx';
 import {AuthService} from '../../services/auth/auth.service';
@@ -30,14 +30,15 @@ export class ProfileImageSlidesComponent implements OnInit {
         public userService: UserService, 
         public fcmService: FcmService, 
         public counterService: CounterService,
-        public cd: ChangeDetectorRef,
+        //public cd: ChangeDetectorRef,
         public chatService: ChatService) 
         {}
 
     ngOnInit() {
         //setTimeout(()=>{
             this.images = this.userService.getAllPhotos(this.user, true);
-            this.cd.detectChanges();
+            console.log(this.images);
+            //this.cd.detectChanges();
         //});
 
         this.userService.getListData('requestImage',this.user.id).subscribe(res => this.imageRequest = res); 
@@ -52,7 +53,7 @@ export class ProfileImageSlidesComponent implements OnInit {
                 this.chatService.sendMessage(res.chat.id, 'בקשה לאישור תמונה', this.userService.user.id, true).then(res => {
                     // Set counter for unread messages
                     this.counterService.setByUserId(this.chatService.interlocutor.id, +1, 'newMessages');
-                    const pushData = {title: 'JoyMe', body: 'קיבלת בקשה לאישור תמונות', receiver_id: this.chatService.interlocutor.id};
+                    const pushData = {title: 'JoyMe', body: 'קיבלת בקשה לאישור תמונות', receiver: this.chatService.interlocutor};
                     // Sending push only to active users
                     if (this.chatService.interlocutor.status === 1) {
                         this.fcmService.sendPushMessage(pushData);

@@ -6,7 +6,6 @@ import {UserModel} from '../../models/user.model';
 import {CounterService} from '../../services/counter/counter.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {counterSubject} from '../../tabs/tabs.page';
-import {ArrayHelper} from '../../helpers/array.helper';
 import {ProfilePage} from '../profile/profile.page';
 
 @Component({

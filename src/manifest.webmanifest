@@ -1,20 +1,21 @@
 {
-  "name": "app",
-  "short_name": "app",
-  "theme_color": "#1976d2",
+  "name": "Joyme",
+  "short_name": "Joyme",
+  "gcm_sender_id": "103953800507",
+  "theme_color": "#040320fa",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
   "icons": [
     {
-      "src": "assets/icons/icon-72x72.png",
+      "src": "assets/icons/drawable-hdpi-icon.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icons/icon-96x96.png",
+      "src": "assets/icons/drawable-xhdpi-icon.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "maskable any"

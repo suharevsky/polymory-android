@@ -22,10 +22,11 @@
     <div *ngIf="imgLoaded" class="cropped-box">
         <div *ngIf="segment === 1" class="edit-photo">
 
-                        <image-cropper [imageChangedEvent]="imageChangedEvent" ></image-cropper>
+                        <!-- <image-cropper [imageChangedEvent]="imageChangedEvent" ></image-cropper> -->
 
 
-            <!-- <image-cropper
+            <image-cropper
+                    [imageChangedEvent]="imageChangedEvent"
                     [imageBase64]="imageBase64"
                     [maintainAspectRatio]="true"
                     [containWithinAspectRatio]="containWithinAspectRatio"
@@ -43,7 +44,7 @@
                     (imageCropped)="imageCropped($event)"
                     (imageLoaded)="imageLoaded()"
                     (loadImageFailed)="loadImageFailed()"
-            ></image-cropper> -->
+            ></image-cropper>
         </div>
         <div *ngIf="segment === 2" class="blur-photo">
             <img [src]="croppedImage" alt=""/>
@@ -70,11 +71,6 @@
            <!--<ion-range snaps (ionChange)="setZoom()" [(ngModel)]="scale" dir="ltr" min="1" max="10" step="1">
             </ion-range>-->
         </ion-buttons>
-        <div *ngIf="segment === 2" class="blur-field">
-            <span>עוצמת טשטוש</span>
-            <ion-range snaps (ionChange)="setBlur()" [(ngModel)]="blur" dir="ltr" min="0" max="30" step="10">
-            </ion-range>
-        </div>
         <ion-buttons class="btn-edit-photos">
             <ion-button (click)="setSegment(1)">
                 <ion-icon name="crop-outline"></ion-icon>
@@ -127,8 +123,7 @@
                 </ion-col>
             </ion-row>
         </ion-grid>
-
-        <ion-grid *ngIf="userService.user.photos.length > 0">
+        <ion-grid *ngIf="userService.user.photos.length > 0 && !newUser">
             <h2>פרטי</h2>
             <ion-row>
                 <ion-col size="4" class="photo-item no-photo"
@@ -161,7 +156,7 @@
     </div>
 
 
-    <ion-button *ngIf="newUser" class="finish-registration"
+    <ion-button *ngIf="newUser && segment === 1" class="finish-registration"
                 expand="block"
                 fill="outline"
                 shape="round"

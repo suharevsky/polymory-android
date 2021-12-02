@@ -18,6 +18,7 @@ import {MatchedModalPageModule} from './pages/matched-modal/matched-modal.module
 import {TinderGoldPageModule} from './pages/tinder-gold/tinder-gold.module';
 import {HttpClientModule} from '@angular/common/http';
 import {AngularFireModule} from '@angular/fire';
+import {AngularFireMessagingModule} from '@angular/fire/messaging';
 import { AngularFirestoreModule} from '@angular/fire/firestore';
 import {environment} from 'src/environments/environment';
 import { Crop } from '@ionic-native/crop/ngx';
@@ -40,7 +41,6 @@ import { ServiceWorkerModule } from '@angular/service-worker';
       backButtonText: '',
       // swipeBackEnabled: false,
     }),
-    AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AppRoutingModule,
     IonicStorageModule.forRoot({
@@ -52,7 +52,11 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     ProfileEditPageModule,
     MatchedModalPageModule,
     TinderGoldPageModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('combined-sw.js', {
+      enabled: environment.production,
+    }),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireMessagingModule,
   ],
   providers: [
     StatusBar,
