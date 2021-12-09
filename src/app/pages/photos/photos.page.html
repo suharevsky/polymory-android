@@ -128,10 +128,12 @@
             <ion-row>
                 <ion-col size="4" class="photo-item no-photo"
                          *ngFor="let i of [0,1,2,3,4,5]" [attr.data-index]="i">
+
                     <div *ngIf="privatePhotos[i]" (error)="imgErrorHandler($event, fileUploadService.getBaseUrl(privatePhotos[i].url))" (click)="selectImage($event, false, privatePhotos[i])"
                          class="photo-image background-img select-image"
                          [style.backgroundImage]="'url(' + fileUploadService.getBaseUrl(privatePhotos[i].url)  +')'"
                     >
+
                         <div class="label-rejected" *ngIf="privatePhotos[i].status === 2">
                             <ion-icon
                                     name="close-circle-outline"></ion-icon>
@@ -146,6 +148,7 @@
                     </div>
                     <div *ngIf="!privatePhotos[i]" (click)="selectImage($event,true, '', true)"
                          class="select-image photo-image background-img"></div>
+                         <ion-icon class="icon-private" name="key-outline"></ion-icon>
                     <div *ngIf="!privatePhotos[i]" (click)="selectImage($event, true, '', true)"
                          class="select-image photo-button photo-button-invert">
                         <ion-icon class="select-image" name="add"></ion-icon>

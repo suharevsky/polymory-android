@@ -14,6 +14,14 @@
     }
   }
 
+  .icon-private {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.75rem;
+  }
+
   .upload-image-area {
     margin-top: 40px;
 
@@ -108,15 +116,7 @@
     }
 
     &.photo-button-invert {
-      background: linear-gradient(
-                      to top right,
-                      var(--color-tinder-stop1) 0%,
-                      var(--color-tinder-stop2) 100%
-      ) !important;
-
-      ion-icon {
-        color: var(--ion-color-white);
-      }
+      background: var(--ion-color-boost-gradient);
     }
   }
 }

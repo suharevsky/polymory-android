@@ -222,6 +222,7 @@ export class PhotosPage implements OnInit {
                 this.userService.user.photos = photos;
 
                 this.userService.user.allPhotosApproved = this.userService.allPhotosApproved();
+                this.userService.user.mainPhotoApproved = this.userService.mainPhotoApproved();
 
                 this.userService.update(this.userService.user).subscribe(() => {},
                 err => console.log(err),
@@ -371,34 +372,7 @@ export class PhotosPage implements OnInit {
 
                 await actionSheet.present();
 
-            } /* else {
-                const buttonOptions = {
-                    header: 'העלאת תמונה מ...',
-                    buttons: [{
-                        text: 'למחוק את התמונה',
-                        handler: () => {
-                            this.delete(photo);
-                        }
-                    },
-      
-                        {
-                            text: 'ביטול',
-                            role: 'cancel'
-                        }
-                    ]
-                };
-
-                if (photo.status === 1 && photo.main === false && photo.isPrivate === false) {
-                    buttonOptions.buttons.push({
-                        text: 'לעשות כתמונה הראשית',
-                        handler: () => {
-                            this.setAsMain(photo);
-                        }
-                    })
-                }
-                const actionSheet = await this.actionSheetController.create(buttonOptions);
-                await actionSheet.present();
-            }*/
+            }
         }
     }
 
@@ -407,7 +381,7 @@ export class PhotosPage implements OnInit {
     }
 
     cropImage(fileUrl) {
-        this.crop.crop(fileUrl, {quality: 75})
+        this.crop.crop(fileUrl, {quality: 100})
             .then(
                 newPath => {
                     this.showCroppedImage(newPath.split('?')[0])
