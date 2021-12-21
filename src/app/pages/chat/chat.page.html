@@ -40,7 +40,7 @@
                         <div class="chat-item-bubble" [ngClass]="{'bubble-image': item.type === 'image'}">
                             <div class="chat-text" *ngIf="item.type !== 'image'"
                                  [innerHtml]="nl2br(item.content)"></div>
-                            <img [src]="item.body" *ngIf="item.type === 'image'">
+                            <ion-img [src]="item.body" *ngIf="item.type === 'image'"></ion-img>
                         </div>
 
                         <div class="chat-item-status" *ngIf="item.uid === userService.user.id">

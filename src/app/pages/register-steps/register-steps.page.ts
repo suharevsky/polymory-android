@@ -6,7 +6,7 @@ import {UserService} from '../../services/user/user.service';
 import {Subscription} from 'rxjs';
 import {first} from 'rxjs/operators';
 import {AuthService} from '../../services/auth/auth.service';
-import {UniqueUsernameValidator} from '../../validators/unique-username.validator';
+//import {UniqueUsernameValidator} from '../../validators/unique-username.validator';
 import {PhotosPage} from '../photos/photos.page';
 import {BirthdayValidator} from '../../validators/birthday.validator';
 
@@ -50,7 +50,7 @@ export class RegisterStepsPage implements OnInit {
         private authService: AuthService,
         public toastController: ToastController,
         private modalCtrl: ModalController,
-        private uniqueUsernameValidator: UniqueUsernameValidator,
+        //private uniqueUsernameValidator: UniqueUsernameValidator,
         private birthdayValidator: BirthdayValidator,
     ) {
     }
@@ -255,7 +255,8 @@ export class RegisterStepsPage implements OnInit {
         this.user.status = +1;
         this.user.lastTimeActive = Date.now();
         this.user.isAdmin = false;
-        this.user.allPhotosApproved = true;
+        this.user.allPhotosApproved = 1;
+        this.user.mainPhotoApproved = 0;
         // this.user.ipAddress = this.ipAddress;
         this.user.accessToken = 'access-token-' + Math.random();
         this.user.refreshToken = 'refreshToken-token-' + Math.random();

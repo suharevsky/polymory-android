@@ -26,7 +26,7 @@ export class FilterPage implements OnInit {
         area: '',
         online: false,
         preferences: [],
-        withPhoto: false
+        withPhoto: true
     };
 
     constructor(public modalCtrl: ModalController, private fb: FormBuilder, public filterService: FilterService, public userService: UserService) {
@@ -36,7 +36,6 @@ export class FilterPage implements OnInit {
         return this.filterForm.controls;
     }
 
-    
     ngOnInit() {
         this.filterData = this.filterService.get(this.filterData);
         this.filterData.preferences = this.filterData.preferences.length > 0 ? this.filterData.preferences : this.userService.getPreference().value;
@@ -67,7 +66,18 @@ export class FilterPage implements OnInit {
             this.f.preferences.setValue(arr);
             this.preferences[i].chosen = true;
         }
+    }
 
+    onCheckBox(e) {
+        if(e.target.dataset.id === 'withPhoto' && this.f.withPhoto.value) {
+            this.f.online.setValue(false);
+        }else if(e.target.dataset.id === 'online' && this.f.online.value){
+            this.f.withPhoto.setValue(false);
+        }else if(e.target.dataset.id === 'online' && !this.f.online.value){
+            this.f.withPhoto.setValue(true);
+        }else if(e.target.dataset.id === 'withPhoto' && !this.f.withPhoto.value) {
+            this.f.online.setValue(true);
+        }
     }
 
     selectArea(i: number) {
@@ -112,6 +122,7 @@ export class FilterPage implements OnInit {
     }
 
     reset() {
+
         Object.keys(this.f).forEach(key => {
             this.f[key].setValue('');
             console.log(key);
@@ -119,7 +130,8 @@ export class FilterPage implements OnInit {
 
         this.f.ageRange.setValue(this.ageRange);
         this.f.preferences.setValue([]);
-        this.f.online.setValue(true);
+        this.f.online.setValue(false);
+        this.f.withPhoto.setValue(true);
         this.filterData.area = '';
 
         this.filterService.delete();
@@ -133,5 +145,4 @@ export class FilterPage implements OnInit {
     close() {
         this.modalCtrl.dismiss();
     }
-
 }

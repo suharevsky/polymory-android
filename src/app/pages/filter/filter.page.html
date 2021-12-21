@@ -56,18 +56,14 @@
                         <ion-label>{{this.filterData.area ? this.filterData.area :'כל האזורים'}}</ion-label>
                     </div>
                 </ion-item>
-
-                <!--<ion-item detail="true" lines="none">
-                    <ion-label>הכל</ion-label>
-                </ion-item>-->
-                <!--<ion-item>
+                <ion-item>
                     <ion-label>עם תמונה בלבד</ion-label>
-                    <ion-checkbox slot="end" formControlName="withImages"></ion-checkbox>
+                    <ion-checkbox data-id="withPhoto" slot="end" (ionChange)="onCheckBox($event)" formControlName="withPhoto"></ion-checkbox>
                 </ion-item>
                 <ion-item>
                     <ion-label>אונליין בלבד</ion-label>
-                    <ion-checkbox slot="end" formControlName="online"></ion-checkbox>
-                </ion-item>-->
+                    <ion-checkbox data-id="online" slot="end" (ionChange)="onCheckBox($event)" formControlName="online"></ion-checkbox>
+                </ion-item>
                 <ion-button
                         expand="block"
                         fill="outline"

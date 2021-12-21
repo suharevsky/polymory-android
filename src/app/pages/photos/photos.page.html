@@ -47,7 +47,7 @@
             ></image-cropper>
         </div>
         <div *ngIf="segment === 2" class="blur-photo">
-            <img [src]="croppedImage" alt=""/>
+            <ion-img [src]="croppedImage" alt=""></ion-img>
         </div>
         <div *ngIf="segment === 3" class="mask-photo">
             <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
@@ -55,12 +55,12 @@
             <div class="card">
                 <div class="mask-list">
                     <div class="mask" (click)="addFigure('rectangle')"><span class="rectangle"></span></div>
-                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/1.png');"><img
-                            class="images-item" src="../../../assets/img/masks/1.png" alt=""></div>
-                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/2.png');"><img
-                            class="images-item" src="../../../assets/img/masks/2.png" alt=""></div>
-                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/3.png');"><img
-                            class="images-item" src="../../../assets/img/masks/3.png" alt=""></div>
+                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/1.png');"><ion-img
+                            class="images-item" src="../../../assets/img/masks/1.png" alt=""></ion-img></div>
+                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/2.png');"><ion-img
+                            class="images-item" src="../../../assets/img/masks/2.png" alt=""></ion-img></div>
+                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/3.png');"><ion-img
+                            class="images-item" src="../../../assets/img/masks/3.png" alt=""></ion-img></div>
                 </div>
             </div>
         </div>
@@ -75,9 +75,9 @@
             <ion-button (click)="setSegment(1)">
                 <ion-icon name="crop-outline"></ion-icon>
             </ion-button>
-            <ion-button (click)="setSegment(2)"><img src="../../../assets/icon/blur.svg" alt="My Happy SVG"/>
+            <ion-button (click)="setSegment(2)"><ion-img src="../../../assets/icon/blur.svg" alt="My Happy SVG"></ion-img>
             </ion-button>
-            <ion-button (click)="setSegment(3)"><img src="../../../assets/icon/mask.svg" alt="My Happy SVG"/>
+            <ion-button (click)="setSegment(3)"><ion-img src="../../../assets/icon/mask.svg" alt="My Happy SVG"></ion-img>
             </ion-button>
         </ion-buttons>
         <ion-buttons class="options">
@@ -124,16 +124,17 @@
             </ion-row>
         </ion-grid>
         <ion-grid *ngIf="userService.user.photos.length > 0 && !newUser">
+            <div class="warning-box">
+                <span class="icon"><ion-icon name="alert-circle-outline"></ion-icon></span><p>תמונות עירום,  מיניות או מבחינה אחרת מותרות באזור הפרטי בלבד. תמונות שלא יתאימו לקריטוריונים המפורטים ימחקו.</p>
+            </div>
             <h2>פרטי</h2>
             <ion-row>
                 <ion-col size="4" class="photo-item no-photo"
                          *ngFor="let i of [0,1,2,3,4,5]" [attr.data-index]="i">
-
                     <div *ngIf="privatePhotos[i]" (error)="imgErrorHandler($event, fileUploadService.getBaseUrl(privatePhotos[i].url))" (click)="selectImage($event, false, privatePhotos[i])"
                          class="photo-image background-img select-image"
                          [style.backgroundImage]="'url(' + fileUploadService.getBaseUrl(privatePhotos[i].url)  +')'"
                     >
-
                         <div class="label-rejected" *ngIf="privatePhotos[i].status === 2">
                             <ion-icon
                                     name="close-circle-outline"></ion-icon>

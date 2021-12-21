@@ -29,6 +29,8 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     public highlights = {
         lastKey: undefined,
         finishLoad: false,
+        length: 0,
+        restResults: []
     };
     public favorites = {
         lastKey: 0,
@@ -140,6 +142,13 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         return this.user.allPhotosApproved = photos.length === 0 ? 1 : 0;
     }
 
+    mainPhotoApproved() {
+        const photos = this.user.photos.filter(photo => {
+            return photo.status === 1 && photo.main;
+        });
+        return this.user.mainPhotoApproved = photos.length === 1 ? 1 : 0;
+    }
+
     public deletePhoto(photo) {
 
         this.user.photos = this.user.photos.filter(photoEl => {
@@ -147,6 +156,7 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         });
 
         this.user.allPhotosApproved = this.allPhotosApproved();
+        this.user.mainPhotoApproved = this.mainPhotoApproved();
 
         const sb = this.update(this.user).subscribe(_ => {
             // Create a reference to the file to delete
@@ -269,7 +279,6 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
             }
         });
 
-
         return {
             label: 'רוצה להכיר...',
             value: this.user ? this.user.preference : '',
@@ -329,7 +338,11 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
 
         if (user) {
 
-            let photo = user.photos.filter(el => el.main === true);
+            let photo:any = [];
+            
+            if(user.photos?.length > 0) {
+                photo = user.photos.filter(el => el.main === true);
+            }
 
             if (photo.length > 0) {
                 photo = photo[0];
@@ -467,107 +480,91 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     }
 
     loadHighlights(filterData) {
+        //return this.http.get<UserModel[]>(this.API_URL + '/highlights');
+          return this.db.collection<any>('users', ref => {
+                let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
+    
+                query = query.where('status', '==', 1);
+                query = query.where('isAdmin', '==', false);
 
-        return this.db.collection<any>('users', ref => {
-            let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
-
-            query = query.where('status', '==', 1);
-            query = query.where('isAdmin', '==', false);
-
-            if (filterData.area) {
-                query = query.where('area', '==', filterData.area);
-            }
-
-            if (filterData?.preferences.length > 0) {
-                query = query.where('gender', 'in', filterData.preferences);
-            }
-
-            if (filterData?.online) {
-                if (this.highlights.lastKey) {
-                    query = query.orderBy('lastTimeActive', 'desc')
-                        .startAfter((this.highlights.lastKey as any).lastTimeActive || 0)
-                        .limit(10);
-                } else {
-                    query = query.orderBy('lastTimeActive', 'desc')
-                        .limit(10);
+                if (filterData.area) {
+                    query = query.where('area', '==', filterData.area);
                 }
-            }
+    
+                if (filterData?.preferences.length > 0) {
+                    query = query.where('gender', 'in', filterData.preferences);
+                }
+    
+                //if (filterData?.online) {
+                    if (this.highlights.lastKey) {
+                        query = query.orderBy('lastTimeActive', 'desc')
+                            .startAfter((this.highlights.lastKey as any).lastTimeActive || 0)
+                            .limit(20);
+                    } else {
+                        query = query.orderBy('lastTimeActive', 'desc')
+                            .limit(20);
+                    }
+                //}
 
-            // if (filterData?.withPhoto) {
-            //     query = query.orderBy('registrationDate').startAfter(this.highlights.lastKey || 0).limit(10);
-            // }
+                return query;
+            })
+                .get()
+                .pipe(
+                    map((response: any) => {
+                        let results = [];
+    
+                        for (let item of response.docs) {
+                            results.push(item.data());
+                          }
 
-            return query;
-        })
-            .get()
-            .pipe(
-                map((response: any) => {
+                          if (filterData?.withPhoto) {
+                            //mainPhotoApproved
+                            let allUsers = results;
+                            results = allUsers.filter((user: any) => user.mainPhotoApproved === 1);
+                            Array.prototype.push.apply(this.highlights.restResults,allUsers.filter((user: any) => user.mainPhotoApproved === 0)); 
 
-                    let results = [];
+                            console.log(this.highlights.restResults);
+                          }
 
-                    for (let item of response.docs) {
-                        results.push(item.data());
-                      }
+                        //if (filterData?.online) {
+                            if ((results[results.length - 1]?.id === (this.highlights.lastKey as any)?.id)) {    
+                                this.highlights.finishLoad = true;
+                                return [];
+                            }
+                            this.highlights.lastKey = results[results.length - 1];
+                        //}
 
-                   /* if (filterData?.withPhoto) {
+                        if (!this.highlights.lastKey) {
+                            console.log('finish');
 
-                        if ((+results[results.length - 1].id === this.highlights.lastKey.id) || isNaN(this.highlights.lastKey)) {
                             this.highlights.finishLoad = true;
-                            return [];
                         }
-                        // this.highlights.lastKey = results[results.length - 1]?.registrationDate;
-                        this.highlights.lastKey = results[results.length - 1];
-
-                    }*/
-                    if (filterData?.online) {
-                        if ((results[results.length - 1]?.id === (this.highlights.lastKey as any)?.id) /*|| isNaN(this.highlights.lastKey)*/) {
-                            this.highlights.finishLoad = true;
-                            return [];
-                        }
-                        this.highlights.lastKey = results[results.length - 1];
-                    }
-
-                    if (!this.highlights.lastKey) {
-                        this.highlights.finishLoad = true;
-                    }
-
-                    if (filterData.ageRange) {
-                        results = results.filter((el: any) => {
-
-                            if (el.gender === 'גבר') {
-                                return this.getAge(el.birthday) >= filterData.ageRange.lower
-                                    && this.getAge(el.birthday) <= filterData.ageRange.upper;
-                            }
-
-                            if (el.gender === 'אישה') {
-                                return this.getAge(el.birthday) >= filterData.ageRange.lower
-                                    && this.getAge(el.birthday) <= filterData.ageRange.upper;
-                            }
-
-                            if (el.gender === 'זוג') {
-                                return ((this.getAge(el.birthday) >= filterData.ageRange.lower)
-                                    && (this.getAge(el.birthday1) >= filterData.ageRange.lower))
-                                    &&
-                                    ((this.getAge(el.birthday) <= filterData.ageRange.upper)
-                                        && (this.getAge(el.birthday1) <= filterData.ageRange.upper));
-                            }
-                        });
-                    }
-
-                    /*if (filterData.withPhoto) {
-                        results = results.map(user => {
-                            if (user.photos.length > 0) {
-                                const hasPhoto = user.photos.filter(el => el.status === 1);
-                                if (hasPhoto) {
-                                    return user;
+    
+                        if (filterData.ageRange) {
+                            results = results.filter((el: any) => {
+                                if (el.gender === 'גבר') {
+                                    return this.getAge(el.birthday) >= filterData.ageRange.lower
+                                        && this.getAge(el.birthday) <= filterData.ageRange.upper;
                                 }
-                            }
-                            return;
-                        });
-                    }*/
+    
+                                if (el.gender === 'אישה') {
+                                    return this.getAge(el.birthday) >= filterData.ageRange.lower
+                                        && this.getAge(el.birthday) <= filterData.ageRange.upper;
+                                }
+    
+                                if (el.gender === 'זוג') {
+                                    return ((this.getAge(el.birthday) >= filterData.ageRange.lower)
+                                        && (this.getAge(el.birthday1) >= filterData.ageRange.lower))
+                                        &&
+                                        ((this.getAge(el.birthday) <= filterData.ageRange.upper)
+                                            && (this.getAge(el.birthday1) <= filterData.ageRange.upper));
+                                }
+                            });
+                        }
 
-                    return results.length > 0 ? results.filter(user => user && user.id !== this.user.id) : [];
-                }),
-            );
+    
+                        return results.length > 0 ? results.filter(user => user && user.id !== this.user.id) : [];
+                    }),
+                );
     }
 }

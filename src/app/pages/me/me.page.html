@@ -3,8 +3,8 @@
         <div class="section-upper">
             <div class="me-header" (click)="viewProfile(userService.user)">
                 <ion-avatar class="avatar">
-                    <img (error)="imgErrorHandler($event, userService.getMainPhoto(userService.user, 'm', false))"
-                         [src]="userService.getMainPhoto(userService.user, 'm', false)"/>
+                    <ion-img (error)="imgErrorHandler($event, userService.getMainPhoto(userService.user, 'm', false))"
+                         [src]="userService.getMainPhoto(userService.user, 'm', false)"></ion-img>
                 </ion-avatar>
                 <div>
                     <div class="me-title">{{userService.user?.username}} {{userService.getAge(userService.user?.birthday)}}
@@ -59,6 +59,9 @@
             </ion-row>
         </div>
         <div class="section-lower has-oval">
+            <div class="warning-box" *ngIf="userService.user.photos.length == 0">
+                <span class="icon"><ion-icon name="alert-circle-outline"></ion-icon></span><p>פרופיל עם תמונה מגדיל הרבה יותר סיכויים להכיר אנשים חדשים</p>
+            </div>
             <!--
                     <div class="section-lower has-oval" (click)="viewSubscriptionGold()">
 

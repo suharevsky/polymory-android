@@ -4,16 +4,6 @@
         <ion-icon name="options-outline"></ion-icon>
     </div>
     <div class="logo title">JoyMe</div>
-    <!-- <ion-toolbar class="toolbar-no-border toolbar-no-safe-area">
-        <ion-segment class="segment-custom" mode="md">
-            <div class="segment">
-                <ion-select cancel-text="ביטול" (ionChange)="onChangeFilter($event)" [(ngModel)]="filterData.status">
-                    <ion-select-option [value]="0">אונליין</ion-select-option>
-                    <ion-select-option [value]="1">עם תמונה בלבד</ion-select-option>
-                </ion-select>
-            </div>
-        </ion-segment>
-    </ion-toolbar> -->
 </ion-header>
       <!-- Loading screen -->
       <div *ngIf="isLoading" class="full-height safe-area-bottom">
@@ -43,7 +33,7 @@
             <div [hidden]="isLoading" class="no-results" *ngIf="users?.length==0">
                 אין תוצאות
             </div>
-            <ion-row>
+            <ion-row class="users">
                 <ion-col size="6" *ngFor="let user of users">
                     <person-card (click)="viewProfile(user)" [data]="user"></person-card>
                 </ion-col>

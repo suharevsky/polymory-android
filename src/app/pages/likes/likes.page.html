@@ -53,7 +53,7 @@
       <ion-item (click)="viewProfile(favorite)" *ngFor="let favorite of favoriteList">
         <ion-avatar slot="start">
           <span *ngIf="userService.isOnline(favorite.lastTimeActive)" class="online-status active"></span>
-          <img src="{{userService.getMainPhoto(favorite,'s')}}">
+          <ion-img src="{{userService.getMainPhoto(favorite,'s')}}"></ion-img>
         </ion-avatar>
         <ion-label>
           <h2>{{favorite.username}}, {{userService.getAge(favorite.birthday)}}</h2>
@@ -82,7 +82,7 @@
       <ion-item (click)="viewProfile(viewed)" *ngFor="let viewed of viewedList; index as i">
         <ion-avatar slot="start">
           <span *ngIf="userService.isOnline(viewed.lastTimeActive)" class="online-status active"></span>
-          <img src="{{userService.getMainPhoto(viewed,'s')}}">
+          <ion-img src="{{userService.getMainPhoto(viewed,'s')}}"></ion-img>
         </ion-avatar>
         <ion-label>
           <h2>{{viewed.username}}, {{userService.getAge(viewed.birthday)}}</h2>

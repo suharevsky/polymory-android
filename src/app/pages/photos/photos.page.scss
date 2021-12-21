@@ -145,12 +145,12 @@ ion-button {
     font-size: 32px;
   }
 
-  img {
+  ion-img {
     height: 32px;
   }
 }
 
-.blur-photo img {
+.blur-photo ion-img {
   margin: 0 auto;
   display: block;
 }
@@ -201,7 +201,7 @@ ion-buttons.options {
     }
 
 
-    img {
+    ion-img {
       height: auto;
       width: 48px;
       position: absolute;
