@@ -4,11 +4,21 @@
         <ion-icon name="options-outline"></ion-icon>
     </div>
     <div class="logo title">JoyMe</div>
+    <!-- <ion-toolbar class="toolbar-no-border toolbar-no-safe-area">
+        <ion-segment class="segment-custom" mode="md">
+            <div class="segment">
+                <ion-select cancel-text="ביטול" (ionChange)="onChangeFilter($event)" [(ngModel)]="filterData.status">
+                    <ion-select-option [value]="0">אונליין</ion-select-option>
+                    <ion-select-option [value]="1">עם תמונה בלבד</ion-select-option>
+                </ion-select>
+            </div>
+        </ion-segment>
+    </ion-toolbar> -->
 </ion-header>
       <!-- Loading screen -->
       <div *ngIf="isLoading" class="full-height safe-area-bottom">
         <ion-row class="full-height ion-justify-content-center ion-align-items-center">
-          <ripple-loader [imageUrl]="userService.getMainPhoto(userService.user, 'm', false)"></ripple-loader>
+          <ripple-loader [imageUrl]="userService.getMainPhoto(userService.user, 'l', false)"></ripple-loader>
         </ion-row>
       </div>
 <!--
@@ -35,7 +45,7 @@
             </div>
             <ion-row class="users">
                 <ion-col size="6" *ngFor="let user of users">
-                    <person-card (click)="viewProfile(user)" [data]="user"></person-card>
+                    <person-card [user]="user"></person-card>
                 </ion-col>
             </ion-row>
             <ion-infinite-scroll *ngIf="!userService.highlights.finishLoad" disabled="false" threshold="100px"

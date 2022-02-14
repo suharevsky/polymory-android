@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="!imgLoaded">
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-back-button></ion-back-button>
@@ -16,34 +16,33 @@
         </ion-toolbar>
     </ion-header>
 
-
     <input style="display: none;" type="file" accept="image/*" (change)="fileChangeEvent($event)"/>
 
     <div *ngIf="imgLoaded" class="cropped-box">
         <div *ngIf="segment === 1" class="edit-photo">
-
-                        <!-- <image-cropper [imageChangedEvent]="imageChangedEvent" ></image-cropper> -->
-
+<!--
+                        <image-cropper [imageChangedEvent]="imageChangedEvent" ></image-cropper>
+-->
 
             <image-cropper
-                    [imageChangedEvent]="imageChangedEvent"
-                    [imageBase64]="imageBase64"
-                    [maintainAspectRatio]="true"
-                    [containWithinAspectRatio]="containWithinAspectRatio"
-                    [aspectRatio]="1"
-                    [resizeToWidth]="590"
-                    [cropperMinWidth]="590"
-                    [imageQuality]="100"
-                    [onlyScaleDown]="true"
-                    [roundCropper]="false"
-                    [canvasRotation]="canvasRotation"
-                    [transform]="transform"
-                    [alignImage]="'center'"
-                    [style.display]="showCropper ? null : 'none'"
-                    format="png"
-                    (imageCropped)="imageCropped($event)"
-                    (imageLoaded)="imageLoaded()"
-                    (loadImageFailed)="loadImageFailed()"
+            [imageChangedEvent]="imageChangedEvent"
+            [imageBase64]="imageBase64"
+            [maintainAspectRatio]="true"
+            [containWithinAspectRatio]="containWithinAspectRatio"
+            [aspectRatio]="1"
+            [resizeToWidth]="600"
+            [cropperMinWidth]="600"
+            [imageQuality]="100"
+            [onlyScaleDown]="true"
+            [roundCropper]="false"
+            [canvasRotation]="canvasRotation"
+            [transform]="transform"
+            [alignImage]="'center'"
+            [style.display]="showCropper ? null : 'none'"
+            format="png"
+            (imageCropped)="imageCropped($event)"
+            (imageLoaded)="imageLoaded()"
+            (loadImageFailed)="loadImageFailed()"
             ></image-cropper>
         </div>
         <div *ngIf="segment === 2" class="blur-photo">
@@ -55,31 +54,37 @@
             <div class="card">
                 <div class="mask-list">
                     <div class="mask" (click)="addFigure('rectangle')"><span class="rectangle"></span></div>
-                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/1.png');"><ion-img
-                            class="images-item" src="../../../assets/img/masks/1.png" alt=""></ion-img></div>
-                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/2.png');"><ion-img
-                            class="images-item" src="../../../assets/img/masks/2.png" alt=""></ion-img></div>
-                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/3.png');"><ion-img
-                            class="images-item" src="../../../assets/img/masks/3.png" alt=""></ion-img></div>
+                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/1.png');"><img
+                            class="images-item" src="../../../assets/img/masks/1.png" alt=""></div>
+                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/2.png');"><img
+                            class="images-item" src="../../../assets/img/masks/2.png" alt=""></div>
+                    <div class="mask" (click)="addImageOnCanvas('../../../assets/img/masks/3.png');"><img
+                            class="images-item" src="../../../assets/img/masks/3.png" alt=""></div>
                 </div>
             </div>
+            
         </div>
-        <ion-buttons *ngIf="segment === 1">
+        <!-- <ion-buttons *ngIf="segment === 1">
             <ion-button (click)="rotateRight()">
                 <ion-icon name="sync-outline"></ion-icon>
             </ion-button>
-           <!--<ion-range snaps (ionChange)="setZoom()" [(ngModel)]="scale" dir="ltr" min="1" max="10" step="1">
-            </ion-range>-->
-        </ion-buttons>
-        <ion-buttons class="btn-edit-photos">
+           <ion-range snaps (ionChange)="setZoom()" [(ngModel)]="scale" dir="ltr" min="1" max="10" step="1">
+            </ion-range>
+        </ion-buttons> -->
+        <!-- <div *ngIf="segment === 2" class="blur-field">
+            <span>עוצמת טשטוש</span>
+            <ion-range snaps (ionChange)="setBlur()" [(ngModel)]="blur" dir="ltr" min="0" max="30" step="10">
+            </ion-range>
+        </div> -->
+        <!-- <ion-buttons class="btn-edit-photos">
             <ion-button (click)="setSegment(1)">
                 <ion-icon name="crop-outline"></ion-icon>
             </ion-button>
-            <ion-button (click)="setSegment(2)"><ion-img src="../../../assets/icon/blur.svg" alt="My Happy SVG"></ion-img>
+            <ion-button (click)="setSegment(2)"><img src="../../../assets/icon/blur.svg" alt="My Happy SVG"/>
             </ion-button>
-            <ion-button (click)="setSegment(3)"><ion-img src="../../../assets/icon/mask.svg" alt="My Happy SVG"></ion-img>
+            <ion-button (click)="setSegment(3)"><img src="../../../assets/icon/mask.svg" alt="My Happy SVG"/>
             </ion-button>
-        </ion-buttons>
+        </ion-buttons> -->
         <ion-buttons class="options">
             <ion-button (click)="cancelUpload()">ביטול</ion-button>
             <ion-button (click)="rasterize()">
@@ -97,16 +102,11 @@
             <ion-row>
                 <ion-col size="4" class="photo-item no-photo"
                          *ngFor="let i of [0,1,2,3,4,5]">
-                    <div *ngIf="publicPhotos[i]" (error)="imgErrorHandler($event, fileUploadService.getBaseUrl(publicPhotos[i].url))" (click)="selectImage($event, false, privatePhotos[i])"
+                    <div *ngIf="publicPhotos[i]" (click)="selectImage($event, false, publicPhotos[i])"
                          class="photo-image background-img select-image"
-                         [style.backgroundImage]="'url(' + fileUploadService.getBaseUrl(publicPhotos[i].url)  +')'"
-                    >
+                         [defaultImage]="defaultImage"
+                         [lazyLoad]="fileUploadService.getBaseUrl(publicPhotos[i].url)">
                         <div class="label-main" *ngIf="publicPhotos[i].main">ראשי</div>
-                        <div class="label-rejected" *ngIf="publicPhotos[i].status === 2">
-                            <ion-icon
-                                    name="close-circle-outline"></ion-icon>
-                        </div>
-
                         <ion-icon *ngIf="publicPhotos[i].status === 0" class="status status-waiting"
                                   name="timer-outline"></ion-icon>
                     </div>
@@ -123,23 +123,21 @@
                 </ion-col>
             </ion-row>
         </ion-grid>
-        <ion-grid *ngIf="userService.user.photos.length > 0 && !newUser">
+
+        <ion-grid *ngIf="userService.user.photos.length > 0">
             <div class="warning-box">
-                <span class="icon"><ion-icon name="alert-circle-outline"></ion-icon></span><p>תמונות עירום,  מיניות או מבחינה אחרת מותרות באזור הפרטי בלבד. תמונות שלא יתאימו לקריטוריונים המפורטים ימחקו.</p>
+                <span class="icon"><ion-icon name="alert-circle-outline"></ion-icon></span><p>תמונות עירום,  מיניות או מבחינה אחרת מותרות לשלוח <b>בפרטי</b> בלבד. תמונות שלא יתאימו לקריטוריונים המפורטים ימחקו.</p>
             </div>
+            
             <h2>פרטי</h2>
             <ion-row>
                 <ion-col size="4" class="photo-item no-photo"
                          *ngFor="let i of [0,1,2,3,4,5]" [attr.data-index]="i">
-                    <div *ngIf="privatePhotos[i]" (error)="imgErrorHandler($event, fileUploadService.getBaseUrl(privatePhotos[i].url))" (click)="selectImage($event, false, privatePhotos[i])"
+                    <div *ngIf="privatePhotos[i]" (click)="selectImage($event, false, privatePhotos[i])"
                          class="photo-image background-img select-image"
-                         [style.backgroundImage]="'url(' + fileUploadService.getBaseUrl(privatePhotos[i].url)  +')'"
+                         [defaultImage]="defaultImage"
+                         [lazyLoad]="fileUploadService.getBaseUrl(privatePhotos[i].url)"
                     >
-                        <div class="label-rejected" *ngIf="privatePhotos[i].status === 2">
-                            <ion-icon
-                                    name="close-circle-outline"></ion-icon>
-                        </div>
-
                         <ion-icon *ngIf="privatePhotos[i].status === 0" class="status status-waiting"
                                   name="timer-outline"></ion-icon>
                     </div>
@@ -149,7 +147,6 @@
                     </div>
                     <div *ngIf="!privatePhotos[i]" (click)="selectImage($event,true, '', true)"
                          class="select-image photo-image background-img"></div>
-                         <ion-icon class="icon-private" name="key-outline"></ion-icon>
                     <div *ngIf="!privatePhotos[i]" (click)="selectImage($event, true, '', true)"
                          class="select-image photo-button photo-button-invert">
                         <ion-icon class="select-image" name="add"></ion-icon>
@@ -160,7 +157,7 @@
     </div>
 
 
-    <ion-button *ngIf="newUser && segment === 1" class="finish-registration"
+    <ion-button *ngIf="newUser" class="finish-registration"
                 expand="block"
                 fill="outline"
                 shape="round"

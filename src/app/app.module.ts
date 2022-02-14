@@ -12,22 +12,23 @@ import {IonicStorageModule} from '@ionic/storage';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {SharedModule} from './components/sharedModule';
-import {SettingsPageModule} from './pages/settings/settings.module';
-import {ProfileEditPageModule} from './pages/profile-edit/profile-edit.module';
-import {MatchedModalPageModule} from './pages/matched-modal/matched-modal.module';
-import {TinderGoldPageModule} from './pages/tinder-gold/tinder-gold.module';
 import {HttpClientModule} from '@angular/common/http';
 import {AngularFireModule} from '@angular/fire';
 import {AngularFireMessagingModule} from '@angular/fire/messaging';
 import { AngularFirestoreModule} from '@angular/fire/firestore';
 import {environment} from 'src/environments/environment';
 import { Crop } from '@ionic-native/crop/ngx';
-import { Camera } from '@ionic-native/Camera/ngx';
-import { File } from '@ionic-native/file/ngx';
+import { Camera } from '@awesome-cordova-plugins/camera/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Market } from '@ionic-native/market/ngx';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { DefaultModule } from './layouts/default/default.module';
+import { SettingsPageModule } from './pages/settings/settings.module';
+import { ProfileEditPageModule } from './pages/profile-edit/profile-edit.module';
+import { TinderGoldPageModule } from './pages/tinder-gold/tinder-gold.module';
+import { ImageModalPageModule } from './components/image-modal/image-modal.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -50,8 +51,9 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     SharedModule,
     SettingsPageModule,
     ProfileEditPageModule,
-    MatchedModalPageModule,
     TinderGoldPageModule,
+    ImageModalPageModule,
+    DefaultModule,
     ServiceWorkerModule.register('combined-sw.js', {
       enabled: environment.production,
     }),

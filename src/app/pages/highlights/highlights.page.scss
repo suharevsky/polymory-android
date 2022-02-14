@@ -14,18 +14,14 @@
   }
 }
 
-ion-row.users {
- // min-height: 100vh;
-}
-
 .header-custom {
   padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 72px;
-  --background: rgb(4 3 32 / 98%);
-  background: rgb(4 3 32 / 98%);
+  --background: rgba(4, 3, 32, 0.98);
+  background: rgba(4, 3, 32, 0.98);
 
   .title.logo {
     margin: 0;

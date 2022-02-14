@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {PageService} from '../../services/page/page.service';
 import {map} from 'rxjs/operators';
 import {ModalController, NavParams} from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-page',
@@ -15,10 +16,10 @@ export class PagePage implements OnInit {
 
     constructor(
         public pageService: PageService,
-        public navParams: NavParams,
+        public route: ActivatedRoute,
         private modalCtrl: ModalController,
     ) {
-        this.slug = this.navParams.get('slug');
+        this.slug = this.route.snapshot.paramMap.get('slug');
     }
 
     close() {

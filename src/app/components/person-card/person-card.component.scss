@@ -1,6 +1,6 @@
 .person-card {
   height: 0;
-  padding-top: 120%;
+  padding-top: 200px;
   box-shadow: var(--card-box-shadow);
   border-radius: var(--swipe-card-border-radius);
   position: relative;
@@ -35,5 +35,12 @@
     position: absolute;
     top: 8px;
     right: 8px;
+  }
+}
+
+
+@media(min-width: 768px) {
+  .person-card {
+    padding-top: 320px;
   }
 }

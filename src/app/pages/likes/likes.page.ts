@@ -5,7 +5,8 @@ import {ModalController, NavController} from '@ionic/angular';
 import {UserModel} from '../../models/user.model';
 import {CounterService} from '../../services/counter/counter.service';
 import {AuthService} from '../../services/auth/auth.service';
-import {counterSubject} from '../../tabs/tabs.page';
+import {counterSubject} from '../../components/tabs/tabs.page';
+import {ArrayHelper} from '../../helpers/array.helper';
 import {ProfilePage} from '../profile/profile.page';
 
 @Component({
@@ -15,14 +16,14 @@ import {ProfilePage} from '../profile/profile.page';
 })
 export class LikesPage implements OnInit, OnDestroy {
 
-    public highlightView = 0;
+    public highlightView = 1;
     public favoriteList = [];
     public viewedList = [];
     public counter;
     public isLoading = true;
     public user: UserModel;
     public slicedList;
-    public type = 'favorites';
+    public type = 'views';
 
 
     private subscriptions: Subscription[] = [];
@@ -48,12 +49,12 @@ export class LikesPage implements OnInit, OnDestroy {
 
     getHighlightView() {
         this.userService[this.type].finishLoad = false;
-        this.type = 'favorites';
+        this.type = 'views';
 
-        if (+this.highlightView === 1) {
-            this.type = 'views';
-            if (this.viewedList.length === 0) {
-                this.getList('views');
+        if (+this.highlightView === 0) {
+            this.type = 'favorites';
+            if (this.favoriteList.length === 0) {
+                this.getList('favorites');
             }
 
             if (this.counter?.views > 0) {
@@ -83,14 +84,6 @@ export class LikesPage implements OnInit, OnDestroy {
                 results.forEach(user => {
                     return this.viewedList.push(user);
                 });
-                /*
-                results.forEach(user => {
-                    const uniqueUsr = this.viewedList.length > 0 ?
-                        this.viewedList.filter(viewedUser => viewedUser.id !== user.id)[0] : user;
-                    if (uniqueUsr) {
-                        return this.viewedList.push(uniqueUsr);
-                    }
-                });*/
             }
         });
     }

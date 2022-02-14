@@ -14,14 +14,6 @@
     }
   }
 
-  .icon-private {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.75rem;
-  }
-
   .upload-image-area {
     margin-top: 40px;
 
@@ -61,23 +53,6 @@
       bottom: 0;
       border-radius: 5px;
     }
-
-    &-rejected {
-      position: absolute;
-      left: 0;
-      background: rgb(239 15 15 / 51%);
-      padding: 2px 4px;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
-      ion-icon{
-        font-size: 80px;
-        position: absolute;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        top: 50%;
-      }
-    }
   }
 
   .photo-image {
@@ -94,9 +69,6 @@
       }
     }
   }
-
-
-
 
   .photo-button {
     position: absolute;
@@ -116,7 +88,15 @@
     }
 
     &.photo-button-invert {
-      background: var(--ion-color-boost-gradient);
+      background: linear-gradient(
+                      to top right,
+                      var(--color-tinder-stop1) 0%,
+                      var(--color-tinder-stop2) 100%
+      ) !important;
+
+      ion-icon {
+        color: var(--ion-color-white);
+      }
     }
   }
 }
@@ -128,8 +108,7 @@ ion-button {
 
 .edit-photo {
   width: 100%;
-  height: 50vh;
-
+  height: calc(100vh - 180px);
   ion-button {
     margin: 30px;
   }

@@ -1,8 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {UserService} from '../../services/user/user.service';
-import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
+import {Camera, CameraOptions} from '@awesome-cordova-plugins/camera/ngx';
 import {Crop} from '@ionic-native/crop/ngx';
-import {File} from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import {ActionSheetController, AlertController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {FileUploadService} from '../../services/file-upload/file-upload.service';
 import {ImageCroppedEvent, ImageTransform} from '../../interfaces/image-cropper';
@@ -11,7 +11,6 @@ import {UserModel} from '../../models/user.model';
 import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from '@angular/fire/storage';
 import {Observable} from 'rxjs';
 import {finalize, map} from 'rxjs/operators';
-import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
     selector: 'app-photos',
@@ -29,6 +28,7 @@ export class PhotosPage implements OnInit {
     public isLoading = false;
     public containWithinAspectRatio = false;
     public showCropper = false;
+    public defaultImage = '';
     public imgLoaded = false;
     public uploadProgress;
     public isPrivateSelectedImage: boolean = false
@@ -64,14 +64,12 @@ export class PhotosPage implements OnInit {
         private afStorage: AngularFireStorage,
         private camera: Camera,
         private crop: Crop,
-        private authService: AuthService,
         private file: File,
         private navCtrl: NavController,
         public toastController: ToastController,
         public actionSheetController: ActionSheetController,
     ) {
     }
-
     ngOnInit() {
         this.newUser = localStorage.getItem('newUser') === 'true';
         this.userService.getUser();
@@ -100,7 +98,6 @@ export class PhotosPage implements OnInit {
         this.navCtrl.navigateForward('/tabs/highlights');
     }
 
-
     addImageOnCanvas(url) {
         this.canvas.confirmClear();
         this.setCanvasImage(this.croppedImage);
@@ -109,9 +106,16 @@ export class PhotosPage implements OnInit {
 
     setSegment(segment) {
         if (segment === 3) {
+
             setTimeout(() => {
                 const element: HTMLElement = document.querySelector('.add-image-on-canvas') as HTMLElement;
                 element.click();
+            });
+
+        } else if (segment === 2) {
+
+            setTimeout(() => {
+                this.setBlur();
             });
         }
         this.segment = segment;
@@ -148,6 +152,7 @@ export class PhotosPage implements OnInit {
 
     imageCropped(event: ImageCroppedEvent) {
         this.croppedImage = event.base64;
+
     }
 
     done() {
@@ -172,19 +177,16 @@ export class PhotosPage implements OnInit {
         this.canvas.getImgPolaroid(event);
     }
 
-    imgErrorHandler(e, src) {
-        console.error(e.target.src);
-        e.target.src = src;
-    }
-
     public rasterize() {
-
+        this.defaultImage = '';
+        this.defaultImage = this.croppedImage;
         let src = '';
         if (this.segment === 3) {
             src = this.canvas.rasterize();
         } else {
             src = this.croppedImage;
         }
+
         this.uploadFile(src);
     }
 
@@ -194,14 +196,15 @@ export class PhotosPage implements OnInit {
         this.uploadingProcess = true;
         // create a random id
         const randomId = Math.random().toString(36).substring(2);
-
         // create a reference to the storage bucket location
         this.ref = this.afStorage.ref('/images/' + randomId);
         // the put method creates an AngularFireUploadTask
         // and kicks off the upload
-        const file = this.imageChangedEvent.target.files[0];
+        const base64result = src.split(',')[1];
         // console.log(base64result);
-        this.task = this.ref.put(file);
+        this.task = this.ref.putString(base64result, 'base64', {
+            contentType: 'image/jpeg'
+        });
 
         // AngularFireUploadTask provides observable
         // to get uploadProgress value
@@ -219,41 +222,28 @@ export class PhotosPage implements OnInit {
                 let newImage = {status: 0, id: randomId, main: mainPhoto.length !== 1, url: randomId, isPrivate: this.isPrivateSelectedImage}
                 photos.push(newImage);
 
+                this.isPrivateSelectedImage ?
+                    this.privatePhotos.push(newImage): this.publicPhotos.push(newImage)
+       
                 this.userService.user.photos = photos;
-
                 this.userService.user.allPhotosApproved = this.userService.allPhotosApproved();
                 this.userService.user.mainPhotoApproved = this.userService.mainPhotoApproved();
+                this.uploadingProcess = false;
+                this.cancelUpload();
 
                 this.userService.update(this.userService.user).subscribe(() => {},
                 err => console.log(err),
                 () => {
-                        this.uploadingProcess = false;
+                    setTimeout(() =>{
                         this.userService.user.photos = photos;
-                        setTimeout(()=> {
-                            console.log('checkImageValidation');
-                            console.log(newImage);
-                            
-                            if(this.imageExists(this.fileUploadService.getBaseUrl(newImage.url))) {
-                                this.isPrivateSelectedImage ?
-                                this.privatePhotos.push(newImage): this.publicPhotos.push(newImage);
-                                this.cancelUpload();
-                            }
-                        }, 100)
+                    },900)
                 });
-                 this.downloadURL = this.ref.getDownloadURL();
+
+                // this.downloadURL = this.ref.getDownloadURL();
+
             })
         ).subscribe();
-         this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
-    }
-
-    imageExists(image_url){
-
-        var http = new XMLHttpRequest();
-    
-        http.open('HEAD', image_url, false);
-        http.send();
-    
-        return http.status != 404;
+        // this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
     }
 
     public addFigure(figure) {
@@ -277,6 +267,10 @@ export class PhotosPage implements OnInit {
         };
     }
 
+    setBlur() {
+        const imageBlur = document.querySelector('.blur-photo').querySelector('img');
+        imageBlur.style.filter = `blur(${this.blur}px)`;
+    }
 
     pickImage(sourceType) {
         const options: CameraOptions = {
@@ -303,7 +297,7 @@ export class PhotosPage implements OnInit {
 
     base64ToImage(dataURI) {
         const fileDate = dataURI.split(',');
-        //const mime = fileDate[0].match(/:(.*?);/)[1];
+        // const mime = fileDate[0].match(/:(.*?);/)[1];
         const byteString = atob(fileDate[1]);
         const arrayBuffer = new ArrayBuffer(byteString.length);
         const int8Array = new Uint8Array(arrayBuffer);
@@ -315,7 +309,6 @@ export class PhotosPage implements OnInit {
     }
 
     async delete(photo) {
-        console.log(photo);
         const alert = await this.alertController.create({
             header: 'מחיקת תמונה',
             message: 'האם למחוק את התמונה?',
@@ -347,22 +340,20 @@ export class PhotosPage implements OnInit {
     }
 
     async selectImage(event, addNew = false, photo: any = '', isPrivate: boolean = false) {
-        this.isPrivateSelectedImage = isPrivate;
 
+        this.isPrivateSelectedImage = isPrivate;
+ 
         if (event.target.classList.contains('select-image')) {
-          
             if (addNew) {
                 const actionSheet = await this.actionSheetController.create({
                     header: 'העלאת תמונה מ...',
                     buttons: [{
                         text: 'גלריה',
                         handler: () => {
-                            //this.pickImage(this.camera.PictureSourceType.PHOTOLIBRARY);
                             const element: HTMLElement = document.querySelector('input[type=file]') as HTMLElement;
                             element.click();
                         }
                     },
-
                         {
                             text: 'ביטול',
                             role: 'cancel'
@@ -372,16 +363,47 @@ export class PhotosPage implements OnInit {
 
                 await actionSheet.present();
 
+            } else if(!photo.main) {
+                const buttonOptions = {
+                    header: 'העלאת תמונה מ...',
+                    buttons: [{
+                        text: 'למחוק את התמונה',
+                        handler: () => {
+                            this.delete(photo);
+                        }
+                    },
+
+                        {
+                            text: 'ביטול',
+                            role: 'cancel'
+                        }
+                    ]
+                };
+
+                if (photo.status === 1 && photo.main === false && photo.isPrivate === false) {
+                    buttonOptions.buttons.push({
+                        text: 'לעשות כתמונה הראשית',
+                        handler: () => {
+                            this.setAsMain(photo);
+                        }
+                    })
+                }
+                const actionSheet = await this.actionSheetController.create(buttonOptions);
+                await actionSheet.present();
             }
         }
     }
 
     setAsMain(photo) {
+        this.publicPhotos.map(el => {
+            el.main = el.url === photo.url;
+        });
+
         this.userService.setAsMainPhoto(photo);
     }
 
     cropImage(fileUrl) {
-        this.crop.crop(fileUrl, {quality: 100})
+        this.crop.crop(fileUrl, {quality: 75})
             .then(
                 newPath => {
                     this.showCroppedImage(newPath.split('?')[0])

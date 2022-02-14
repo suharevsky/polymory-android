@@ -30,3 +30,32 @@
 @import './sass/helper.scss';
 @import './sass/app.scss';
 @import './sass/dark.scss';
+
+.full-size-image {
+    .swiper-wrapper {
+        align-items: center;
+        .swiper-slide {
+            height: auto;
+        }
+    }
+}
+
+.transparent-modal {
+    --background: rgba(0,0,0);
+    &::part(content) {
+        backdrop-filter: blur(12px);
+    }
+}
+
+.ng-lazyloaded {
+    animation: fadein .8s;
+  }
+  
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }

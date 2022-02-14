@@ -23,14 +23,9 @@
   font-size: var(--font-size-sm);
 }
 
-.chat-item-status ion-icon {
-  font-size: 18px;
-}
-
-ion-footer {
-  margin-bottom:12px;
-  .form input {
-    background: #131142 !important;
-    --background: #131142 !important;
+.chat-item-status  {
+  ion-icon {
+    font-size: 18px;
   }
+  display: flex;
 }

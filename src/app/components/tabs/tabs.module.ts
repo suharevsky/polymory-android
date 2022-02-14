@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { TabsPageRoutingModule } from './tabs-routing.module';
 
 import { TabsPage } from './tabs.page';
-import {CounterService} from '../services/counter/counter.service';
 
 @NgModule({
   imports: [
@@ -15,7 +14,6 @@ import {CounterService} from '../services/counter/counter.service';
     FormsModule,
     TabsPageRoutingModule
   ],
-  // providers: [CounterService],
   declarations: [TabsPage]
 })
 export class TabsPageModule {}

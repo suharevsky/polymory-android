@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { TinderGoldPage } from './tinder-gold.page';
@@ -7,7 +7,7 @@ describe('TinderGoldPage', () => {
   let component: TinderGoldPage;
   let fixture: ComponentFixture<TinderGoldPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TinderGoldPage ],
       imports: [IonicModule.forRoot()]

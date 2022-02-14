@@ -4,7 +4,7 @@
   "gcm_sender_id": "103953800507",
   "theme_color": "#040320",
   "background_color": "#040320",
-  "display": "standalone",
+  "display": "fullscreen",
   "scope": "./",
   "start_url": "./",
   "icons": [
@@ -12,7 +12,7 @@
       "src": "assets/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "maskable"
     }
   ]
 }

@@ -21,11 +21,6 @@
     }
   }
 
-  .warning-box{
-    width: 75%;
-    margin: 0 auto;
-  }
-
   canvas {
     // max-height: 350px !important;
   }
@@ -110,5 +105,10 @@
     padding: 16px 16px 8px;
     border-radius: 12px;
     margin: 12px;
+  }
+
+  .warning-box{
+    width: 75%;
+    margin: 0 auto;
   }
 }

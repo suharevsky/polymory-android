@@ -6,6 +6,16 @@
     font-size: 12px;
     color: var(--ion-color-medium);
 
+    strong {
+      background: #131242;
+      padding: 4px 12px;
+      border-radius: 25px;
+      width: 120px;
+      display: inline-block;
+      color: #fff;
+      font-weight: 400;
+    }
+
     &.center {
       text-align: center;
       margin: 8px 0;
@@ -15,16 +25,17 @@
   .chat-item {
     margin-bottom: 12px;
 
-    &.chat-item-outgoing {
-      text-align: right;
-
+    &:not(.chat-item-outgoing) {
       .chat-item-inner {
         flex-direction: row-reverse;
       }
+    }
 
+    &.chat-item-outgoing {
+      //text-align: right;
       .chat-item-bubble .chat-text {
-        border-radius: 20px 20px 20px 0;
-        background: #8a50ff;
+        border-radius: 20px 20px 0px 20px;
+        background: rgb(17, 17, 43);
         color: #fff;
       }
     }
@@ -70,8 +81,8 @@
         white-space: normal;
         max-width: 100%;
         text-align: right;
-        border-radius: 20px 20px 0 20px;
-        background: rgb(17 17 43);
+        border-radius: 20px 20px 20px 0;
+        background: #8a50ff;
 
         ion-img {
           width: 100%;
@@ -99,35 +110,41 @@
 
 ion-footer {
   .form {
-    position: relative;
-    margin: 0 12px;
-
+    display: flex;
     button {
-      position: absolute;
-      right: 12px;
-      bottom: 10px;
       background: transparent;
-      font-size: 17px;
+      font-size: 16px;
       outline: none;
       color: #fff;
     }
 
-    input {
+    ion-textarea {
       border-radius: 17px;
       border: 1px solid rgba(0, 0, 0, 0.05);
-      background: var(--dark-color-foreground) !important;
-      --padding-start: 12px;
-      --padding-end: 64px;
+          background: #131142;
+      --background: #131142;
+      --padding-start: 8px;
+      --padding-end: 8px;
       --padding-top: 6px;
       --padding-bottom: 8px;
       padding-left: var(--padding-start);
       padding-right: var(--padding-end);
       padding-top: var(--padding-top);
-      padding-bottom: var(--padding-bottom);
+      padding-bottom: 0;
       outline: none;
       width: 100%;
       max-width: 100%;
       max-height: 100%;
+    }
+
+    .btn-img-send {
+      display: inline-block;
+      position: absolute;
+      left: -3px;
+      top: 0px;
+      font-size: 21px;
+      padding: 8px 20px;
+      z-index: 99999;
     }
   }
 }

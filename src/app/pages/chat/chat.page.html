@@ -29,7 +29,7 @@
         <ng-container *ngIf="chat$ | async as chat">
             <div class="chat-item" *ngFor="let item of chat.messages; trackBy: trackByCreated; index as i"
                  [ngClass]="{'chat-item-outgoing': item.uid !== userService.user.id}">
-                <div *ngIf="item.imageRequest === false" class="chat-timestamp center">
+                <div *ngIf="item.imageRequest === false && item?.date" class="chat-timestamp center">
                     <strong>{{item?.date}}</strong>
                 </div>
                 <div *ngIf="item.imageRequest === false" class="chat-item-inner">
@@ -40,20 +40,30 @@
                         <div class="chat-item-bubble" [ngClass]="{'bubble-image': item.type === 'image'}">
                             <div class="chat-text" *ngIf="item.type !== 'image'"
                                  [innerHtml]="nl2br(item.content)"></div>
-                            <ion-img [src]="item.body" *ngIf="item.type === 'image'"></ion-img>
+                            <ion-img tappable (click)="openPreview(item.content)" [src]="item.content" *ngIf="item.type === 'image'"></ion-img>
                         </div>
-
-                        <div class="chat-item-status" *ngIf="item.uid === userService.user.id">
-                            <ion-icon *ngIf="item.delivered" name="checkmark-done-circle" color="secondary"></ion-icon>
-                            <ion-icon  *ngIf="!item.delivered" name="checkmark-outline" color="secondary"></ion-icon>
-                            <!--נשלח--> {{item.time}}
+                        <div class="chat-item-status">
+                            <div *ngIf="item.uid === userService.user.id">
+                                <ion-icon *ngIf="item.delivered" name="checkmark-done-circle" color="secondary"></ion-icon>
+                                <ion-icon  *ngIf="!item.delivered" name="checkmark-outline" color="secondary"></ion-icon>
+                            </div>
+                            <!--נשלח--><div class="time">{{item.time}}</div> 
                         </div>
                     </div>
 
-                    <div class="chat-item-reaction" *ngIf="item.uid === userService.user.id && item.type === 'image'">
+                    <!-- <div class="chat-item-reaction" *ngIf="item.uid === userService.user.id && item.type === 'image'">
                         <ion-icon name="heart-outline"></ion-icon>
-                    </div>
+                    </div> -->
                 </div>
+            </div>
+            <div *ngIf="!updatedDialogue" class="chat-item" >
+              <div class="chat-item-inner">
+                <div  class="chat-body">
+                    <div class="chat-item-bubble">
+                        <div class="chat-text">{{temporaryMessage}}</div>
+                    </div>
+               </div>
+               </div>
             </div>
         </ng-container>
     </div>
@@ -62,10 +72,12 @@
 <ion-footer *ngIf="!blockedMessage">
     <ion-toolbar class="toolbar-no-border">
         <div class="form">
-            <input [(ngModel)]="newMsg" (keydown.enter)="submit()">
+            <ion-textarea placeholder="הודעה" rows="1" (ionChange)="validateMessage()" [(ngModel)]="newMsg"></ion-textarea>
+            <!-- <div (click)="chooseImage()" class="btn-img-send">
+                <ion-icon name="image-outline"></ion-icon>
+            </div> -->
             <button (click)="submit()">שלח</button>
-        </div>
-
+        </div> 
         <!--<input-with-giphy
                 (onSubmit)="submit(chat?.id)"
                 (onSizeChange)="onInputSizeChange()">

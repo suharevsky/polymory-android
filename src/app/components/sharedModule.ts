@@ -10,12 +10,14 @@ import { PlusIntroComponent } from './plus-intro/plus-intro.component';
 import { PersonCardComponent } from './person-card/person-card.component';
 import { SpotifyHighlightsComponent } from './spotify-highlights/spotify-highlights.component';
 import { LabelMatchedComponent } from './label-matched/label-matched.component';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    LazyLoadImageModule
   ],
   declarations: [
     RandomAvatarComponent,

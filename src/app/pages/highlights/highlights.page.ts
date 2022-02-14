@@ -1,6 +1,7 @@
 import {Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {UserService} from '../../services/user/user.service';
 import {GroupingState, PaginatorState, SortState} from '../../crud-table';
+import {FormBuilder} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {IonContent, IonInfiniteScroll, ModalController, NavController, ToastController} from '@ionic/angular';
 import {FilterPage} from '../filter/filter.page';
@@ -10,7 +11,6 @@ import {FilterService} from '../../services/filter/filter.service';
 import {PhotosPage} from '../photos/photos.page';
 import {ProfilePage} from '../profile/profile.page';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 
 @Component({
     selector: 'app-highlights',
@@ -31,8 +31,8 @@ export class HighlightsPage implements OnInit, OnDestroy {
     users = [];
     warningMsg = {active: false, message: ''};
     filterData = {
-        withPhoto: false,
-        online: true,
+        withPhoto: true,
+        online: false,
         preferences: [],
         area: '',
         status: 0,
@@ -46,6 +46,7 @@ export class HighlightsPage implements OnInit, OnDestroy {
 
     constructor(
         public userService: UserService,
+        private fb: FormBuilder,
         private authService: AuthService,
         private modalCtrl: ModalController,
         public navCtrl: NavController,
@@ -60,9 +61,9 @@ export class HighlightsPage implements OnInit, OnDestroy {
     ngOnInit() {
 
         this.filterData = this.filterService.get(this.filterData);
-        this.fcmService.initPush();
 
         setTimeout(_ => {
+            this.fcmService.initPush();
             this.userService.setOnline();
             this.loadHighlights().subscribe(users => {
                 this.isLoading = false;
@@ -143,7 +144,7 @@ export class HighlightsPage implements OnInit, OnDestroy {
                         this.filterData = {...this.filterData, ...res.data};
                         this.filter();
                     });
-                 }
+                }
             });
         return await modal.present();
     }
@@ -186,16 +187,6 @@ export class HighlightsPage implements OnInit, OnDestroy {
                     });
             });
         }, 500);
-    }
-
-    async viewProfile(profile) {
-        const modal = await this.modalCtrl.create({
-            component: ProfilePage,
-            componentProps: {
-                profile,
-            }
-        });
-        return await modal.present();
     }
 
     ngOnDestroy(): void {

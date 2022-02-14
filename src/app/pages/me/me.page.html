@@ -3,8 +3,7 @@
         <div class="section-upper">
             <div class="me-header" (click)="viewProfile(userService.user)">
                 <ion-avatar class="avatar">
-                    <ion-img (error)="imgErrorHandler($event, userService.getMainPhoto(userService.user, 'm', false))"
-                         [src]="userService.getMainPhoto(userService.user, 'm', false)"></ion-img>
+                    <img [lazyLoad]="userService.getMainPhoto(userService.user, 'l', false)" [defaultImage]="userService.getDefaultPhotoPlaceholder(userService.user)">
                 </ion-avatar>
                 <div>
                     <div class="me-title">{{userService.user?.username}} {{userService.getAge(userService.user?.birthday)}}
@@ -59,11 +58,8 @@
             </ion-row>
         </div>
         <div class="section-lower has-oval">
-            <div class="warning-box" *ngIf="userService.user.photos.length == 0">
-                <span class="icon"><ion-icon name="alert-circle-outline"></ion-icon></span><p>פרופיל עם תמונה מגדיל הרבה יותר סיכויים להכיר אנשים חדשים</p>
-            </div>
-            <!--
-                    <div class="section-lower has-oval" (click)="viewSubscriptionGold()">
+           
+                    <!-- <div class="section-lower has-oval" (click)="viewSubscriptionGold()">
 
                         <div class="slide-intro">
                             <plus-intro *ngIf="showSlides"></plus-intro>
@@ -74,7 +70,8 @@
                                     class="button-custom text-primary button-tinder-plus">
                                 רכוש מנוי כעת
                             </ion-button>
-                        </div>-->
+                        </div>
+        </div> -->
         </div>
     </div>
 </ion-content>

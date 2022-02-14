@@ -1,9 +1,9 @@
-import {UserModel} from '../models/user.model';
+import {UserModel} from '../../models/user.model';
 import {Component, OnInit} from '@angular/core';
-import {CounterService} from '../services/counter/counter.service';
-import {UserService} from '../services/user/user.service';
 import {BehaviorSubject} from 'rxjs';
-import { AuthService } from '../services/auth/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { UserService } from '../../services/user/user.service';
+import { CounterService } from '../../services/counter/counter.service';
 
 export const counterSubject = new BehaviorSubject(0); // 0 is the initial value
 

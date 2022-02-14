@@ -1,7 +1,8 @@
 <div
   class="avatar"
   [ngClass]="'avatar-' + size"
-  [style.backgroundImage]="'url(' + photo + ')'"
+  [defaultImage]="userService.getDefaultPhotoPlaceholder(userService.user)"
+  [lazyLoad]="photo"
   [style.width]="customSize + 'px'"
   [style.height]="customSize + 'px'"
 >

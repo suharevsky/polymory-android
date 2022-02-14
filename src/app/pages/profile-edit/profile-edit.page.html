@@ -85,12 +85,6 @@
         <!-- PREVIEW -->
         <div class="segment-view preview-container full-height" *ngSwitchCase="'1'">
             <div class="card-border full-height" *ngIf="showSlides">
-                <swipe-card
-                        [data]=""
-                        [isPreview]="true"
-                        (onNoMoreSlide)="onNoMoreSlide($event)"
-                >
-                </swipe-card>
             </div>
         </div>
     </div>

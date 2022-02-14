@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {IonSlides, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {SelectService} from '../../services/form/select/select.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UserModel} from '../../models/user.model';
 import {UserService} from '../../services/user/user.service';
@@ -69,8 +70,7 @@ export class RegisterStepsPage implements OnInit {
         this.lookingFor = this.userService.getLookingFor().options;
         this.genders = this.userService.getGender().options;
         this.preferences = this.userService.getPreference().options;
-
-        this.numSlides = document.getElementsByTagName('ion-slide').length;
+        this.numSlides = document.getElementsByTagName('ion-slide').length;        
     }
 
     async presentToast(errorMessage: string) {
@@ -291,9 +291,13 @@ export class RegisterStepsPage implements OnInit {
     }
 
     back() {
+        console.log(this.currentIndexSlide);
+
         this.currentIndexSlide === 0
             ? this.navCtrl.back()
-            : this.slides.slideTo(this.currentIndexSlide - 1);
+            : this.currentIndexSlide = this.currentIndexSlide - 1;
+
+        console.log(this.currentIndexSlide);
     }
 
     /*getCurrentSlide() {

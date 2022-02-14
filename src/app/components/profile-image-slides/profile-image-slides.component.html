@@ -1,19 +1,21 @@
-<ion-slides
+<ion-slides *ngIf="images.length > 0"
   class="slides" #profileImages
   (ionSlideDidChange)="onSlideChange()"
   (ionSlideReachStart)="onReachStart()"
   (ionSlideReachEnd)="onReachEnd()">
     <ion-slide  *ngFor="let item of images">
-      <div *ngIf="(!item.photo?.isPrivate || imageRequest.result?.accepted) || user.id === userService.user.id" class="slide-img background-img" [style.backgroundImage]="'url(' + item.url + ')'"></div>
+      <div *ngIf="(!item.photo?.isPrivate || imageRequest.result?.accepted) || user.id === userService.user.id" class="slide-img background-img" 
+       [lazyLoad]="item.url"></div>
       <div *ngIf="((item.photo?.isPrivate && !imageRequest.result?.accepted) || (item.photo?.isPrivate && imageRequest.empty)) && user.id !== userService.user.id" class="slide-img background-img">
-        <div class="box">
+       <div class="box">
           <h2>התמונה הזו פרטית</h2>
           <div (click)="sendImageRequest()" *ngIf="imageRequest.empty" class="btn">בקש גישה לתמונות פרטיות</div>
           <div *ngIf="!imageRequest.empty">הבקשה נשלחה!</div>
         </div>
       </div>
     </ion-slide>
-</ion-slides>
+</ion-slides> 
+
 
 <div class="custom-pagination">
   <div *ngFor="let bullet of images; let i = index" class="pagination-bullet" [ngClass]="{'pagination-bullet-active': activeIndex === i}"></div>

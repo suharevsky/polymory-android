@@ -1,0 +1,51 @@
+main {
+    height: 100%;
+    width: 75%;
+}
+
+.wrap {
+    max-width: 1280px;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.header-custom {
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    --background: RGB(4 3 32 / 98%);
+    background: RGB(4 3 32 / 98%);
+  
+    .title.logo {
+      margin: 0;
+    }
+    ion-icon {
+      font-size: 32px;
+      color: #fff;
+      }
+  }
+
+  .page-title {
+    font-size: 56px;
+    font-weight: bold;
+  }
+
+  .navigation {
+    display: flex;
+    justify-content: space-between;
+    nav {
+        ul {
+            list-style-type: none;
+            display: flex;
+            font-size: 24px;
+            font-weight: 400;
+            text-align: center;
+            li {
+                padding-left: 45px;
+                cursor: pointer;
+            }
+        }
+    }
+  }

@@ -374,6 +374,10 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         }
     }
 
+    public getDefaultPhotoPlaceholder(user):string {
+        return '../../../assets/media/users/default_' + user.gender + '.png'
+    }
+
     getAllPhotos(user, approvedOnly = false) {
 
         // Get only approved photos (others, not personal)

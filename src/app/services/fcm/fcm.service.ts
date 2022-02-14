@@ -95,12 +95,12 @@ export class FcmService {
 
                 changes.map((a: any) => {
                     const id = a.payload.doc.id;
-                    if (this.frequency(a.payload.doc.data().lastTimeUse) && this.options.push.active && this.options.push.messages) {
+                    //if (this.frequency(a.payload.doc.data().lastTimeUse) && this.options.push.active && this.options.push.messages) {
                         this.exec(a.payload.doc.data().token);
                         this.db.collection('push').doc(id).set({
                             lastTimeUse: Date.now()
                         },{merge: true});
-                    }
+                   //}
                 });
             });
         } catch (e) {

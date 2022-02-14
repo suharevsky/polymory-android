@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
+import { DefaultComponent } from './layouts/default/default.component';
 
 // Send unauthorized  users to login
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/landing']);
@@ -34,6 +35,13 @@ const routes: Routes = [
             ),
     },
     {
+        path: 'page/:slug',
+        loadChildren: () => 
+            import('./pages/page/page.module').then(
+                m => m.PagePageModule
+            ),
+    },
+    {
         path: 'chat',
         loadChildren: () => import('./pages/chat/chat.module').then(m => m.ChatPageModule)
     },
@@ -42,9 +50,13 @@ const routes: Routes = [
         loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfilePageModule)
 
     },
+    // {
+    //     path: 'user',
+    //     loadChildren: () => import('./layouts/default/default.module').then(m => m.DefaultModule)
+    // },
     {
         path: 'tabs',
-        loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+        loadChildren: () => import('./components/tabs/tabs.module').then(m => m.TabsPageModule)
     },
     {
         path: 'likes',
@@ -67,14 +79,6 @@ const routes: Routes = [
         // component: PhotosPage
         loadChildren: () => import('./pages/photos/photos.module').then(m => m.PhotosPageModule)
     },
-    {
-        path: 'page/:slug',
-        loadChildren: () => import('./pages/page/page.module').then(m => m.PagePageModule)
-    },
-  {
-    path: 'sms-app-link-modal',
-    loadChildren: () => import('./pages/sms-app-link-modal/sms-app-link-modal/sms-app-link-modal.module').then( m => m.SmsAppLinkModalPageModule)
-  },
 ];
 
 @NgModule({

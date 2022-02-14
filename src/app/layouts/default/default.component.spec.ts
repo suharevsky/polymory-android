@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { SmsAppLinkModalPage } from './sms-app-link-modal.page';
+import { DefaultComponent } from './default.component';
 
-describe('SmsAppLinkModalPage', () => {
-  let component: SmsAppLinkModalPage;
-  let fixture: ComponentFixture<SmsAppLinkModalPage>;
+describe('DefaultComponent', () => {
+  let component: DefaultComponent;
+  let fixture: ComponentFixture<DefaultComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SmsAppLinkModalPage ],
+      declarations: [ DefaultComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SmsAppLinkModalPage);
+    fixture = TestBed.createComponent(DefaultComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

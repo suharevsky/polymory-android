@@ -8,7 +8,6 @@ import {Subscription} from 'rxjs';
 import {UserService} from '../../services/user/user.service';
 import {PhotosPage} from '../photos/photos.page';
 import {ProfilePage} from '../profile/profile.page';
-import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
     selector: 'app-me',
@@ -23,19 +22,15 @@ export class MePage implements OnInit, OnDestroy {
     private subscriptions: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
     constructor(
+        private navCtrl: NavController,
         private modalCtrl: ModalController,
         public http: HttpClient,
         public userService: UserService,
-        private authService: AuthService,
     ) {
     }
 
     async ngOnInit() {
         this.userService.getUser();
-    }
-
-    imgErrorHandler(e, src) {
-        e.target.src = src;
     }
 
     ionViewDidEnter() {

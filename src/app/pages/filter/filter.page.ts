@@ -36,6 +36,7 @@ export class FilterPage implements OnInit {
         return this.filterForm.controls;
     }
 
+    
     ngOnInit() {
         this.filterData = this.filterService.get(this.filterData);
         this.filterData.preferences = this.filterData.preferences.length > 0 ? this.filterData.preferences : this.userService.getPreference().value;
@@ -122,7 +123,6 @@ export class FilterPage implements OnInit {
     }
 
     reset() {
-
         Object.keys(this.f).forEach(key => {
             this.f[key].setValue('');
             console.log(key);
@@ -145,4 +145,5 @@ export class FilterPage implements OnInit {
     close() {
         this.modalCtrl.dismiss();
     }
+
 }

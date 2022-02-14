@@ -13,7 +13,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../pages/likes/likes.module').then(m => m.LikesPageModule)
+              import('../../pages/likes/likes.module').then(m => m.LikesPageModule)
           }
         ]
       },
@@ -23,7 +23,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../pages/me/me.module').then(m => m.MePageModule)
+              import('../../pages/me/me.module').then(m => m.MePageModule)
           }
         ]
       },
@@ -33,7 +33,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../pages/highlights/highlights.module').then(m => m.HighlightsPageModule)
+              import('../../pages/highlights/highlights.module').then(m => m.HighlightsPageModule)
           }
         ]
       },
@@ -43,7 +43,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../pages/matches/matches.module').then(m => m.MatchesPageModule)
+              import('../../pages/matches/matches.module').then(m => m.MatchesPageModule)
           }
         ]
       },

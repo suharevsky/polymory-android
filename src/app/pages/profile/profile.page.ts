@@ -6,7 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ReportPage} from '../report/report.page';
 import {ChatService} from '../../services/chat/chat.service';
 import {ChatPage} from '../chat/chat.page';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import {FcmService} from '../../services/fcm/fcm.service';
 
 @Component({
     selector: 'app-profile',
@@ -30,16 +30,14 @@ export class ProfilePage implements OnInit {
         private route: ActivatedRoute,
         public chatService: ChatService,
         public toastController: ToastController,
-        private authService: AuthService,
+        private fcmService: FcmService,
         public userService: UserService) {
 
         this.profile = this.navParams.get('profile');
 
         this.me = this.userService.getUser();
         this.getListData('blockList');
-        if (this.profile.id !== this.userService.user.id) {
-            this.setList('views', false);
-        }
+       
         // this.userService.viewed(this.profile.id).subscribe();
         this.getListData('favorites');
 
@@ -47,17 +45,28 @@ export class ProfilePage implements OnInit {
             this.route.params.subscribe((params: any) => {
                 this.userService.getById(params.id).subscribe(user => {
                     this.profile = user;
+                    this.viewedProfile();
                 });
             });
+        }else{
+            this.viewedProfile();
         }
     }
 
-    // Closing page
     close() {
         this.modalCtrl.dismiss({reloadPrevPage: this.reloadPrevPage});
     }
 
+    viewedProfile() {
+        if (this.profile.id !== this.userService.user.id) {
+            const pushData = {title: 'JoyMe', body: 'מישהו צפה בפרופיל שלך 💜 ', page: '/tabs/likes', modal: false, sender: this.userService.user, receiver: this.profile};
+            this.fcmService.sendPushMessage(pushData);
+            this.setList('views', false);
+        }
+    }
+
     ngOnInit() {
+
     }
 
     // Known issue of using ion-slides in a modal template

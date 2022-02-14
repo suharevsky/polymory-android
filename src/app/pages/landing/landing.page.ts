@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {LoadingController, ModalController, ToastController} from '@ionic/angular';
+import {LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {WindowService} from '../../services/window/window.service';
@@ -7,8 +7,6 @@ import {AuthService} from '../../services/auth/auth.service';
 import firebase from 'firebase';
 import {UserService} from '../../services/user/user.service';
 import {PagePage} from '../page/page.page';
-import { GeneralService } from 'src/app/services/general/general.service';
-import { SmsAppLinkModalPage } from '../sms-app-link-modal/sms-app-link-modal/sms-app-link-modal.page';
 
 @Component({
     selector: 'app-landing',
@@ -35,8 +33,7 @@ export class LandingPage implements OnInit {
         public win: WindowService,
         private loadingCtrl: LoadingController,
         public toastController: ToastController,
-        public router: Router, // private chatService: ChatService
-        public generalService: GeneralService
+        public router: Router // private chatService: ChatService
     ) {
         this.createCodeForm();
         this.createPhoneForm();
@@ -59,15 +56,7 @@ export class LandingPage implements OnInit {
     }
 
     codeFormStatus(status: number) {
-        //this.generalService.sendAppLink('972529584341').subscribe(res=>console.log(res),err => console.log(err));
         this.showCodeFormStatus = status;
-    }
-
-    async getSmsLinkForm() {
-        const modal = await this.modalCtrl.create({
-            component: SmsAppLinkModalPage,
-        });
-        return await modal.present();
     }
 
     async getPage(slug) {

@@ -1,0 +1,28 @@
+<ion-content>
+  <ion-header  #header class="header-custom mobile">
+    <div class="segment">
+        <ion-icon name="options-outline"></ion-icon>
+    </div>
+    <div class="logo title">JoyMe</div>
+  </ion-header>
+  <div class="wrap">
+    <div class="navigation">
+      <div class="page-title">
+        <!-- {{menu.title}} -->גילוי
+      </div>
+      <nav>
+        <ul>
+          <li *ngFor="let menuItem of menu">
+            {{menuItem.title}}
+          </li>
+        </ul>
+      </nav>
+
+    </div>
+<aside>
+</aside>
+<main>
+  <router-outlet></router-outlet>
+</main>
+</div>
+</ion-content>

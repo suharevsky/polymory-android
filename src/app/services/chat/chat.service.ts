@@ -77,7 +77,7 @@ export class ChatService extends TableService<UserModel> {
         return ArrayHelper.valuesComparison(user1, user2);
     }
 
-    async sendMessage(chatId: string, content: string, userId: string, imageRequest: boolean = false): Promise<any> {
+    async sendMessage(chatId: string, content: string, userId: string, imageRequest: boolean = false, type =''): Promise<any> {
 
         const message = {
             uid: userId,
@@ -85,6 +85,7 @@ export class ChatService extends TableService<UserModel> {
             delivered: false,
             content,
             imageRequest,
+            type
         };
 
         const data = {
