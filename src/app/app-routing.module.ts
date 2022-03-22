@@ -1,7 +1,8 @@
 import {NgModule} from '@angular/core';
 import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
-import { DefaultComponent } from './layouts/default/default.component';
+
+
 
 // Send unauthorized  users to login
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/landing']);
@@ -12,6 +13,8 @@ const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/landing']);
 //});
 
 const redirectLoggedInToResults = () => redirectLoggedInTo(['/user/highlights'])
+
+
 
 const routes: Routes = [
     /*{
@@ -57,12 +60,6 @@ const routes: Routes = [
         path: 'user',
         loadChildren: () => import('./layouts/default/default.module').then(m => m.DefaultModule)
     },
-    // {
-    //     path: 'user/highlights',
-    //     component: DefaultComponent,
-        
-    //     //loadChildren: () => import('./layouts/default/default.module').then(m => m.DefaultModule)
-    // },
     {
         path: 'tabs',
         loadChildren: () => import('./components/tabs/tabs.module').then(m => m.TabsPageModule)
@@ -95,7 +92,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [
+        RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})
+    ],
     exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

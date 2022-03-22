@@ -8,12 +8,13 @@ import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {TapticEngine} from '@ionic-native/taptic-engine/ngx';
 import {IonicStorageModule} from '@ionic/storage';
+
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {SharedModule} from './components/sharedModule';
 import {HttpClientModule} from '@angular/common/http';
-import { AngularFireModule } from '@angular/fire';
-import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import {AngularFireModule} from '@angular/fire';
+import {AngularFireMessagingModule} from '@angular/fire/messaging';
 import { AngularFirestoreModule} from '@angular/fire/firestore';
 import {environment} from 'src/environments/environment';
 import { Crop } from '@ionic-native/crop/ngx';
@@ -29,14 +30,12 @@ import { ProfileEditPageModule } from './pages/profile-edit/profile-edit.module'
 import { TinderGoldPageModule } from './pages/tinder-gold/tinder-gold.module';
 import { ImageModalPageModule } from './components/image-modal/image-modal.module';
 import { PhotosPageModule } from './pages/photos/photos.module';
-import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
-    CommonModule,
     FormsModule,
     HttpClientModule,
     IonicModule.forRoot({
@@ -50,7 +49,6 @@ import { CommonModule } from '@angular/common';
       name: 'tinder',
       driverOrder: ['indexeddb', 'sqlite', 'websql']
     }),
-    
     SharedModule,
     PhotosPageModule,
     SettingsPageModule,

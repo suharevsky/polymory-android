@@ -8,6 +8,7 @@ import {UserService} from './services/user/user.service';
 import { UpdateAppService } from './services/update-app/update-app.service';
 import { Router } from '@angular/router';
 import { GeneralService } from './services/general/general.service';
+
 @Component({
     selector: 'app-root',
     templateUrl: 'app.component.html',
@@ -60,6 +61,6 @@ export class AppComponent {
             });*/
         });
         // this.themeService.restore();
-        //this.themeService.toggleDarkMode(true);
+        this.themeService.toggleDarkMode(true);
     }
 }
