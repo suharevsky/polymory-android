@@ -1,0 +1,13 @@
+<div class="desktop filter ">
+  <ul>
+      <li><h3 class="filter__title"><ion-icon name="options-outline"></ion-icon>סינון</h3></li>
+      <li>מין: {{userService.user?.gender}}</li>
+      <li>מחפש/ת: {{filterData?.preferences[0]}} {{filterData?.preferences[1]}} {{filterData?.preferences[2]}}</li>
+      <li>איזור: {{filterData.area ? filterData.area : 'כל הארץ'}}</li>
+      <li>גילים: {{filterData.ageRange.lower}} - {{filterData.ageRange.upper}}</li>
+      <li>
+          <ion-icon *ngIf="!filterOptions.active" name="arrow-down-outline"></ion-icon>
+          <ion-icon *ngIf="filterOptions.active" name="arrow-up-outline"></ion-icon>
+      </li>
+  </ul>
+</div>

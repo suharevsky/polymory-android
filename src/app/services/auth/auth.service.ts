@@ -56,11 +56,13 @@ export class AuthService implements OnDestroy {
     logout() {
         this.fireAuth.signOut().then(_ => {
             localStorage.removeItem(this.authLocalStorageToken);
-            this.router.navigate(['/landing']);
+            this.router.navigate(['/']);
         });
     }
 
     login(auth) {
+        console.log(auth);
+
         this.setAuthFromLocalStorage(auth);
     }
 
@@ -69,8 +71,6 @@ export class AuthService implements OnDestroy {
         if (!auth || !auth.accessToken) {
             return of(undefined);
         }
-
-        console.log(auth);
 
         this.userService.setUser(auth);
         // this.isLoadingSubject.next(true);
@@ -93,6 +93,7 @@ export class AuthService implements OnDestroy {
 
     private setAuthFromLocalStorage(auth: AuthModel): boolean {
         // store auth accessToken/refreshToken/expiresIn in local storage to keep user logged in between page refreshes
+
         if (auth && auth.accessToken) {
             localStorage.setItem(this.authLocalStorageToken, JSON.stringify(auth));
             return true;

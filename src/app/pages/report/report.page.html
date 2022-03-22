@@ -8,12 +8,11 @@
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
-
 <ion-content>
     <form [formGroup]="reportForm">
         <ion-item>
             <ion-label>סיבה *</ion-label>
-            <ion-select formControlName="subject" placeholder="בחר" value="notifications" cancel-text="ביטול" interface="action-sheet">
+            <ion-select formControlName="subject" placeholder="בחר" value="notifications" cancel-text="ביטול" interface="popover">
                 <ion-select-option value="תוכן לא הולם">תוכן לא הולם</ion-select-option>
                 <ion-select-option value="מידע פרופיל חשוד">מידע פרופיל חשוד</ion-select-option>
                 <ion-select-option value="משתמש לא אמיתי">משתמש לא אמיתי</ion-select-option>

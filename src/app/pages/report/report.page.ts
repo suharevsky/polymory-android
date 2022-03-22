@@ -3,6 +3,7 @@ import {ModalController, ToastController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {DateHelper} from '../../helpers/date.helper';
+import { GeneralService } from 'src/app/services/general/general.service';
 
 @Component({
     selector: 'app-report',
@@ -23,7 +24,8 @@ export class ReportPage implements OnInit {
         public modalController: ModalController,
         public fb: FormBuilder,
         private db: AngularFirestore,
-        public toastController: ToastController
+        public toastController: ToastController,
+        public generalService: GeneralService
     ) {
     }
 
@@ -65,8 +67,6 @@ export class ReportPage implements OnInit {
             await this.db.collection('reportAbuse', ref =>
                 ref.where('fromId', '==', this.fromId).where('onId', '==', this.onId)
             ).get().subscribe(records => {
-
-                // console.log(this.db.collection('reportAbuse').doc().ref.id);
 
                 const reportAbuse = this.db.collection('reportAbuse').doc();
                 console.log(reportAbuse.ref.id);

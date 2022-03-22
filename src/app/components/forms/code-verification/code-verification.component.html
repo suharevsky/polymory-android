@@ -1,0 +1,32 @@
+<div class="desktop wrap">
+  <form *ngIf="showCodeFormStatus === 1" [formGroup]="phoneForm" class="code-confirm" (ngSubmit)="logIn(phoneForm)">
+      <h2>הכנס את מספר הטלפון שלך</h2>
+      <h3>לא משנה אם את/ה משתמש חדש או משתמש קיים, הכנס/י את מספר הטלפון שלך לכניסה מהירה</h3>
+      <div class="input phone">
+          <ion-input type="phone" autofocus formControlName="phone" dir="ltr"></ion-input>
+      </div>
+      <!-- <ion-item>
+        <ion-label position="stacked">Stacked Label</ion-label>
+        <ion-input></ion-input>
+      </ion-item> -->
+      <a
+          (click)="logIn(phoneForm)"
+          class="btn">
+          <ion-spinner *ngIf="loadingSpinner"></ion-spinner>
+                        <span *ngIf="!loadingSpinner">קבל קוד</span>
+    </a>
+  </form>
+
+  <form *ngIf="showCodeFormStatus === 2" [formGroup]="codeForm" (ngSubmit)="verifyCode(codeForm)">
+    <h2>אמת קוד</h2>
+      <div class="input">
+        <ion-input placeholder="הזן את הקוד כאן" formControlName="code"
+                               class="form-control"
+                               id="code"></ion-input>
+      </div>
+   <a class="btn">
+      <ion-spinner *ngIf="loadingSpinner"></ion-spinner>
+      <span *ngIf="!loadingSpinner">אמת קוד</span>
+   </a>
+</form>
+</div>

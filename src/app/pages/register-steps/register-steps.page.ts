@@ -1,15 +1,17 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {IonSlides, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
-import {SelectService} from '../../services/form/select/select.service';
+import {IonSlides, LoadingController, ModalController, NavController, NavParams, ToastController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UserModel} from '../../models/user.model';
 import {UserService} from '../../services/user/user.service';
-import {Subscription} from 'rxjs';
+import {range, Subscription} from 'rxjs';
 import {first} from 'rxjs/operators';
 import {AuthService} from '../../services/auth/auth.service';
 //import {UniqueUsernameValidator} from '../../validators/unique-username.validator';
 import {PhotosPage} from '../photos/photos.page';
 import {BirthdayValidator} from '../../validators/birthday.validator';
+import { GeneralService } from 'src/app/services/general/general.service';
+import { ActivatedRoute } from '@angular/router';
+import { ArrayHelper } from 'src/app/helpers/array.helper';
 
 @Component({
     selector: 'app-register-steps',
@@ -23,19 +25,27 @@ export class RegisterStepsPage implements OnInit {
     public user;
     public registrationForm: FormGroup;
     public steps: any = [];
-    public numSlides;
     public cities: any;
     public lookingFor: any;
     public filteredCities: any;
     public areas = [];
     public genders: any;
     public preferences: any;
+    public dateRange = {
+        date: ArrayHelper.range(1,31),
+        month: ArrayHelper.range(1,12),
+        year: ArrayHelper.range(1960,new Date().getFullYear() - 18),
+    }
     public slideOpts = {
         // initialSlide: 7,
         speed: 400,
         // allowTouchMove: false,
         // lockSwipes: false
     };
+
+    public tab = 'verification';
+    //public tab = 'registration';
+
     public form = {
         isValid: false,
     };
@@ -50,7 +60,9 @@ export class RegisterStepsPage implements OnInit {
         public userService: UserService,
         private authService: AuthService,
         public toastController: ToastController,
+        public generalService: GeneralService,
         private modalCtrl: ModalController,
+        private route: ActivatedRoute,
         //private uniqueUsernameValidator: UniqueUsernameValidator,
         private birthdayValidator: BirthdayValidator,
     ) {
@@ -64,13 +76,14 @@ export class RegisterStepsPage implements OnInit {
     ngOnInit() {
 
         this.initForm();
-
+        this.route.queryParams.subscribe((params: any) => {
+            this.tab = params.tab ? params.tab : this.tab;
+        });
         this.areas = this.userService.getArea().options;
         this.cities = this.userService.getCities().options;
         this.lookingFor = this.userService.getLookingFor().options;
         this.genders = this.userService.getGender().options;
         this.preferences = this.userService.getPreference().options;
-        this.numSlides = document.getElementsByTagName('ion-slide').length;        
     }
 
     async presentToast(errorMessage: string) {
@@ -79,6 +92,10 @@ export class RegisterStepsPage implements OnInit {
             duration: 2000
         });
         toast.present();
+    }
+
+    getSelectValue(e) {
+        console.log(e.target.value);
     }
 
     initForm() {
@@ -202,6 +219,8 @@ export class RegisterStepsPage implements OnInit {
                 result[key] = this.f[key].value;
             });
 
+            console.log(result);
+
             Object.keys(this.f).reverse().forEach(key => {
                 if (this.f[key].errors?.required || this.f[key].errors?.email) {
                     errorMessage = 'שדה "' + errorFields[key] + '"' + ' לא תקינ ';
@@ -230,6 +249,15 @@ export class RegisterStepsPage implements OnInit {
                 this.slideNext();
             }
         }
+    }
+
+    close() {
+        this.modalCtrl.dismiss();
+    }
+
+    setMinimumAge() {
+        let d = new Date();
+        return new Date(d.setDate(d.getDate()- (18 *365) )).toISOString()
     }
 
     async goToPhotos() {
@@ -284,47 +312,27 @@ export class RegisterStepsPage implements OnInit {
     }
 
     async photosProfile() {
-        const modal = await this.modalCtrl.create({
-            component: PhotosPage,
-        });
-        return await modal.present();
+        if(this.generalService.isDesktop()) {
+            this.modalCtrl.dismiss();
+            window.location.href = 'user/photos';
+        } else {
+            const modal = await this.modalCtrl.create({
+                component: PhotosPage,
+            });
+            return await modal.present();
+        }
+        
     }
 
     back() {
-        console.log(this.currentIndexSlide);
-
         this.currentIndexSlide === 0
             ? this.navCtrl.back()
             : this.currentIndexSlide = this.currentIndexSlide - 1;
-
-        console.log(this.currentIndexSlide);
     }
 
-    /*getCurrentSlide() {
-        this.slides.getActiveIndex().then((sIndex) => {
-            this.currentIndexSlide = sIndex;
-
-            console.log(this.currentIndexSlide);
-
-            this.registrationForm = this.fb.group(
-                this.steps[this.currentIndexSlide]
-            );
-
-            if (this.currentIndexSlide === 8) {
-                let opacity = 0;
-
-                function MyFadeFunction() {
-                    if (opacity < 1) {
-                        opacity += 0.1;
-                        setTimeout(() => {
-                            MyFadeFunction();
-                        }, 100);
-                    }
-                }
-                MyFadeFunction();
-            }
-        });
-    }*/
+    tabChangedHandler(tab: string) {
+        this.tab = tab;
+    }
 
     selectArea(i: number) {
         this.areas = this.areas.map((el) => {

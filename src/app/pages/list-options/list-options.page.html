@@ -1,11 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button color="primary" (click)="cancel()"> ביטול </ion-button>
+      <ion-button (click)="cancel()"> ביטול </ion-button>
     </ion-buttons>
     <ion-title>{{object.label}}</ion-title>
     <ion-buttons slot="end" *ngIf="multiple">
-      <ion-button color="primary" (click)="done()"> בוצע </ion-button>
+      <ion-button (click)="done()"> בוצע </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

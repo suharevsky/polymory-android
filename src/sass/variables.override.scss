@@ -1,7 +1,7 @@
 :root {
   /** primary **/
-  --ion-color-primary: #fd5068;
-  --ion-color-primary-rgb: 253, 80, 104;
+  --ion-color-primary: rgb(43, 60, 77);
+  --color-primary-rgb:  rgb(43, 60, 77);
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 0, 0, 0;
   --ion-color-primary-shade: #df465c;
@@ -47,6 +47,7 @@
   --ion-text-color: #333333;
   --ion-background-color: #ffffff;
 }
+
 
 .ion-color-white {
   --ion-color-base: var(--ion-color-white);

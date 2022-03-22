@@ -4,6 +4,7 @@
   box-shadow: var(--card-box-shadow);
   border-radius: var(--swipe-card-border-radius);
   position: relative;
+  cursor: pointer;
 
   .card-caption {
     position: absolute;
@@ -16,10 +17,6 @@
     font-weight: 700;
     background-image: linear-gradient(to top, rgba(0, 0, 0, .8), transparent);
     border-radius: 0 0 var(--swipe-card-border-radius) var(--swipe-card-border-radius);
-
-    ion-row {
-      width: 100%;
-    }
   }
 
   .caption-text {
@@ -41,6 +38,12 @@
 
 @media(min-width: 768px) {
   .person-card {
-    padding-top: 320px;
+    padding-top: 220px;
+  }
+}
+
+@media(min-width: 1300px) {
+  .person-card {
+    padding-top: 240px;
   }
 }

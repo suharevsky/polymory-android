@@ -30,8 +30,9 @@ export class TabsPage implements OnInit {
     ngOnInit(): void {
         this.userService.getUser();
             this.counterService.getByUserId(this.userService.user?.id).subscribe(result => {
-
+                
                 this.counter = result.payload.data();
+                console.log(this.counter);
                 counterSubject.next(this.counter);
                 counterSubject.subscribe();
                 /*counterSubject.subscribe({

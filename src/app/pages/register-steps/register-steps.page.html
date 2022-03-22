@@ -1,14 +1,20 @@
 <ion-header *ngIf="currentIndexSlide === 0">
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-button (click)="back()">
+            <ion-button class="mobile" (click)="back()">
                 <ion-icon name="chevron-back-outline"></ion-icon>
+            </ion-button>
+            <ion-button class="desktop" (click)="close()">
+                <ion-icon name="close-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
+
 <ion-content>
+    <app-code-verification class="desktop" [tab]="tab" (tabChanged)="tabChangedHandler($event)" *ngIf="tab === 'verification'"></app-code-verification>
+    <ng-container>
     <div class="ion-slides"
          #slides>
         <!-- {{myForm.value | json}} -->
@@ -30,7 +36,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="option">
                         <h2>{{userService.getPreference().label}}</h2>
                         <div class="preference smileys-items">
@@ -48,7 +53,7 @@
         </div>
         <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 1">
             <form [formGroup]="registrationForm">
-                <ion-item>
+                <ion-item no-lines>
                     <ion-label position="stacked"><h2>{{userService.getUsername().label}}</h2></ion-label>
                     <ion-input #focusable
                             [value]="user?.username"
@@ -63,17 +68,42 @@
 
         <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 2">
             <form [formGroup]="registrationForm">
-
-                <ion-item>
+                <ion-item no-lines>
                     <ion-label position="stacked"><h2>
                         {{ user?.gender == 'זוג' ? userService.getBirthday().label3 :
                         userService.getBirthday().label}}
                     </h2></ion-label>
-                    <ion-datetime #focusable cancel-text="ביטול" done-text="בוצע" name="birthday" formControlName="birthday"></ion-datetime>
+                    <ion-datetime value="setMinimumAge()" class="datetime" #focusable cancel-text="ביטול" done-text="בוצע" name="birthday" formControlName="birthday"></ion-datetime>
                 </ion-item>
-                <ion-item *ngIf="user?.gender === 'זוג'">
+                <ion-item no-lines *ngIf="user?.gender === 'זוג'">
                     <ion-label position="stacked"><h2>{{userService.getBirthday1().label3}}</h2></ion-label>
-                    <ion-datetime cancel-text="ביטול" done-text="בוצע" name="birthday1" formControlName="birthday1"></ion-datetime>
+                    <ion-datetime value="setMinimumAge()" class="datetime" cancel-text="ביטול" done-text="בוצע" name="birthday1" formControlName="birthday1"></ion-datetime>
+                    <!-- <div class="date">
+                        <div class="day">
+                            <ion-label>יום</ion-label>
+                            <ion-select value="1" (ionChange)="getSelectValue($event)" interface="popover">
+                                <ion-select-option *ngFor="let date of dateRange.date" value="{{date}}">
+                                    {{date}}
+                                </ion-select-option>
+                            </ion-select>
+                        </div>
+                        <div class="month">
+                            <ion-label>חודש</ion-label>
+                            <ion-select value="1" interface="popover">
+                                <ion-select-option *ngFor="let month of dateRange.month" value="{{month}}">
+                                    {{month}}
+                                </ion-select-option>
+                            </ion-select>
+                        </div>
+                        <div class="year">
+                            <ion-label>שנה</ion-label>
+                            <ion-select value="1980" interface="popover">
+                                <ion-select-option *ngFor="let year of dateRange.year" value="{{year}}">
+                                    {{year}}
+                                </ion-select-option>
+                            </ion-select>
+                        </div>
+                    </div> -->
                 </ion-item>
             </form>
         </div>
@@ -129,7 +159,7 @@
         </div>
         <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 6">
             <form [formGroup]="registrationForm">
-                <ion-item>
+                <ion-item no-lines>
                     <ion-label position="stacked"><h2>
                         {{ userService.getGender().value == 3 ? userService.getAbout().label3 : userService.getAbout().label}}
                     </h2></ion-label>
@@ -152,7 +182,7 @@
             <p>במידה ואינך רואה את המייל אנא בדוק את תיבת הספאם.</p>
             <p>
                 אם בכל זאת לא קיבלת את המייל, אנא צור קשר עם תמיכת האתר בכתובת
-                <a href="mailto:contact@joyme.co.il">contact@joyme.co.il</a>
+                <a href="mailto:contact@polymatch.co.il">contact@polymatch.co.il</a>
             </p>
             
             <ion-button
@@ -165,8 +195,12 @@
             </ion-button>
         </div>-->
     </div>
+</ng-container>
+
 </ion-content>
 
+<ng-container>
 <ion-footer *ngIf="currentIndexSlide != 7">
     <ion-button [disabled]="registrationForm.errors" type="submit" (click)="submit()" class="btn-form">שמור</ion-button>
 </ion-footer>
+</ng-container>

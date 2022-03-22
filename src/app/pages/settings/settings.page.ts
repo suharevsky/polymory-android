@@ -7,6 +7,7 @@ import {UserService} from '../../services/user/user.service';
 import {UserModel} from '../../models/user.model';
 import {SettingsService} from '../../services/user/settings/settings.service';
 import {PagePage} from '../page/page.page';
+import { GeneralService } from 'src/app/services/general/general.service';
 
 @Component({
     selector: 'app-settings',
@@ -31,6 +32,7 @@ export class SettingsPage implements OnInit {
                 private themeService: ThemeService,
                 private authService: AuthService,
                 public alertController: AlertController,
+                public generalService: GeneralService,
                 public appVersion: AppVersion,
                 public userService: UserService) {
         this.userService.getUser();
@@ -38,6 +40,7 @@ export class SettingsPage implements OnInit {
 
     ngOnInit() {
 
+        console.log('loaded');
         this.settingsService.getByUserId(this.userService.getId()).subscribe(settings => {
             this.settings = settings;
         });
@@ -46,6 +49,10 @@ export class SettingsPage implements OnInit {
             .then(val => {
                 this.isDark = val;
             })
+    }
+
+    close() {
+        this.navCtrl.back();
     }
 
     done() {
@@ -61,7 +68,6 @@ export class SettingsPage implements OnInit {
                 text: 'לא',
                 role: 'cancel',
                 handler: (blah) => {
-                    console.log('Confirm Cancel: blah');
                 }
             }, {
                 text: 'כן',
@@ -74,6 +80,10 @@ export class SettingsPage implements OnInit {
 
         await alert.present();
 
+    }
+
+    contactUs() {
+        window.location.href = "mailto:contact@polymatch.co.il";
     }
 
     getContact() {

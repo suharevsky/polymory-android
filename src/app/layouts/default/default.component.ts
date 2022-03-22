@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, NavigationExtras } from '@angular/router';
+import { GeneralService } from 'src/app/services/general/general.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-default',
@@ -7,30 +10,51 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DefaultComponent implements OnInit {
 
-  constructor() { }
+  public usersPerPage = 20;
+  public currentPage;
 
-  public menu = [{
-    title: 'מועדפים',
-    route: 'user/likes',
-    params: ''
-  },
-  {
-    title: 'בי',
-    route: 'user/likes',
-    params: ''
-  },
-  {
-    title: 'הפרופיל שלי',
-    route: 'user/profile',
-    params: ''
-  },{
-    title: 'גילוי',
-    route: 'user/highlights',
-    params: ''
-  }
-]
+  public menu = [];
+
+constructor(
+  private router: Router, 
+  public userService: UserService,
+  public generalService: GeneralService
+  ) {
+}
   
 
-  ngOnInit() {}
+  ngOnInit() {
+
+    setTimeout(() => {
+      this.menu = [{
+        title: 'מועדפים',
+        route: '/user/list/favorites',
+        params: {}
+      },
+      {
+        title: 'צפו בי',
+        route: '/user/list/views',
+        params: ''
+      },
+      {
+        title: 'הפרופיל שלי',
+        route: '/user/me',
+        params: ''
+      },{
+        title: 'גילוי',
+        route: '/user/highlights',
+        params: ''
+      }
+    ]
+
+    this.currentPage = this.menu.filter(menuItem => menuItem.route === this.router.url)[0];
+
+    },4000)
+  }
+
+  goTo(menuItem) {
+    this.currentPage = menuItem;
+    this.router.navigate([menuItem.route], menuItem.params);
+  }
 
 }

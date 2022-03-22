@@ -1,28 +1,29 @@
 <ion-content>
-  <ion-header  #header class="header-custom mobile">
-    <div class="segment">
-        <ion-icon name="options-outline"></ion-icon>
-    </div>
-    <div class="logo title">JoyMe</div>
-  </ion-header>
   <div class="wrap">
-    <div class="navigation">
-      <div class="page-title">
-        <!-- {{menu.title}} -->גילוי
-      </div>
-      <nav>
-        <ul>
-          <li *ngFor="let menuItem of menu">
-            {{menuItem.title}}
-          </li>
-        </ul>
-      </nav>
-
-    </div>
-<aside>
-</aside>
-<main>
-  <router-outlet></router-outlet>
-</main>
+    <div id="page">
+      <!-- <ion-header  #header class="header-custom mobile">
+        <div class="segment">
+            <ion-icon name="options-outline"></ion-icon>
+        </div>
+        <div class="logo title">JoyMe</div>
+      </ion-header> -->
+      <aside>
+        <app-inbox></app-inbox>
+      </aside>
+      <main>
+        <div class="navigation">
+          <nav class="main-menu">
+            <ul>
+              <li *ngFor="let menuItem of menu">
+               <span [ngClass]="currentPage?.title === menuItem?.title ? 'active' : ''" (click)="goTo(menuItem)">{{menuItem?.title}}</span>
+              </li>
+            </ul>
+          </nav>
+        </div>
+          <ion-router-outlet></ion-router-outlet>
+        <!-- <router-outlet animated="false"></router-outlet> -->
+      </main>
+</div>
 </div>
 </ion-content>
+

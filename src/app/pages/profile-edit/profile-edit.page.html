@@ -1,40 +1,51 @@
-<ion-header class="header-custom">
-    <ion-toolbar>
+<ion-header class="mobile">
+     <ion-toolbar class="toolbar-no-border">
         <ion-buttons slot="start">
-            <ion-button color="primary" (click)="cancel()"> ביטול </ion-button>
+            <ion-button (click)="cancel()"> ביטול </ion-button>
         </ion-buttons>
-        <ion-title> ערוך פרופיל </ion-title>
+        <!-- <ion-title> ערוך פרופיל </ion-title> -->
         <ion-buttons slot="end">
-            <ion-button color="primary" (click)="save()"> שמור </ion-button>
+            <ion-button (click)="save()"> שמור </ion-button>
         </ion-buttons>
     </ion-toolbar>
 
     <!--<ion-toolbar class="toolbar-no-border">
-        <ion-segment class="segment-custom" [(ngModel)]="segmentView" mode="md">
-            <ion-segment-button value="0">
-                <ion-label> Edit </ion-label>
-            </ion-segment-button>
-            <ion-segment-button value="1">
-                <ion-label> Preview </ion-label>
-            </ion-segment-button>
-        </ion-segment>
+        <ion-title class="page-title">ערוך פרופיל</ion-title>
+        <ion-buttons slot="end">
+            <ion-button color="primary" (click)="cancel()">
+                ביטול
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>-->
 </ion-header>
+<ion-content class="bg-light" *ngIf="!generalService.isDesktop()">
+    <ng-content *ngTemplateOutlet="template"></ng-content>
+</ion-content>
+    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
 
-<ion-content class="bg-light">
-    <ion-header collapse="condense">
-        <ion-toolbar>
-            <ion-title size="large"> ערוך פרופיל </ion-title>
+    <ng-template #template>
+    <ion-header class="title-margin" collapse="condense desktop">
+        <ion-toolbar class="header-custom">
+            <ion-title class="page-title">ערוך פרופיל</ion-title>
+            <ion-buttons slot="end">
+                <ion-button (click)="close()">
+                    <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+            </ion-buttons>
         </ion-toolbar>
     </ion-header>
+    <ion-header collapse="condense mobile">
+        <ion-toolbar>
+          <ion-title size="large">ערוך פרופיל</ion-title>
+        </ion-toolbar>
+      </ion-header>
     <div [ngSwitch]="segmentView" class="full-height">
         <!-- EDIT -->
 
             <div class="segment-view" *ngSwitchCase="'0'">
 
                 <form [formGroup]="editUser">
-
-                <ion-list class="list-custom">
+                <ion-list class="link list-custom">
                     <ion-list-header>
                         <ion-label>אזור</ion-label>
                     </ion-list-header>
@@ -43,7 +54,7 @@
                     </ion-item>
                 </ion-list>
 
-                <ion-list class="list-custom">
+                <ion-list class="link list-custom">
                     <ion-list-header>
                         <ion-label>עיר</ion-label>
                     </ion-list-header>
@@ -52,7 +63,7 @@
                     </ion-item>
                 </ion-list>
 
-                <ion-list class="list-custom">
+                <ion-list class="link list-custom">
                     <ion-list-header>
                         <ion-label>רוצה להכיר</ion-label>
                     </ion-list-header>
@@ -72,7 +83,7 @@
                     </ion-item>
                 </ion-list>
 
-                <ion-list class="list-custom">
+                <ion-list class="link list-custom">
                     <ion-list-header>
                         <ion-label>מחפש/ת</ion-label>
                     </ion-list-header>
@@ -87,8 +98,13 @@
             <div class="card-border full-height" *ngIf="showSlides">
             </div>
         </div>
+        <a (click)="save()"
+        class="btn desktop">
+    <span>שמור</span>
+    </a>
     </div>
-</ion-content>
+
+</ng-template>
 <!--
 <ion-footer>
     <ion-button (click)="save()"

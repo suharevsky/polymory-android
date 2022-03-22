@@ -24,6 +24,10 @@
   }
 }
 
+app-code-verification {
+  height: 100%;
+}
+
 ion-searchbar {
   text-align: right;
 }
@@ -38,9 +42,9 @@ ion-icon {
 
 ion-item,
 .item-option {
+  --inner-border-width: 0;
   width: 80%;
   align-self: flex-start;
-  border-bottom: 2px solid #0c0d34;
 
   h2 {
     padding: 0;
@@ -51,11 +55,6 @@ ion-item,
   &.item-has-focus {
     border-bottom: 2px solid #fff;
   }
-}
-
-ion-input,
-ion-datetime {
-  font-size: 20px;
 }
 
 /*ion-textarea {
@@ -70,7 +69,7 @@ ion-datetime {
 .btn-form {
   width: 100%;
   margin: 0 auto;
-  --background: var(--ion-color-boost-gradient);
+  --background: #7774c5;
   --border-radius: 0;
 }
 
@@ -86,7 +85,9 @@ h2 {
 }
 
 .item-option {
-  border: 1px solid #fff;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-primary-rgb);
   border-radius: 50px;
   padding: 16px 32px;
   margin: 12px 0;
@@ -94,8 +95,8 @@ h2 {
   width: 100%;
 
   &.active {
-    background: var(--ion-color-boost-gradient);
-    --background: var(--ion-color-boost-gradient);
+    background: var(--color-primary-rgb);
+    --background: var(--color-primary-rgb);
     color: #ffffff;
   }
 
@@ -138,6 +139,7 @@ h2 {
   justify-content: space-around;
 
   .smile-item {
+    cursor: pointer;
     flex: 0 0 30%;
     margin: 1%;
     border-radius: 8px;
@@ -145,13 +147,33 @@ h2 {
     padding: 12px 0;
     text-align: center;
     &.active {
-      border: 2px solid var(--ion-color-boost);
+      border: 2px solid #7774c5;
     }
   }
 }
 
 ion-button.ion-focusable {
-  --background-activated: var(--ion-color-boost);
-  --background-focused: var(--ion-color-boost);
-  --background-hover: var(--ion-color-boost);
+  --background-activated: #7774c5;
+  --background-focused: #7774c5;
+  --background-hover: #7774c5;
+}
+
+@media (min-width: 768px) {
+  .option {
+    margin: 60px 0;
+  }
+
+  .date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .day, .month, .year {
+      display: flex;
+      align-items: center;
+      border: 1px solid;
+      padding: 7px 20px;
+      border-radius: 5px;
+    }
+  }
 }

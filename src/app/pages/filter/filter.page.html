@@ -2,7 +2,7 @@
     <ion-toolbar>
         <ion-title>סיונן</ion-title>
         <ion-buttons slot="end">
-            <ion-button color="primary" (click)="close()">
+            <ion-button (click)="close()">
                 <ion-icon name="close-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
@@ -65,23 +65,19 @@
                     <ion-label>אונליין בלבד</ion-label>
                     <ion-checkbox data-id="online" slot="end" (ionChange)="onCheckBox($event)" formControlName="online"></ion-checkbox>
                 </ion-item>
-                <ion-button
-                        expand="block"
-                        fill="outline"
-                        type="submit"
-                        shape="round"
-                        class="button-landing">
-                    <span>חיפוש</span>
-                </ion-button>
-                <ion-button
+                <ion-buttons>
+                    <button
+                    type="submit"
+                    class="btn">
+                        <span>חיפוש</span>
+                    </button>
+                    <div
                         (click)="reset()"
-                        expand="block"
-                        fill="outline"
-                        type="button"
-                        shape="round"
-                        class="button-landing">
+                        class="btn btn-tertiary">
                     אפס סינון
-                </ion-button>
+                    </div>
+                </ion-buttons>
+                
             </ion-list>
         </form>
     </ion-list>

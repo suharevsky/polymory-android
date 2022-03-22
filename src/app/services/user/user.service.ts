@@ -10,6 +10,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import firebase from 'firebase';
 import {AngularFireStorage, AngularFireStorageReference} from '@angular/fire/storage';
 import {AdminConfigService} from '../admin-config/admin-config.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -117,12 +118,10 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
             switchMap(l => {
                 // Unique User IDs
                 //list = l;
-
                 // Firestore User Doc Reads
                 const userDocs = l.map(u =>
                     this.db.doc(`users/${u.profileId}`).valueChanges()
                 );
-
                 return userDocs.length ? combineLatest(userDocs) : of([]);
             }), map(arr => {
                 return arr;
@@ -132,7 +131,6 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     }
 
     getBlackList(userId) {
-
     }
 
     allPhotosApproved() {
@@ -426,14 +424,16 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     }
 
     public getUser() {
+
         if (this.user) {
             this.db.collection('users', ref =>
                 ref.where('id', '==', this.user.id)
             ).snapshotChanges().pipe(map(user => user[0])).subscribe(user => {
                 this.setUser(user.payload.doc.data());
             });
+
+            return this.user;
         }
-        return this.user;
     }
 
     public setUsername(username) {
@@ -526,8 +526,6 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                             let allUsers = results;
                             results = allUsers.filter((user: any) => user.mainPhotoApproved === 1);
                             Array.prototype.push.apply(this.highlights.restResults,allUsers.filter((user: any) => user.mainPhotoApproved === 0)); 
-
-                            console.log(this.highlights.restResults);
                           }
 
                         //if (filterData?.online) {

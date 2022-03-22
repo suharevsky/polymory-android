@@ -14,7 +14,6 @@ ion-icon {
     color: white;
 }
 
-
 .btn-close {
     ion-icon {
         margin: 0;
@@ -22,4 +21,17 @@ ion-icon {
         border-radius: 50%;
         padding: 8px;
     }
+}
+
+
+@media (min-width: 768px)  {
+    ion-footer {
+        position: absolute;
+        .btn-close {
+            position: absolute;
+            left: 0;
+        }
+    }
+
+    .modal-wrapper{}
 }

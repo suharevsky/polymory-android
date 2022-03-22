@@ -10,6 +10,16 @@ ion-buttons {
   position: fixed;
 }
 
+.image-items {
+  display: flex;
+  flex-wrap: wrap;
+  .image-item {
+    flex: 0 0 30%;
+    position: relative;
+    margin: 2px 4px;
+  }
+}
+
 .heart {
   width: 100px;
   height: 100px;
@@ -61,6 +71,44 @@ ion-buttons {
   position: relative;
 }
 
+.private-photos {
+  .unlock {
+    flex: 0 0 75%;
+    height: 49px;
+    color: #fff;
+    border-radius: 25px;
+    cursor: pointer;
+    background: #7774c5;
+    margin: 0 auto;
+    .wrap {
+      height: 100%;
+      line-height: 47px;
+      span {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  }
+
+  ion-icon.lock {
+    position: absolute;
+    font-size: 16px;
+  }
+
+  img {
+    &.blur {
+      filter: blur(0.375rem);
+    }
+    cursor: pointer;
+    height: 120px;
+  }
+}
+
+.public-photos img {
+  cursor: pointer;
+  height: 120px;
+}
+
 .profile-info {
   padding: 16px;
 
@@ -102,7 +150,7 @@ ion-buttons {
 }
 
 .report-btn div {
-  color: #f95266;
+  color: #7774c5;
 }
 
 .section-title {
@@ -111,33 +159,33 @@ ion-buttons {
   font-size: 18px;
 }
 
-.album-artwork {
-  position: relative;
+// .album-artwork {
+//   position: relative;
 
-  .album-cover {
-    width: 64px;
-    height: 64px;
-    border-radius: 4px;
-  }
+//   .album-cover {
+//     width: 64px;
+//     height: 64px;
+//     border-radius: 4px;
+//   }
 
-  .album-artwork-overlay {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+//   .album-artwork-overlay {
+//     position: absolute;
+//     top: 0;
+//     right: 0;
+//     bottom: 0;
+//     left: 0;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
 
-    ion-button {
-      width: 20px;
-      height: 20px;
-      font-size: 7px;
-      opacity: .8;
-    }
-  }
-}
+//     ion-button {
+//       width: 20px;
+//       height: 20px;
+//       font-size: 7px;
+//       opacity: .8;
+//     }
+//   }
+// }
 
 .profile-share, .profile-footer {
   text-align: center;
@@ -167,15 +215,15 @@ ion-buttons {
 
 .dismiss {
   border-radius: 50%;
-  background: #201f39;
-  color: #ffffff;
+  color: #fff;
+  background-color: #00000057;
   margin: 18px 18px;
-  width: 48px;
-  height: 48px;
-  border: 1px solid #6f7075;
+  width: 42px;
+  height: 42px;
 }
 
 .bottom-actions {
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
@@ -199,7 +247,7 @@ ion-buttons {
 
     &.button-favorite {
       span {
-        color: #ffffff;
+        color: var(--color-primary-rgb);
       //  color: var(--color-button-star);
       }
     }
@@ -209,7 +257,7 @@ ion-buttons {
     }
 
     &.button-star ion-icon {
-      color: #ffffff;
+      color: var(--color-primary-rgb);
 
       //  color: var(--color-button-star);
     }
@@ -229,3 +277,4 @@ ion-buttons {
     margin-bottom: 8px;
   }
 }
+

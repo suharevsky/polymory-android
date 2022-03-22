@@ -1,8 +1,15 @@
 .photos-edit {
   padding: 4px;
-
+  cursor: pointer;
   .toggle-icon {
     //--background: var(--ion-color-boost-gradient);
+  }
+
+  .btn {
+    margin: 0 auto;
+    display: block;
+    max-width: 260px;
+    margin-top: 40px;
   }
 
   .photo-item {
@@ -19,20 +26,12 @@
 
     .upload-btn {
       font-size: 60px;
-      color: #7774c5;
+      color: var(--ion-color-primary);
       padding: 20px;
-      border: 1px dashed #ccc;
+      border: 1px dashed #7774c5;
       border-radius: 50%;
       display: block;
       margin: 0 auto;
-    }
-
-
-    ion-button {
-      --background: var(--ion-color-boost-gradient);
-      width: 80%;
-      margin: 40px auto;
-      display: block;
     }
   }
 
@@ -48,7 +47,8 @@
     &-main {
       position: absolute;
       left: 0;
-      background: #7c0bd0;
+      background: #7774c5;
+      color: #fff;
       padding: 2px 4px;
       bottom: 0;
       border-radius: 5px;
@@ -66,6 +66,7 @@
 
       &-waiting {
         background: #ffe400;
+        color: #fff;
       }
     }
   }
@@ -88,21 +89,11 @@
     }
 
     &.photo-button-invert {
-      background: linear-gradient(
-                      to top right,
-                      var(--color-tinder-stop1) 0%,
-                      var(--color-tinder-stop2) 100%
-      ) !important;
-
       ion-icon {
-        color: var(--ion-color-white);
+        color: var(--color-primary-rgb);
       }
     }
   }
-}
-
-ion-button {
-  --background: var(--ion-color-boost-gradient);
 }
 
 
@@ -156,6 +147,7 @@ ion-buttons.options {
   }
 
   margin-top: 32px;
+  justify-content: center;
 }
 
 .mask-list {
@@ -193,4 +185,13 @@ ion-buttons.options {
 
 .finish-registration {
   margin: 28px;
+}
+
+@media (min-width: 768px)  {
+  .edit-photo {
+    height: calc(100vh - 320px);
+  }
+  .finish-registration {
+    display: none;
+  }
 }

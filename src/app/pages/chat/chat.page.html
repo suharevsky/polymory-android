@@ -1,14 +1,28 @@
 <ion-header class="header-custom">
     <ion-toolbar class="toolbar-no-border">
-        <ion-buttons slot="start">
-            <ion-button class="dismiss" color="primary" (click)="close()">
+        <ion-buttons class="mobile" slot="start">
+            <ion-button class="dismiss" (click)="close()">
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
+        <ion-buttons class="desktop" slot="end">
+            <ion-button class="dismiss" (click)="close()">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
         <ion-title>
-            <random-avatar (click)="viewProfile(chatService.interlocutor)" [user]="chatService.interlocutor" [photo]="userService.getMainPhoto(chatService.interlocutor)" [size]="'sm'">
-            </random-avatar>
-            <div class="user-name" (click)="viewProfile(chatService.interlocutor)">{{chatService.interlocutor?.username}}</div>
+            <div class="wrap" *ngIf="generalService.isDesktop()">
+                <ng-content *ngTemplateOutlet="template"></ng-content>
+            </div>
+                <ng-content *ngTemplateOutlet="!generalService.isDesktop()?template:null"></ng-content>
+            
+            <div class="wrap">
+                <ng-template #template>
+                <random-avatar (click)="viewProfile(chatService.interlocutor)" [user]="chatService.interlocutor" [photo]="userService.getMainPhoto(chatService.interlocutor)" [size]="'sm'">
+                </random-avatar>
+                <div class="user-name" (click)="viewProfile(chatService.interlocutor)">{{chatService.interlocutor?.username}}</div>
+            </ng-template>
+            </div>
         </ion-title>
         <!--<ion-buttons slot="end">
             <ion-button color="secondary">
@@ -18,11 +32,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content #content class="ion-padding">
-    <!--<div class="ion-padding ion-text-center match-info">
-        <ion-text color="medium">YOU MATCHED WITH TINDIE ON 14/11/2019</ion-text>
-    </div>-->
     <div class="chat-list">
-      
         <div class="no-results" *ngIf="blockedMessage">
             {{blockedMessage}}
         </div>
@@ -76,7 +86,7 @@
             <!-- <div (click)="chooseImage()" class="btn-img-send">
                 <ion-icon name="image-outline"></ion-icon>
             </div> -->
-            <button (click)="submit()">שלח</button>
+            <button [ngClass]="{'visible': newMsg?.length > 0}" class="btn" (click)="submit()">שלח</button>
         </div> 
         <!--<input-with-giphy
                 (onSubmit)="submit(chat?.id)"

@@ -3,7 +3,7 @@
   class="person-card background-img">
   <span *ngIf="userService.isOnline(user.lastTimeActive)" class="online-status active"></span>
   <div class="card-caption">
-    <ion-row class="ion-align-items-end">
+    
       <ion-col class="caption-text">
         <div class="caption-title">
           {{user.username}} <span *ngIf="user.birthday">{{userService.getAge(user.birthday)}}</span>
@@ -15,7 +15,6 @@
           <ion-icon slot="icon-only" name="star"></ion-icon>
         </ion-button>
       </ion-col>-->
-    </ion-row>
   </div>
 </div>
 

@@ -6,7 +6,8 @@ import {ThemeService} from './services/theme/theme.service';
 import {RouterService} from './services/router.service';
 import {UserService} from './services/user/user.service';
 import { UpdateAppService } from './services/update-app/update-app.service';
-
+import { Router } from '@angular/router';
+import { GeneralService } from './services/general/general.service';
 @Component({
     selector: 'app-root',
     templateUrl: 'app.component.html',
@@ -23,7 +24,9 @@ export class AppComponent {
         private themeService: ThemeService,
         private routerService: RouterService,
         public userService: UserService,
-        public updateAppService: UpdateAppService
+        public updateAppService: UpdateAppService,
+        public generalService: GeneralService,
+        private router: Router
        // private ngZone: NgZone,
     ) {
         this.initializeApp();
@@ -38,6 +41,9 @@ export class AppComponent {
        // this.userService.setUser(user);
        // alert(this.userService.user.id);
         this.platform.ready().then(() => {
+            if(!this.generalService.isDesktop()) {
+                this.router.navigate(['/tabs/highlights']);
+            }
             if(this.platform.is('android') || this.platform.is('ios')) {
                 this.updateAppService.checkForUpdate();
             }
@@ -54,6 +60,6 @@ export class AppComponent {
             });*/
         });
         // this.themeService.restore();
-        this.themeService.toggleDarkMode(true);
+        //this.themeService.toggleDarkMode(true);
     }
 }

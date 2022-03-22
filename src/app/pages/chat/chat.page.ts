@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {AlertController, IonContent, ModalController, NavParams, ToastController} from '@ionic/angular';
+import {AlertController, IonContent, ModalController, NavController, NavParams, ToastController} from '@ionic/angular';
 import {Observable, Subscription} from 'rxjs';
 import {ChatService} from '../../services/chat/chat.service';
 import {UserModel} from '../../models/user.model';
@@ -12,6 +12,8 @@ import { take } from 'rxjs/operators';
 import {Camera, CameraOptions} from '@awesome-cordova-plugins/camera/ngx';
 
 import { ImageModalPage } from 'src/app/components/image-modal/image-modal.page';
+import { GeneralService } from 'src/app/services/general/general.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-chat',
@@ -44,18 +46,29 @@ export class ChatPage implements OnInit {
         public chatService: ChatService,
         public userService: UserService,
         public counterService: CounterService,
+        public navCtrl: NavController,
         private modalCtrl: ModalController,
         private alertController: AlertController,
         public toastController: ToastController,
         public fcmService: FcmService,
         public navParams: NavParams,
+        public generalService: GeneralService,
         private camera: Camera,
+        private route: ActivatedRoute,
+        
 
     ) {
         this.chatId = this.navParams.get('chatId');
-        console.log(this.chatId);
         this.dialogueExists = this.navParams.get('chatExists');
         this.interlocutorId = this.navParams.get('profileId');
+
+        if(this.generalService.isDesktop()) {
+            this.route.queryParams.subscribe((params: any) => {
+                this.chatId = params.chatId;
+                this.dialogueExists = params.dialogueExists;
+                this.interlocutorId  = params.profileId;
+            });
+        }
 
         this.init();
     }
@@ -66,7 +79,12 @@ export class ChatPage implements OnInit {
     }
 
     close() {
-        this.modalCtrl.dismiss();
+
+        if(this.generalService.isDesktop()) {
+            this.navCtrl.back();
+        }else{
+            this.modalCtrl.dismiss();
+        }
     }
 
     ionViewDidLeave() {
@@ -216,15 +234,18 @@ export class ChatPage implements OnInit {
       }
 
     async viewProfile(profile) {
-        const modal = await this.modalCtrl.create({
-            component: ProfilePage,
-            componentProps: {
-                profile,
-            }
 
-        });
-        return await modal.present();
-        // this.navCtrl.navigateForward(`/profile/${user.id}`, user);
+        if(this.generalService.isDesktop()) {
+            this.navCtrl.navigateForward(`/profile/${profile.id}`, {queryParams: {id: profile.id}});
+        }else{
+            const modal = await this.modalCtrl.create({
+                component: ProfilePage,
+                componentProps: {
+                    profile,
+                }
+            });
+            return await modal.present();
+        }
     }
 
     ngOnInit() {

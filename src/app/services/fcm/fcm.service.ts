@@ -33,7 +33,6 @@ export class FcmService {
     requestPermission() {
         return this.afMessaging.requestToken.pipe(
             tap(token => {
-                console.log('You should store the token ', token);
                 //alert(token);
                 this.setToken(token);
             })
@@ -115,7 +114,7 @@ export class FcmService {
                 body: this.data.body,
                 sound: 'default',
                 icon: 'fcm_push_icon',
-                click_action: "https://joyme.co.il/" + this.data.page
+                click_action: "https://polymatch.co.il/" + this.data.page
             },
             data: {
                 page: this.data.page,

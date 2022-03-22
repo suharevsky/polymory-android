@@ -6,26 +6,28 @@ import { DefaultComponent } from './layouts/default/default.component';
 // Send unauthorized  users to login
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/landing']);
 // Automatically log in users
-const redirectLoggedInToResults = () => redirectLoggedInTo(['/tabs/highlights']);
+
+//Platform.ready.then(_=> {
+   // const redirectLoggedInToResults = () => Platform.is('desktop') ? redirectLoggedInTo(['/user/highlights']) : redirectLoggedInTo(['/tabs/highlights']);
+//});
+
+const redirectLoggedInToResults = () => redirectLoggedInTo(['/user/highlights'])
 
 const routes: Routes = [
     /*{
       path: 'passions',
       loadChildren: './pages/passions/passions.module#PassionsPageModule'
     },*/
+    // {
+    //     path: '',
+    //     redirectTo: 'landing',
+    //     pathMatch: 'full'
+    // },
     {
         path: '',
-        redirectTo: 'landing',
-        pathMatch: 'full'
-    },
-    {
-        path: 'landing',
-        // loadChildren: './pages/landing/landing.module#LandingPageModule',
-        loadChildren: () =>
-            import('./pages/landing/landing.module').then(
-                (m) => m.LandingPageModule
-            ),
+        loadChildren: () => import('./pages/landing/landing.module').then(m => m.LandingPageModule),
         ...canActivate(redirectLoggedInToResults),
+
     },
     {
         path: 'register-steps',
@@ -45,23 +47,34 @@ const routes: Routes = [
         path: 'chat',
         loadChildren: () => import('./pages/chat/chat.module').then(m => m.ChatPageModule)
     },
+   
     {
         path: 'profile',
         loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfilePageModule)
 
     },
+    {
+        path: 'user',
+        loadChildren: () => import('./layouts/default/default.module').then(m => m.DefaultModule)
+    },
     // {
-    //     path: 'user',
-    //     loadChildren: () => import('./layouts/default/default.module').then(m => m.DefaultModule)
+    //     path: 'user/highlights',
+    //     component: DefaultComponent,
+        
+    //     //loadChildren: () => import('./layouts/default/default.module').then(m => m.DefaultModule)
     // },
     {
         path: 'tabs',
         loadChildren: () => import('./components/tabs/tabs.module').then(m => m.TabsPageModule)
     },
     {
-        path: 'likes',
+        path: 'favorites/:segment',
         loadChildren: () => import('./pages/likes/likes.module').then(m => m.LikesPageModule)
     },
+    // {
+    //     path: 'likes',
+    //     loadChildren: () => import('./pages/likes/likes.module').then(m => m.LikesPageModule)
+    // },
     {
         path: 'report',
         loadChildren: () => import('./pages/report/report.module').then(m => m.ReportPageModule)
@@ -82,10 +95,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [
-        RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})
-    ],
+    imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

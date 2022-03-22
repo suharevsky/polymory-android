@@ -50,3 +50,15 @@
     }
   }
 }
+
+@media (min-width: 768px)  {
+
+  :host {
+    .avatar.avatar-sm {
+      width: 52px;
+      height: 52px;
+      margin-left: 24px;
+    }
+  }
+  
+}

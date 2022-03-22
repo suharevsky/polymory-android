@@ -8,6 +8,8 @@ import {AuthService} from '../../services/auth/auth.service';
 import {counterSubject} from '../../components/tabs/tabs.page';
 import {ArrayHelper} from '../../helpers/array.helper';
 import {ProfilePage} from '../profile/profile.page';
+import { GeneralService } from 'src/app/services/general/general.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-likes',
@@ -24,7 +26,7 @@ export class LikesPage implements OnInit, OnDestroy {
     public user: UserModel;
     public slicedList;
     public type = 'views';
-
+    public pageTitle = 'צפו בי';
 
     private subscriptions: Subscription[] = [];
 
@@ -33,12 +35,32 @@ export class LikesPage implements OnInit, OnDestroy {
                 private modalCtrl: ModalController,
                 public counterService: CounterService,
                 public navCtrl: NavController,
+                public generalService: GeneralService,
+                public route: ActivatedRoute
     ) {
     }
 
     async ngOnInit() {
+        
+        //this.type = 'views';
+
+        const tab =  window.location.pathname.split('/')[3] || '';
+
+        console.log(tab)
+
+        if(tab === 'favorites') {
+            this.type = tab;
+            this.pageTitle = 'מועדפים';
+            this.highlightView = 0;
+        }
+
+        this.userService[this.type].lastKey = 0;
+        this.getList(this.type, true);
+
         this.userService.getUser();
         this.isLoading = false;
+
+       //this.route.url.subscribe(res => console.log(res))
 
         await counterSubject.subscribe({
             next: (counter) => {
@@ -49,7 +71,6 @@ export class LikesPage implements OnInit, OnDestroy {
 
     getHighlightView() {
         this.userService[this.type].finishLoad = false;
-        this.type = 'views';
 
         if (+this.highlightView === 0) {
             this.type = 'favorites';
@@ -108,8 +129,7 @@ export class LikesPage implements OnInit, OnDestroy {
     }
 
     ionViewWillEnter() {
-        this.userService[this.type].lastKey = 0;
-        this.getList(this.type, true);
+      
     }
 
     loadData(event) {

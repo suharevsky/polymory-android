@@ -1,26 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap');
 
-.title {
-  font-size: 2em;
-}
 
 ion-label {
   margin-top: 8px;
   font-weight: 600;
   font-size: 16px;
-  color: #fff;
 }
 
 ion-toggle {
   //--background: #000;
-  --background-checked: #7a49a5;
-
-  --handle-background: #7a49a5;
-  --handle-background-checked: #7a49a5 !important;
+  //--handle-background-checked: var(--color) !important;
+  --ion-color-base: #ccc !important;
+  --background-checked: #7774c5;
 }
 
 .logo-text {
   font-family: "Dosis", sans-serif;
+  text-transform: uppercase;
+  font-size: 22px;
 }
 
 a {
@@ -72,4 +69,16 @@ a {
 
 .text-sm {
   font-size: var(--font-size-sm);
+}
+
+
+ion-label {
+  font-weight: 400;
+}
+
+ion-list-header {
+  ion-label {
+    font-size: 28px;
+    font-weight: bold;
+  }
 }

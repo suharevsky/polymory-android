@@ -1,20 +1,46 @@
-<ion-header *ngIf="!imgLoaded">
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-back-button></ion-back-button>
-        </ion-buttons>
-        <ion-title>תמונות</ion-title>
-        <ion-buttons *ngIf="!newUser" slot="end">
-            <ion-button color="primary" (click)="done()"> בוצע</ion-button>
+
+<ion-header class="mobile">
+    <ion-toolbar class="toolbar-no-border">
+        <ion-title class="page-title">הגדרות</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="done()">
+                בוצע
+            </ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
-<ion-content>
-    <ion-header collapse="condense">
+
+<ion-content *ngIf="!generalService.isDesktop()">
+    <ng-content *ngTemplateOutlet="template"></ng-content>
+</ion-content>
+    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
+<ng-template #template>
+    <ion-header class="title-margin desktop" collapse="condense">
         <ion-toolbar>
-            <ion-title size="large">תמונות</ion-title>
+            <ion-title class="page-title">תמונות</ion-title>
+            <ion-buttons slot="end">
+                <ion-button (click)="close()">
+                    <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+            </ion-buttons>
         </ion-toolbar>
     </ion-header>
+    <ion-header collapse="condense mobile">
+        <ion-toolbar class="header-custom">
+          <ion-title size="large">תמונות</ion-title>
+        </ion-toolbar>
+      </ion-header>
+    <!-- <ion-header class="title-margin desktop" collapse="condense">
+        <ion-toolbar>
+            <ion-title class="page-title">תמונות</ion-title>
+            <ion-buttons slot="end">
+                <ion-button color="primary" (click)="close()">
+                    <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+        </ion-toolbar>
+    </ion-header> -->
+    
 
     <input style="display: none;" type="file" accept="image/*" (change)="fileChangeEvent($event)"/>
 
@@ -49,7 +75,7 @@
             <ion-img [src]="croppedImage" alt=""></ion-img>
         </div>
         <div *ngIf="segment === 3" class="mask-photo">
-            <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
+            <!-- <angular-editor-fabric-js #canvas></angular-editor-fabric-js> -->
             <div class="add-image-on-canvas" (click)="setCanvasImage(croppedImage)"></div>
             <div class="card">
                 <div class="mask-list">
@@ -62,7 +88,6 @@
                             class="images-item" src="../../../assets/img/masks/3.png" alt=""></div>
                 </div>
             </div>
-            
         </div>
         <!-- <ion-buttons *ngIf="segment === 1">
             <ion-button (click)="rotateRight()">
@@ -86,21 +111,21 @@
             </ion-button>
         </ion-buttons> -->
         <ion-buttons class="options">
-            <ion-button (click)="cancelUpload()">ביטול</ion-button>
-            <ion-button (click)="rasterize()">
+            <div class="btn btn-tertiary" (click)="cancelUpload()">ביטול</div>
+            <div class="btn" (click)="rasterize()">
                 <ion-spinner *ngIf="uploadingProcess"></ion-spinner>
-                <span *ngIf="!uploadingProcess">העלה</span></ion-button>
+                <span *ngIf="!uploadingProcess">העלה</span></div>
         </ion-buttons>
     </div>
     <div *ngIf="!imgLoaded" class="photos-edit">
-        <div *ngIf="publicPhotos.length === 0" class=" upload-image-area">
-            <ion-icon class=" upload-btn" name="camera-outline"></ion-icon>
-            <ion-button (click)="selectImage($event, true, '')" class="select-image">העלאת תמונה</ion-button>
+        <div *ngIf="publicPhotos.length === 0" class="upload-image-area">
+            <ion-icon class="upload-btn select-image" name="camera-outline" (click)="selectImage($event, true, '')"></ion-icon>
+            <a class="btn select-image" (click)="selectImage($event, true, '')">העלאת תמונה</a>
         </div>
         <ion-grid *ngIf="userService.user.photos.length > 0">
             <h2>ציבוריות</h2>
             <ion-row>
-                <ion-col size="4" class="photo-item no-photo"
+                <ion-col size="4" size-md="2" class="photo-item no-photo"
                          *ngFor="let i of [0,1,2,3,4,5]">
                     <div *ngIf="publicPhotos[i]" (click)="selectImage($event, false, publicPhotos[i])"
                          class="photo-image background-img select-image"
@@ -131,7 +156,7 @@
             
             <h2>פרטי</h2>
             <ion-row>
-                <ion-col size="4" class="photo-item no-photo"
+                <ion-col size="4" size-md="2" class="photo-item no-photo"
                          *ngFor="let i of [0,1,2,3,4,5]" [attr.data-index]="i">
                     <div *ngIf="privatePhotos[i]" (click)="selectImage($event, false, privatePhotos[i])"
                          class="photo-image background-img select-image"
@@ -165,6 +190,6 @@
     >
         לסיים את ההרשמה
     </ion-button>
-</ion-content>
+</ng-template>
 
 

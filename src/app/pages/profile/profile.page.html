@@ -1,8 +1,9 @@
 <ion-content class="profile-page">
+    <div class="wrap">
     <div class="profile-header">
         <profile-image-slides *ngIf="showSlides" [user]="profile"></profile-image-slides>
         <ion-buttons slot="start">
-            <ion-button class="dismiss" color="primary" (click)="close()">
+            <ion-button class="dismiss" (click)="close()">
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
@@ -21,7 +22,6 @@
               <ion-icon name="checkmark-outline"></ion-icon>
             </span>-->
         </div>
-
         <div class="profile-user-info">
             <!--<div class="info-item">
               <ion-icon name="briefcase-outline"></ion-icon>job_title
@@ -29,6 +29,38 @@
             <div class="info-item">
                 <ion-icon name="location-outline"></ion-icon>
                 {{profile?.area + ', ' + profile?.city}}
+            </div>
+        </div>
+        <div class="profile-user-photos">
+            <div class="public-photos" *ngIf="publicPhotos.length > 1">
+                <div class="section-title">תמונות ציבוריות</div>
+                <div class="image-items">
+                <div  *ngFor="let publicPhoto of publicPhotos" class="image-item">
+                    <img (click)="getImage(fileUploadService.getBaseUrl(publicPhoto?.url,'l'))" [src]="fileUploadService.getBaseUrl(publicPhoto?.url)" alt="">
+                </div>
+            </div>
+            </div>
+            <div class="private-photos" *ngIf="privatePhotos.length > 0">
+                <div class="section-title">תמונות פרטיות</div>
+                <div id="container" class="image-items">
+                <ng-container *ngIf="!imageRequestService?.imageRequest.result?.accepted">
+                    <div *ngFor="let privatePhoto of privatePhotos" class="image-item">
+                        <ion-icon name="lock-closed-outline" class="lock"></ion-icon>
+                        <img class="blur" [src]="userService.getDefaultPhotoPlaceholder(profile)" alt="">
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="imageRequestService?.imageRequest.result?.accepted">
+                    <div *ngFor="let privatePhoto of privatePhotos" class="image-item">
+                        <img (click)="getImage(fileUploadService.getBaseUrl(privatePhoto?.url,'l'))" [src]="fileUploadService.getBaseUrl(privatePhoto?.url)" alt="">
+                    </div>
+                </ng-container>
+                <div *ngIf="!imageRequestService?.imageRequest.result?.accepted" class="unlock">
+                    <div class="wrap">
+                        <span (click)="imageRequestService.send(profile)" *ngIf="imageRequestService?.imageRequest.empty">בקשת גישה</span>
+                        <span *ngIf="!imageRequestService?.imageRequest.empty">הבקשה נשלחה!</span>
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
         <div class="section-title">אני מחפש/ת</div>
@@ -88,4 +120,5 @@
             <div class="heart"></div>
         </ion-button>-->
     </ion-fab>
+</div>
 </ion-content>

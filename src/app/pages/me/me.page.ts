@@ -8,6 +8,7 @@ import {Subscription} from 'rxjs';
 import {UserService} from '../../services/user/user.service';
 import {PhotosPage} from '../photos/photos.page';
 import {ProfilePage} from '../profile/profile.page';
+import { GeneralService } from 'src/app/services/general/general.service';
 
 @Component({
     selector: 'app-me',
@@ -26,11 +27,14 @@ export class MePage implements OnInit, OnDestroy {
         private modalCtrl: ModalController,
         public http: HttpClient,
         public userService: UserService,
+        public generalSevice: GeneralService
     ) {
     }
 
     async ngOnInit() {
         this.userService.getUser();
+        console.log('reloaded');
+
     }
 
     ionViewDidEnter() {
@@ -38,35 +42,53 @@ export class MePage implements OnInit, OnDestroy {
     }
 
     async viewProfile(profile) {
-        const modal = await this.modalCtrl.create({
-            component: ProfilePage,
-            componentProps: {
-                profile,
-            }
-        });
-
-        return await modal.present();
+        if(this.generalSevice.isDesktop()) {
+            this.navCtrl.navigateForward('user/profile/' + profile.id, {queryParams:{id:  profile.id} });
+        }else {
+            const modal = await this.modalCtrl.create({
+                component: ProfilePage,
+                componentProps: {
+                    profile,
+                }
+            });
+    
+            return await modal.present();
+        }
     }
 
     async photosProfile() {
-        const modal = await this.modalCtrl.create({
-            component: PhotosPage,
-        });
-        return await modal.present();
+        if(this.generalSevice.isDesktop()) {
+            this.navCtrl.navigateForward('user/photos')
+        }else{
+            const modal = await this.modalCtrl.create({
+                component: PhotosPage,
+            });
+            return await modal.present();
+        }
     }
 
     async viewSettings() {
-        const modal = await this.modalCtrl.create({
-            component: SettingsPage,
-        });
-        return await modal.present();
+
+        if(this.generalSevice.isDesktop()) {
+            this.navCtrl.navigateForward('user/settings')
+        }else{
+            const modal = await this.modalCtrl.create({
+                component: SettingsPage,
+            });
+            return await modal.present();
+        }
     }
 
     async viewEditProfile() {
-        const modal = await this.modalCtrl.create({
-            component: ProfileEditPage,
-        });
-        return await modal.present();
+
+        if(this.generalSevice.isDesktop()) {
+            this.navCtrl.navigateForward('user/edit')
+        }else{
+            const modal = await this.modalCtrl.create({
+                component: ProfileEditPage,
+            });
+            return await modal.present();
+        }
     }
 
     async viewSubscriptionGold() {

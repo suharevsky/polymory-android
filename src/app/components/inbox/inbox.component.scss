@@ -1,0 +1,78 @@
+:host {
+    --border-color-rgb: rgba(var(--ion-color-medium-rgb), 0.1);
+  }
+  
+  .border-bottom {
+    border-bottom: 1px solid var(--border-color-rgb);
+  }
+  
+  ion-badge {
+    --background: var(--color-button-boost) !important;
+  
+    &.counter {
+      position: absolute;
+      transform: translateY(-50%);
+      top: 50%;
+      left: 20px;
+    }
+  }
+
+  h3 {
+    font-size: 32px;
+    font-weight: 400;
+    .counter {
+      height: 28px;
+      width: 28px;
+      line-height: 28px;
+      font-size: 18px;
+      background: var(--ion-color-boost-gradient);
+      display: inline-block;
+      text-align: center;
+      border-radius: 50%;
+    }
+  }
+ 
+
+ion-row {
+    cursor: pointer;
+}
+
+.message-list {
+    padding: 6px;
+    .message-item-text {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color-rgb);
+      ion-text {
+        display: block;
+        white-space: nowrap;
+        width: 12em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .user-name {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+    }
+  }
+
+
+  @media (min-width: 768px)  {
+    .no-results {
+      ion-icon {
+        display: none;
+      }
+      position: relative;
+      transform: none;
+      left: auto
+    }
+    .message-list {
+      .message-item-text {
+        ion-text{
+          padding-right: 4px;
+        }
+      }
+    }
+  }
+ 

@@ -1,7 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {UserService} from '../../services/user/user.service';
-import {GroupingState, PaginatorState, SortState} from '../../crud-table';
-import {FormBuilder} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {IonContent, IonInfiniteScroll, ModalController, NavController, ToastController} from '@ionic/angular';
 import {FilterPage} from '../filter/filter.page';
@@ -9,8 +7,8 @@ import {FcmService} from '../../services/fcm/fcm.service';
 import {UserModel} from '../../models/user.model';
 import {FilterService} from '../../services/filter/filter.service';
 import {PhotosPage} from '../photos/photos.page';
-import {ProfilePage} from '../profile/profile.page';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { GeneralService } from 'src/app/services/general/general.service';
 
 @Component({
     selector: 'app-highlights',
@@ -22,14 +20,16 @@ export class HighlightsPage implements OnInit, OnDestroy {
     @ViewChild('header') header: any;
     @ViewChild(IonContent, {static: false}) content: IonContent;
 
-    paginator: PaginatorState;
-    sorting: SortState;
-    grouping: GroupingState;
     isLoading = true;
     user: UserModel;
     // store last document
     users = [];
+    bottomScrollBar = '1000'
     warningMsg = {active: false, message: ''};
+    ageRange: any = {
+        lower: 18,
+        upper: 75
+    };
     filterData = {
         withPhoto: true,
         online: false,
@@ -46,7 +46,6 @@ export class HighlightsPage implements OnInit, OnDestroy {
 
     constructor(
         public userService: UserService,
-        private fb: FormBuilder,
         private authService: AuthService,
         private modalCtrl: ModalController,
         public navCtrl: NavController,
@@ -55,21 +54,34 @@ export class HighlightsPage implements OnInit, OnDestroy {
         public toastController: ToastController,
         public element: ElementRef,
         public renderer: Renderer2,
+        public generalService: GeneralService,
     ) {
     }
 
     ngOnInit() {
+        console.log('ngOnInit');
 
         this.filterData = this.filterService.get(this.filterData);
+        //console.log(this.userService.highlights);
+        this.userService.highlights = {
+            lastKey: undefined,
+            finishLoad: false,
+            length: 0,
+            restResults: []
+        };
 
-        setTimeout(_ => {
-            this.fcmService.initPush();
-            this.userService.setOnline();
-            this.loadHighlights().subscribe(users => {
-                this.isLoading = false;
-                users.forEach((user: any) => this.users.push(user));
-            });
-        },5000);
+        if( this.users.length === 0) {
+            //this.users = [];
+            setTimeout(_ => {
+                this.fcmService.initPush();
+                this.userService.setOnline();
+                this.loadHighlights().subscribe(users => {
+                    this.isLoading = false;
+                    users.forEach((user: any) => this.users.push(user));
+                });
+            },3000);
+        }
+     
     }
 
     checkIfFrozenAcc() {
@@ -101,6 +113,7 @@ export class HighlightsPage implements OnInit, OnDestroy {
     ionViewWillEnter() {
         // Restore scroll position
         // this.content.scrollToPoint(0, this.scrollPosition);
+        
             if(this.userService.user) {
                 this.hasRejectedPhotos();
                 this.checkIfFrozenAcc();
@@ -130,6 +143,14 @@ export class HighlightsPage implements OnInit, OnDestroy {
         this.filter();
     }
 
+    onActivate(event) {
+        console.log(event);
+        window.scroll(0,0);
+        //or document.body.scrollTop = 0;
+        //or document.querySelector('body').scrollTo(0,0)
+    }
+
+
     async filterModal() {
         const modal = await this.modalCtrl.create({
             component: FilterPage,
@@ -140,10 +161,17 @@ export class HighlightsPage implements OnInit, OnDestroy {
         modal.onDidDismiss()
             .then((res) => {
                 if (res.data) {
-                    this.content.scrollToTop().then(_ => {
+                    if(this.generalService.isDesktop()) {
+                        document.body.scrollTop = 0;
+                        document.documentElement.scrollTop = 0
                         this.filterData = {...this.filterData, ...res.data};
                         this.filter();
-                    });
+                    }else{
+                        this.content.scrollToTop().then(_ => {
+                            this.filterData = {...this.filterData, ...res.data};
+                            this.filter();
+                        });
+                    }
                 }
             });
         return await modal.present();
@@ -164,9 +192,9 @@ export class HighlightsPage implements OnInit, OnDestroy {
 
     ionViewDidLeave() {
         // Save scroll position
-        this.content.getScrollElement().then(data => {
-            this.scrollPosition = data.scrollTop;
-        });
+        // this.content.getScrollElement().then(data => {
+        //     this.scrollPosition = data.scrollTop;
+        // });
     }
 
     loadData(event) {
@@ -178,12 +206,9 @@ export class HighlightsPage implements OnInit, OnDestroy {
                             this.userService.highlights.restResults.forEach(user => {
                                 this.users.push(user);
                             });
-
                             this.users = [...new Map(this.users.map(item =>
                                 [item['id'], item])).values()];
-                            
                         }
-                        
                     });
             });
         }, 500);

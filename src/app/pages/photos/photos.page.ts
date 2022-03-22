@@ -11,6 +11,7 @@ import {UserModel} from '../../models/user.model';
 import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from '@angular/fire/storage';
 import {Observable} from 'rxjs';
 import {finalize, map} from 'rxjs/operators';
+import { GeneralService } from 'src/app/services/general/general.service';
 
 @Component({
     selector: 'app-photos',
@@ -68,6 +69,7 @@ export class PhotosPage implements OnInit {
         private navCtrl: NavController,
         public toastController: ToastController,
         public actionSheetController: ActionSheetController,
+        public generalService: GeneralService,
     ) {
     }
     ngOnInit() {
@@ -83,6 +85,10 @@ export class PhotosPage implements OnInit {
             duration: 3000
         });
         await toast.present();
+    }
+
+    close() {
+        this.navCtrl.back();
     }
 
     async photosProfile() {
@@ -345,23 +351,28 @@ export class PhotosPage implements OnInit {
  
         if (event.target.classList.contains('select-image')) {
             if (addNew) {
-                const actionSheet = await this.actionSheetController.create({
-                    header: 'העלאת תמונה מ...',
-                    buttons: [{
-                        text: 'גלריה',
-                        handler: () => {
-                            const element: HTMLElement = document.querySelector('input[type=file]') as HTMLElement;
-                            element.click();
-                        }
-                    },
-                        {
-                            text: 'ביטול',
-                            role: 'cancel'
-                        }
-                    ]
-                });
-
-                await actionSheet.present();
+                if(this.generalService.isDesktop()) {
+                    const element: HTMLElement = document.querySelector('input[type=file]') as HTMLElement;
+                    element.click();
+                }else{
+                    const actionSheet = await this.actionSheetController.create({
+                        header: 'העלאת תמונה מ...',
+                        buttons: [{
+                            text: 'גלריה',
+                            handler: () => {
+                                const element: HTMLElement = document.querySelector('input[type=file]') as HTMLElement;
+                                element.click();
+                            }
+                        },
+                            {
+                                text: 'ביטול',
+                                role: 'cancel'
+                            }
+                        ]
+                    });
+    
+                    await actionSheet.present();
+                }
 
             } else if(!photo.main) {
                 const buttonOptions = {

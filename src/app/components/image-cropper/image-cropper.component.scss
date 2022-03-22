@@ -23,7 +23,7 @@
     position: absolute;
     pointer-events: none;
     touch-action: none;
-    outline: #040321 solid 100vw;
+    //outline: #040321 solid 100vw;
     top: 0;
     left: 0;
   }
@@ -33,7 +33,7 @@
     display: flex;
     color: #53535C;
     background: transparent;
-    outline: rgba(4, 3, 33, 0.5) solid 100vw;
+    //outline: rgba(4, 3, 33, 0.5) solid 100vw;
     outline: var(--cropper-outline-color, rgba(4, 3, 33, 0.5)) solid 100vw;
     touch-action: none;
 

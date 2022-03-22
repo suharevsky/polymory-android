@@ -1,9 +1,82 @@
 <ion-content force-overscroll="false" class="landing-page bg-gradient">
-    <div class="vertical-layout safe-area-bottom">
+    <div class="desktop">
+    <main class="inner">
+        <header>
+            <div class="logo"><img class="logo__image" src="/assets/img/logo.png"></div>
+                <nav data-aos="fade-up-right">
+                    <ul>
+                        <li (click)="contactUs()">צור קשר</li>
+                        <li (click)="getPage('terms-and-conditions')"><a>לתנאים</a></li>
+                        <li (click)="getPage('policy')"><a>מדיניות פרטיות</a></li>
+                        <li (click)="registerForm()"><a>הרשמה חינם</a></li>
+                    </ul>
+                </nav>
+                <a href="#" class="btn register-btn" (click)="registerForm()">
+                    כניסה
+                </a>
+        </header>
+        <div class="main-bg">
+
+        </div>
+    <div class="wrap">
+        <section>
+            <div class="logo"><img class="logo__image" src="/assets/img/logo.png"><div class="logo__name">polymatch</div></div>
+            <div class="description">
+                תצתרפו עכשיו כדי להתחיל להתחבר לבני אדם בעלי דעות דומות
+            </div>
+            <div class="download">
+                <a href="https://play.google.com/store/apps/details?id=il.co.polymatch&hl=he&gl=il" target="_blank"><img src="/assets/img/google_play.svg"></a>
+                <a href="/"><img src="/assets/img/pwa.png"></a>
+            </div>
+            <a href="#" class="btn register-btn" (click)="registerForm()">
+                הצטרפו עכשיו חינם!
+            </a>
+        </section>
+    </div>
+    </main>
+    <div class="wrap">
+    <section class="how-it-works section">
+        <section>
+            <h2>- איך זה עובד</h2>
+            <div class="description"> המקום המושלם למצוא את ההתאמה האידיאלית שלך בהתבסס על מטרות החיים שלך, העדפות מיניות, אורח חיים, אישיות והרגלים.</div>
+            <ul class="list">
+                <li><span class="num">1</span>
+                    <div>
+                    <h3>תקשר בתנאים שלך</h3>
+                    <div class="text">
+                        תתחברו בסביבה בטוחה ומאובטחת. תהנה מצ'אטים פרטיים ומשיחות אישיות בזמן שלך.
+                    </div>
+                </div>
+                </li>
+                <li><span class="num">2</span>
+                    <div>
+                        <h3>הכירו את האנשים האידיאליים </h3>
+                        <div class="text">מהפכת היכרויות בפעולה. התחבר עם אלה שאתה תואם או בדוק תאימות עם אלה שאתה כבר מכיר רק על ידי חיפוש שלהם באמצעות מזהה פרופיל.</div>
+                    </div>
+                </li>
+                <li><span class="num">3</span>
+                    <div>
+                        <h3>פרטיות מלאה</h3>
+                        <div class="text">הסתר את התמונות שלך והשתמש בשם בדוי כדי להישאר אנונימי לחברים ובני משפחה.</div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+        <section class="devices">
+            <div data-aos="fade-up-right" class="device">
+                <img class="device__img" src="/assets/img/device-1.png">
+            </div>
+        </section>
+    </section>
+</div>
+</div>
+    <div class="vertical-layout safe-area-bottom ">
         <div class="section-brand">
-            <div class="logo title">
-                JoyMe
-                <div class="subtitle">אפליקציה להחלפת זוגות</div>
+            <div class="main-bg"></div>
+            <div class="logo">
+                <img class="logo__image" src="/assets/img/logo.png">
+                <div class="logo__name">polymatch</div>
+                <div class="logo__subtitle">אפליקציה להחלפת זוגות</div>
             </div>
         </div>
 
@@ -15,7 +88,6 @@
                 <ion-button
                         expand="block"
                         fill="outline"
-                        color="white"
                         shape="round"
                         class="button-landing ion-margin-bottom"
                         (click)="codeFormStatus(1)"
@@ -26,7 +98,6 @@
                 <ion-button
                         expand="block"
                         fill="outline"
-                        color="white"
                         shape="round"
                         class="button-landing ion-margin-bottom"
                         (click)="codeFormStatus(1)"
@@ -57,7 +128,6 @@
                     <ion-button
                             expand="block"
                             fill="outline"
-                            color="white"
                             type="submit"
                             shape="round"
                             class="button-landing ion-margin-bottom">
@@ -75,7 +145,6 @@
                     <ion-button
                             expand="block"
                             fill="outline"
-                            color="white"
                             type="submit"
                             shape="round"
                             class="button-landing ion-margin-bottom">
@@ -88,7 +157,6 @@
                     *ngIf="showCodeFormStatus !== 0"
                     (click)="codeFormStatus(0)"
                     fill="outline"
-                    color="white"
                     type="submit"
                     shape="round"
                     class="button-landing close ion-margin-bottom">
@@ -99,15 +167,19 @@
             </ion-button> -->
         </div>
     </div>
-    <video
-            id="video"
-            autoplay="autoplay"
-            preload="auto"
-            muted="muted"
-            loop="true"
-            class="bg-video"
-    >
-        <source src="assets/video/video.mov" type="video/mp4"/>
-    </video>
     <span id="sign-in-button"></span>
+    <section>
+
+    </section>
+    <footer class="desktop">
+            <nav>
+                <ul>
+                    <li (click)="contactUs()">צור קשר</li>
+                    <li (click)="getPage('terms-and-conditions')"><a>לתנאים</a></li>
+                    <li (click)="getPage('policy')"><a>מדיניות פרטיות</a></li>
+                    <li (click)="registerForm()"><a>כניסה</a></li>
+                    <li (click)="registerForm()"><a>הרשמה חינם</a></li>
+                </ul>
+            </nav>
+    </footer>
 </ion-content>

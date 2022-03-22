@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'ripple-loader',
@@ -6,9 +7,9 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./ripple-loader.component.scss']
 })
 export class RippleLoaderComponent implements OnInit {
-  @Input() imageUrl: string = 'assets/img/logo_avatar.png';
+  @Input() imageUrl: string;
 
-  constructor() { }
+  constructor(public userService: UserService) { }
 
   ngOnInit() {
   }

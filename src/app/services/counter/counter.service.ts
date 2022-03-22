@@ -26,7 +26,6 @@ export class CounterService {
 
     getByUserId(id) {
         console.log('counter user id', id);
-
         return this.db.collection('users').doc(id).collection('counter').doc(id).snapshotChanges();
     }
  }

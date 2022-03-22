@@ -7,13 +7,18 @@ import {ReportPage} from '../report/report.page';
 import {ChatService} from '../../services/chat/chat.service';
 import {ChatPage} from '../chat/chat.page';
 import {FcmService} from '../../services/fcm/fcm.service';
+import { GeneralService } from 'src/app/services/general/general.service';
+import { FileUploadService } from 'src/app/services/file-upload/file-upload.service';
+import { ImageRequestService } from 'src/app/services/image-request/image-request.service';
+import { ImageModalPage } from 'src/app/components/image-modal/image-modal.page';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-profile',
     templateUrl: './profile.page.html',
-    styleUrls: ['./profile.page.scss']
+    styleUrls: ['./profile.page.scss'],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage implements OnInit  {
     // Data passed in by componentProps
     profile: any;
     me: UserModel;
@@ -21,6 +26,8 @@ export class ProfilePage implements OnInit {
     profileBlockLabel: string;
     profileFavoriteLabel: string;
     reloadPrevPage = false;
+    public privatePhotos = [];
+    public publicPhotos = [];
 
     constructor(
         public navParams: NavParams,
@@ -31,9 +38,16 @@ export class ProfilePage implements OnInit {
         public chatService: ChatService,
         public toastController: ToastController,
         private fcmService: FcmService,
+        public fileUploadService: FileUploadService,
+        public generalService: GeneralService,
+        public imageRequestService: ImageRequestService,
+        public location: Location,
+        //private router: Router,
         public userService: UserService) {
-
-        this.profile = this.navParams.get('profile');
+            
+        console.log('load profile page');   
+        
+        this.profile = this.navParams.get('profile') || '';
 
         this.me = this.userService.getUser();
         this.getListData('blockList');
@@ -42,16 +56,38 @@ export class ProfilePage implements OnInit {
         this.getListData('favorites');
 
         if (!this.profile?.id) {
-            this.route.params.subscribe((params: any) => {
+            this.route.queryParams.subscribe((params: any) => {
                 this.userService.getById(params.id).subscribe(user => {
                     this.profile = user;
+                    console.log(this.profile);
+                    this.privatePhotos = this.publicPhotos = [];
+                    
+                    this.privatePhotos = this.profile.photos.filter(photo => photo.isPrivate && photo.status === 1);
+                    this.publicPhotos = this.profile.photos.filter(photo => !photo.isPrivate && photo.status === 1);
+
+                    this.imageRequestService.checkImageRequest(user);     
+
                     this.viewedProfile();
+                    this.showSlides = true;
                 });
             });
         }else{
             this.viewedProfile();
         }
     }
+
+    async getImage(img) {
+        const modal = await this.modalCtrl.create({
+            component: ImageModalPage,
+            componentProps: {
+                img
+            },
+            cssClass: 'image-modal'
+        });
+
+        modal.present();
+    }
+
 
     close() {
         this.modalCtrl.dismiss({reloadPrevPage: this.reloadPrevPage});
@@ -66,7 +102,6 @@ export class ProfilePage implements OnInit {
     }
 
     ngOnInit() {
-
     }
 
     // Known issue of using ion-slides in a modal template
@@ -133,18 +168,27 @@ export class ProfilePage implements OnInit {
         this.chatService.getDialogue().subscribe(async (res: any) => {
             // this.navCtrl.navigateForward(`/chat/${res.chat.id}/${res.chat.exists}/${this.profile.id}`);
 
-            const modal = await this.chatModalCtrl.create({
-                component: ChatPage,
-                componentProps: {
+            if(this.generalService.isDesktop()) {
+                this.navCtrl.navigateForward(`user/chat/${res.chat.id}/${res.chat.exists}/${this.profile.id}`, { animated: false, queryParams: {
                     chatId: res.chat.id,
-                    chatExists: res.chat.exists,
+                    dialogueExists: true,
                     profileId: this.profile.id
-                }
-            });
-
-            // await modal.onDidDismiss();
-
-            return await modal.present();
+                }});
+            }else{
+                const modal = await this.chatModalCtrl.create({
+                    component: ChatPage,
+                    componentProps: {
+                        chatId: res.chat.id,
+                        chatExists: res.chat.exists,
+                        profileId: this.profile.id
+                    }
+                });
+    
+                // await modal.onDidDismiss();
+    
+                return await modal.present();
+            }
+            
         });
     }
 

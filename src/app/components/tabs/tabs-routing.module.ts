@@ -49,16 +49,16 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'likes',
+        redirectTo: '/tabs/highlights',
         pathMatch: 'full'
       }
     ]
   },
-  {
-    path: '',
-    redirectTo: '/tabs/likes',
-    pathMatch: 'full'
-  }
+  // {
+  //   path: '',
+  //   redirectTo: '/tabs/highlights',
+  //   pathMatch: 'full'
+  // }
 ];
 
 @NgModule({

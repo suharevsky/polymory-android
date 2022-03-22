@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {LoadingController, ModalController, ToastController} from '@ionic/angular';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {WindowService} from '../../services/window/window.service';
@@ -7,6 +7,7 @@ import {AuthService} from '../../services/auth/auth.service';
 import firebase from 'firebase';
 import {UserService} from '../../services/user/user.service';
 import {PagePage} from '../page/page.page';
+import { RegisterStepsPage } from '../register-steps/register-steps.page';
 
 @Component({
     selector: 'app-landing',
@@ -94,6 +95,18 @@ export class LandingPage implements OnInit {
         })
     }
 
+    contactUs() {
+        window.location.href = "mailto:contact@polymatch.co.il";
+    }
+
+    async registerForm() {
+        const modal = await this.modalCtrl.create({
+            component: RegisterStepsPage,
+            cssClass: 'dark-bg'
+        });
+        return await modal.present();
+    }
+
     logIn(phoneForm: FormGroup) {
         const appVerifier = this.windowRef.recaptchaVerifier;
         const phoneNumber = '+972' + phoneForm.value.phone;
@@ -110,7 +123,6 @@ export class LandingPage implements OnInit {
             this.loadingSpinner = false;
         })
     }
-
 
     verifyCode(codeForm: FormGroup) {
         let code: string = codeForm.value.code.toString().trim();
@@ -132,7 +144,7 @@ export class LandingPage implements OnInit {
                     this.loadingSpinner = false;
                     if (user) {
                         if (user.status === 3) {
-                            this.presentToast('החשבון שלך נחסם. למידע נוסף שלח לנו הודעה בכתובת contact@joyme.co.il', 8000);
+                            this.presentToast('החשבון שלך נחסם. למידע נוסף שלח לנו הודעה בכתובת contact@polymatch.co.il', 8000);
                             this.showCodeFormStatus = 0;
                         } else {
                             this.userService.setUser(user);
@@ -141,7 +153,7 @@ export class LandingPage implements OnInit {
                         }
 
                     } else {
-                        this.router.navigate(['register-steps']).then(r => {
+                        this.router.navigate(['register-steps'],{queryParams: { tab: 'registration' }}).then(r => {
                             this.userService.setUser({socialAuthId: res.user.uid});
                         });
                     }
@@ -163,11 +175,5 @@ export class LandingPage implements OnInit {
             this.errorMessage = 'קוד לא תקין';
             this.presentToast(this.errorMessage);
         }
-    }
-
-    ionViewDidEnter() {
-        setTimeout(_ => {
-            document.querySelector('video').play();
-        })
     }
 }

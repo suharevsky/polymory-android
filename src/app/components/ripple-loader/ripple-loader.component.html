@@ -1,6 +1,6 @@
 <div class="ripple-container">
   <ion-avatar class="thumbnail-xl ripple-trigger">
-    <img [src]="this.imageUrl" alt="">
+    <img *ngIf="imageUrl" [src]="imageUrl" alt="">
   </ion-avatar>
   <div class="ripple-1"></div>
   <div class="ripple-2"></div>

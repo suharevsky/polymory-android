@@ -4,15 +4,13 @@
 
   .chat-timestamp {
     font-size: 12px;
-    color: var(--ion-color-medium);
+    color: var(--color-primary-rgb);
 
     strong {
-      background: #131242;
       padding: 4px 12px;
       border-radius: 25px;
       width: 120px;
       display: inline-block;
-      color: #fff;
       font-weight: 400;
     }
 
@@ -63,7 +61,7 @@
 
     .chat-item-status {
       font-size: 12px;
-      color: var(--ion-color-medium);
+      color: var(--color-primary-rgb);
 
       ion-icon {
         position: relative;
@@ -82,7 +80,8 @@
         max-width: 100%;
         text-align: right;
         border-radius: 20px 20px 20px 0;
-        background: #8a50ff;
+        color: #fff;
+        background: rgb(71, 161, 255);
 
         ion-img {
           width: 100%;
@@ -112,17 +111,22 @@ ion-footer {
   .form {
     display: flex;
     button {
-      background: transparent;
-      font-size: 16px;
-      outline: none;
-      color: #fff;
+      &.visible {
+        background: #7774c5;
+        color: #fff;
+      }
+      font-size: 14px;
+      max-width: 80px;
+      min-width: 80px;
+      padding: 0;
+      background: #ccc;
+      color: var(--color-primary-rgb);
+      margin: 0 8px;
     }
 
     ion-textarea {
       border-radius: 17px;
-      border: 1px solid rgba(0, 0, 0, 0.05);
-          background: #131142;
-      --background: #131142;
+      border: 1px solid rgba(0, 0, 0, 0.5);
       --padding-start: 8px;
       --padding-end: 8px;
       --padding-top: 6px;
@@ -145,6 +149,19 @@ ion-footer {
       font-size: 21px;
       padding: 8px 20px;
       z-index: 99999;
+    }
+  }
+}
+
+
+@media (min-width: 768px)  {
+  ion-footer {
+    .form {
+      display: flex;
+      button {
+        font-size: 16px;
+        min-width: 118px;
+      }
     }
   }
 }

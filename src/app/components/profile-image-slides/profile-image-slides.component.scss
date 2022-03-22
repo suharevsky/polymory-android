@@ -3,6 +3,10 @@
 .slides {
   height: 100%;
 
+  ion-slide{ 
+    cursor: grab;
+  }
+
   .slide-img {
     width: 100%;
     height: 100%;

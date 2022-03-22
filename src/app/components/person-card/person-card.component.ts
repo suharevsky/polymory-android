@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController, Platform } from '@ionic/angular';
 import { ProfilePage } from 'src/app/pages/profile/profile.page';
 import {UserService} from '../../services/user/user.service';
 
@@ -14,6 +14,8 @@ export class PersonCardComponent implements OnInit {
   constructor(
       public userService: UserService,
       private modalCtrl: ModalController,
+      private platform: Platform,
+      private navCtrl: NavController
 
   ) {     
   }
@@ -24,7 +26,10 @@ export class PersonCardComponent implements OnInit {
 
   async viewProfile() {
     
-    const modal = await this.modalCtrl.create({
+    // if(this.platform.is('desktop')) {
+    //   this.navCtrl.navigateRoot(['user/profile/' + this.user.id], { queryParams: {id:  this.user.id} } );
+    // }else{
+      const modal = await this.modalCtrl.create({
         component: ProfilePage,
         componentProps: {
           profile: this.user,
@@ -32,7 +37,9 @@ export class PersonCardComponent implements OnInit {
 
     });
     return await modal.present();
-    // this.navCtrl.navigateForward(`/profile/${user.id}`, user);
-}
+   // }
+  
+
+  }
 
 }

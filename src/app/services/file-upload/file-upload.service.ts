@@ -43,7 +43,6 @@ export class FileUploadService {
          this.task.snapshotChanges().pipe(
              finalize(() => {
                this.userService.getItemById(this.user.id).subscribe((user) => {
-                 console.log(2131);
 
                  const photos = user.photos;
                  const mainPhoto = photos.filter(photo => photo.main === true);

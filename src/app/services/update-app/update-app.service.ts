@@ -47,7 +47,7 @@ export class UpdateAppService {
 
   openAppstoreEntry() {
     if(this.platform.is('android')) {
-      this.market.open('il.co.joyme');
+      this.market.open('il.co.polymatch');
     }
   }
 

@@ -1,12 +1,15 @@
-main {
-    height: 100%;
-    width: 75%;
-}
-
 .wrap {
     max-width: 1280px;
     height: 100%;
     margin: 0 auto;
+}
+
+.inbox-title{ 
+  font-size: 32px;
+}
+
+ion-router-outlet {
+    position: relative;
 }
 
 .header-custom {
@@ -27,11 +30,6 @@ main {
       }
   }
 
-  .page-title {
-    font-size: 56px;
-    font-weight: bold;
-  }
-
   .navigation {
     display: flex;
     justify-content: space-between;
@@ -45,7 +43,24 @@ main {
             li {
                 padding-left: 45px;
                 cursor: pointer;
+                span.active {
+                  border-bottom: 2px solid;
+                  border-bottom-color: #7774c5;
+                }
             }
         }
     }
+  }
+
+  #page {
+    display: flex;
+    height: 100%;
+  }
+
+  aside {
+    flex: 1 1 30%;
+  }
+
+  main {
+    flex: 1 1 70%;
   }

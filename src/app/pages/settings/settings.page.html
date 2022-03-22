@@ -1,19 +1,36 @@
-<ion-header>
+<ion-header class="mobile">
     <ion-toolbar class="toolbar-no-border">
-        <ion-title>הגדרות</ion-title>
+        <ion-title class="page-title">הגדרות</ion-title>
         <ion-buttons slot="end">
-            <ion-button color="primary" (click)="done()">
+            <ion-button (click)="done()">
                 בוצע
             </ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
+
+<ion-content *ngIf="!generalService.isDesktop()">
+    <ng-content *ngTemplateOutlet="template"></ng-content>
+</ion-content>
+    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
+
+    <ng-template #template>
 <ion-content class="settings-page bg-light">
-    <ion-header collapse="condense">
+    <ion-header class="title-margin desktop" collapse="condense">
         <ion-toolbar>
-            <ion-title size="large">הגדרות</ion-title>
+            <ion-title class="page-title">הגדרות</ion-title>
+            <ion-buttons slot="end">
+                <ion-button (click)="close()">
+                    <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+            </ion-buttons>
         </ion-toolbar>
     </ion-header>
+    <ion-header collapse="condense mobile">
+        <ion-toolbar>
+          <ion-title size="large">הגדרות</ion-title>
+        </ion-toolbar>
+      </ion-header>
     <!--<div class="cards-wrapper">
         <ion-card class="card-custom">
             <ion-card-content>
@@ -55,15 +72,15 @@
         </ion-list-header>
         <ion-item>
             <ion-label>יש לך הודעה חדשה</ion-label>
-            <ion-toggle [(ngModel)]="settings?.push.messages" color="primary"></ion-toggle>
+            <ion-toggle [(ngModel)]="settings?.push.messages"></ion-toggle>
         </ion-item>
         <ion-item>
             <ion-label>צפו בפרופיל שלך</ion-label>
-            <ion-toggle [(ngModel)]="settings?.push.views" color="primary"></ion-toggle>
+            <ion-toggle [(ngModel)]="settings?.push.views"></ion-toggle>
         </ion-item>
         <ion-item>
             <ion-label>עדכוני האתר</ion-label>
-            <ion-toggle [(ngModel)]="settings?.push.updates" color="primary"></ion-toggle>
+            <ion-toggle [(ngModel)]="settings?.push.updates"></ion-toggle>
         </ion-item>
 
     </ion-list>
@@ -73,8 +90,8 @@
         <ion-list-header>
             <ion-label>עזרה</ion-label>
         </ion-list-header>
-        <ion-item detail="true" lines="none">
-            <a href="mailto:contact@joyme.co.il">צור קשר</a>
+        <ion-item class="link" lines="none" (click)="contactUs()">
+            צור קשר
         </ion-item>
     </ion-list>
 
@@ -93,33 +110,34 @@
         <ion-list-header>
             <ion-label>מידע כללי</ion-label>
         </ion-list-header>
-        <ion-item (click)="getPage('terms-and-conditions')" detail="true">
+        <ion-item class="link" (click)="getPage('terms-and-conditions')" detail="true">
             <ion-label>תנאי שימוש</ion-label>
         </ion-item>
-        <ion-item (click)="getPage('policy')" detail="true">
+        <ion-item class="link" (click)="getPage('policy')" detail="true">
             <ion-label>הצהרת פרטיות</ion-label>
         </ion-item>
     </ion-list>
 
-    <ion-list class="list-custom">
+    <ion-list class="list-custom link">
         <ion-item class="ion-text-center" button="true" detail="false" (click)="logout()" lines="none">
             <ion-label>יציאה</ion-label>
         </ion-item>
     </ion-list>
 
-    <div class="ion-text-center ion-padding">
+    <div class="ion-text-center mobile ion-padding">
         <div class="title logo-text">
             <!--<img src="assets/img/logo_small.png" width="36" alt="">-->
-            JoyMe
+            polydate
         </div>
         <div>הרסה <!--{{appVersion.getVersionNumber()}}--></div>
     </div>
 
     <div class="safe-area-bottom">
         <ion-list class="list-custom">
-            <ion-item class="ion-text-center" button="true" detail="false" lines="none">
+            <ion-item class="ion-text-center link" button="true" detail="false" lines="none">
                 <ion-label (click)="freeze()">הקפאת חשבון</ion-label>
             </ion-item>
         </ion-list>
     </div>
 </ion-content>
+</ng-template>

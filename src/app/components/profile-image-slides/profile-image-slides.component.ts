@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {IonSlides} from '@ionic/angular';
 import {TapticEngine} from '@ionic-native/taptic-engine/ngx';
 import {AuthService} from '../../services/auth/auth.service';
@@ -7,6 +7,8 @@ import {UserModel} from '../../models/user.model';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { CounterService } from 'src/app/services/counter/counter.service';
+import { GeneralService } from 'src/app/services/general/general.service';
+import { ImageRequestService } from 'src/app/services/image-request/image-request.service';
 
 @Component({
     selector: 'profile-image-slides',
@@ -15,6 +17,7 @@ import { CounterService } from 'src/app/services/counter/counter.service';
 })
 export class ProfileImageSlidesComponent implements OnInit {
     activeIndex: number = 0;
+    setSlideHeight = 0;
     currentEnd: number = -1;
     @Input() user: UserModel;
     @Input() images: any[] = [];
@@ -22,52 +25,31 @@ export class ProfileImageSlidesComponent implements OnInit {
     @Output() onNoMoreSlide = new EventEmitter();
     @Output() onChange = new EventEmitter();
     @ViewChild('profileImages', {static: false}) slides: IonSlides;
-    imageRequest = {result: {accepted: false}, empty: true}; 
-
+    @ViewChild('slideHeight') slideHeight: ElementRef;
     constructor(
         private taptic: TapticEngine, 
         public authService: AuthService, 
         public userService: UserService, 
         public fcmService: FcmService, 
         public counterService: CounterService,
-        //public cd: ChangeDetectorRef,
+        public imageRequestService: ImageRequestService,
+        public generalService: GeneralService,
         public chatService: ChatService) 
         {}
 
     ngOnInit() {
-        //setTimeout(()=>{
+        setTimeout(()=>{
+            console.log(this.user);
             this.images = this.userService.getAllPhotos(this.user, true);
-            console.log(this.images);
             //this.cd.detectChanges();
-        //});
+        },3000);
 
-        this.userService.getListData('requestImage',this.user.id).subscribe(res => this.imageRequest = res); 
-        this.checkImageRequest();     
+        //this.userService.getListData('requestImage',this.user.id).subscribe(res => this.imageRequest = res); 
+        //this.imageRequestService.checkImageRequest(this.user);     
     }
 
-    sendImageRequest(){
-        this.imageRequest.empty = false;
-        this.userService.setList('requestImage', this.user.id, this.userService.user.id).subscribe(res => {
-            this.chatService.interlocutor = this.user;
-            this.chatService.getDialogue().subscribe(async (res: any) => {
-                this.chatService.sendMessage(res.chat.id, 'בקשה לאישור תמונה', this.userService.user.id, true).then(res => {
-                    // Set counter for unread messages
-                    this.counterService.setByUserId(this.chatService.interlocutor.id, +1, 'newMessages');
-                    const pushData = {title: 'JoyMe', body: 'קיבלת בקשה לאישור תמונות', page: 'tabs/matches', receiver: this.chatService.interlocutor};
-                    // Sending push only to active users
-                    if (this.chatService.interlocutor.status === 1) {
-                        this.fcmService.sendPushMessage(pushData);
-                    }
-                });
-            });
-        });
-    }
-
-    checkImageRequest() {
-        this.userService.getListData('requestImage', this.user.id).subscribe(res =>{
-            this.imageRequest.result = res.result[0];
-            this.imageRequest.empty = res.empty;
-        });
+    ngAfterViewInit() {
+      
     }
 
     onSlideChange() {
@@ -100,10 +82,12 @@ export class ProfileImageSlidesComponent implements OnInit {
     }
 
     onReachStart() {
+        console.log('onReachStart')
         this.currentEnd = -1;
     }
 
     onReachEnd() {
+        console.log('onReachEnd')
         this.currentEnd = 1;
     }
 }

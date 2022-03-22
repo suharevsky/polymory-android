@@ -1,4 +1,4 @@
-<ion-header class="header-custom">
+<ion-header *ngIf="!generalService.isDesktop()">
   <ion-toolbar class="toolbar-no-border toolbar-no-safe-area">
     <ion-segment class="segment-custom" (click)="getHighlightView()" [(ngModel)]="highlightView" mode="md">
       <ion-segment-button value="0">
@@ -10,20 +10,31 @@
     </ion-segment>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <!--<div class="boost-promotion">
+
+<ion-content *ngIf="!generalService.isDesktop()">
+  <ng-content *ngTemplateOutlet="template"></ng-content>
+</ion-content>
+  <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
+
+<ng-template #template>
+  <ion-header class="title-margin desktop" collapse="condense">
+    <ion-toolbar>
+        <ion-title class="page-title">{{pageTitle}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+  <!-- <div class="boost-promotion">
     <ion-text color="boost">קבל עד 100 צפיות נוספות</ion-text>
 
     <ion-button expand="block" shape="round" color="boost-bg">
       סופר בוסט עכשיו
     </ion-button>
-  </div>-->
+  </div> -->
 
   <div [ngSwitch]="highlightView" class="safe-area-bottom">
     <!-- LIKES -->
     <div class="segment-view" *ngSwitchCase="0">
-      <ion-header collapse="condense">
-        <ion-toolbar>
+      <ion-header collapse="condense mobile">
+        <ion-toolbar class="header-custom">
           <ion-title size="large">מועדפים</ion-title>
         </ion-toolbar>
       </ion-header>
@@ -49,7 +60,7 @@
         אין מועדפים
       </div>
       <ion-row class="users">
-        <ion-col size="6" *ngFor="let favorite of favoriteList">
+        <ion-col size="6" size-md="3" *ngFor="let favorite of favoriteList">
             <person-card [user]="favorite"></person-card>
         </ion-col>
     </ion-row>
@@ -62,8 +73,8 @@
     </div>
     <!-- TOP PICKS -->
     <div class="segment-view" *ngSwitchCase="1">
-      <ion-header collapse="condense">
-        <ion-toolbar>
+      <ion-header collapse="condense mobile">
+        <ion-toolbar class="header-custom">
           <ion-title size="large">צפו בי</ion-title>
         </ion-toolbar>
       </ion-header>
@@ -72,7 +83,7 @@
       </div>-->
       <div class="no-results" *ngIf="viewedList?.length==0"><ion-icon name="eye-outline"></ion-icon>אין צפיות</div>
       <ion-row class="users">
-        <ion-col size="6" *ngFor="let viewed of viewedList">
+        <ion-col size="6" size-md="3" *ngFor="let viewed of viewedList">
             <person-card [user]="viewed"></person-card>
         </ion-col>
     </ion-row>
@@ -84,4 +95,4 @@
       </ion-infinite-scroll>
     </div>
   </div>
-</ion-content>
+</ng-template>

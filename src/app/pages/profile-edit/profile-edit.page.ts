@@ -1,10 +1,11 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import { ModalController, ToastController} from '@ionic/angular';
+import { ModalController, NavController, ToastController} from '@ionic/angular';
 
 import {UserService} from '../../services/user/user.service';
 import {UserModel} from '../../models/user.model';
 import {ListOptionsPage} from '../list-options/list-options.page';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import { GeneralService } from 'src/app/services/general/general.service';
 
 @Component({
     selector: 'app-profile-edit',
@@ -24,7 +25,9 @@ export class ProfileEditPage implements OnInit {
         private fb: FormBuilder,
         public modalCtrl: ModalController,
         private elementRef: ElementRef,
+        public generalService: GeneralService,
         public toastController: ToastController,
+        private navCtrl: NavController,
         public userService: UserService) {
     }
 
@@ -43,6 +46,10 @@ export class ProfileEditPage implements OnInit {
             duration: 2000
         });
         await toast.present();
+    }
+
+    close() {
+        this.navCtrl.back();
     }
 
     async openAreasList() {

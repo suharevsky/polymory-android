@@ -1,8 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {HideHeaderDirective} from './hide-header/hide-header.directive';
 
-const directives = [HideHeaderDirective];
+const directives = [];
 
 @NgModule({
     declarations: [...directives],
