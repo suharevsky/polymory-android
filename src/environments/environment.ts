@@ -4,16 +4,16 @@
 
 export const environment = {
     production: false,
-    apiUrl: 'https://us-central1-joyme-19532.cloudfunctions.net/app',
+    
+    apiUrl: 'https://us-central1-polymatch-d1996.cloudfunctions.net/app',
     // apiUrl: 'http://localhost:8100/joyme-19532/us-central1/app',
     firebase: {
-        apiKey: 'AIzaSyDBbV_GN4EQ4A9-fWuTqX6jLsbiY2c9XC8',
-        authDomain: 'joyme-19532.firebaseapp.com',
-        projectId: 'joyme-19532',
-        storageBucket: 'joyme-19532.appspot.com',
-        messagingSenderId: '817722655258',
-        appId: '1:817722655258:web:c28c8086e58ddb35b307a3',
-        measurementId: 'G-XKNFP7GJQX'
+        apiKey: "AIzaSyCkMYsglRs-HVZdh6zn32LzeNQukpTAw6g",
+        authDomain: "polymatch-d1996.firebaseapp.com",
+        projectId: "polymatch-d1996",
+        storageBucket: "polymatch-d1996.appspot.com",
+        messagingSenderId: "793648489294",
+        appId: "1:793648489294:web:fd0829751e92b9a4a1341f"
     }
 };
 

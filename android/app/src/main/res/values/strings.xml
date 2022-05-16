@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Joyme</string>
-    <string name="title_activity_main">Joyme</string>
-    <string name="package_name">il.co.joyme</string>
-    <string name="custom_url_scheme">il.co.joyme</string>
-</resources>

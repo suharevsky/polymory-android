@@ -8,6 +8,9 @@ import {take, tap} from 'rxjs/operators';
 import {SettingsService} from '../user/settings/settings.service';
 import { ParamsService } from '../params/params.service';
 import { AngularFireMessaging } from '@angular/fire/messaging';
+import { ModalController } from '@ionic/angular';
+import { PushAlertComponent } from 'src/app/components/push-alert/push-alert/push-alert.component';
+import { StorageService } from '../storage/storageService';
 
 
 @Injectable({
@@ -18,8 +21,8 @@ export class FcmService {
     public data;
     public options;
 
-    constructor(public afMessaging: AngularFireMessaging, private router: Router, public db: AngularFirestore, public userService: UserService,
-                public http: HttpClient, public settingsService: SettingsService, public paramsService: ParamsService
+    constructor(public afMessaging: AngularFireMessaging, public storage: StorageService, private router: Router, public db: AngularFirestore, public userService: UserService,
+                public http: HttpClient, public settingsService: SettingsService, public paramsService: ParamsService, public modalCtrl: ModalController,
     ) {}
 
     public getOptionsByUserId(id) {
@@ -33,7 +36,7 @@ export class FcmService {
     requestPermission() {
         return this.afMessaging.requestToken.pipe(
             tap(token => {
-                //alert(token);
+                console.log('Token: ',token);
                 this.setToken(token);
             })
         )
@@ -44,11 +47,34 @@ export class FcmService {
     }
 
     public initPush() {
-       // alert(Capacitor.getPlatform());
-        if (Capacitor.getPlatform() === 'web') {
-            this.registerPush();
-        }
+        this.presentModal();
     }
+
+    async presentModal() {
+
+        let now = new Date();
+
+        let currentTimestamp = now.getTime();
+
+        let pushExpires = await this.storage.get('pushExpires');
+
+        if(currentTimestamp >= pushExpires && pushExpires !== 0) {
+            const modal = await this.modalCtrl.create({
+                component: PushAlertComponent,
+                cssClass: 'dark-bg'
+              });
+      
+              modal.onWillDismiss().then(res => {
+                  if (Capacitor.getPlatform() === 'web' && res.data) {
+                    this.storage.set('pushExpires', 0)
+                      this.registerPush();
+                  }else if(!res.data) {
+                      this.storage.set('pushExpires', now.setDate(now.getDate() +  7))
+                  }
+              });
+              return await modal.present();
+        }
+      }
 
     lastTimeUsageByUserId(id) {
         this.db.collection('push', ref => ref
@@ -94,12 +120,14 @@ export class FcmService {
 
                 changes.map((a: any) => {
                     const id = a.payload.doc.id;
-                    //if (this.frequency(a.payload.doc.data().lastTimeUse) && this.options.push.active && this.options.push.messages) {
-                        this.exec(a.payload.doc.data().token);
-                        this.db.collection('push').doc(id).set({
-                            lastTimeUse: Date.now()
-                        },{merge: true});
-                   //}
+                    if (this.frequency(a.payload.doc.data().lastTimeUse) && this.options.push.active && this.options.push.messages) {
+                        if(a.payload.doc.data().token) {
+                            this.exec(a.payload.doc.data().token);
+                            this.db.collection('push').doc(id).set({
+                                lastTimeUse: Date.now()
+                            },{merge: true});
+                        }
+                   }
                 });
             });
         } catch (e) {
@@ -113,8 +141,10 @@ export class FcmService {
                 title: this.data.title,
                 body: this.data.body,
                 sound: 'default',
-                icon: 'fcm_push_icon',
-                click_action: "https://polymatch.co.il/" + this.data.page
+                //icon: 'fcm_push_icon',
+                icon: 'https://polymatch-d1996.web.app/assets/img/web-push-icon.png',
+                //click_action: "https://polymatch.co.il"
+                click_action: "https://polymory.co.il"
             },
             data: {
                 page: this.data.page,
@@ -123,18 +153,16 @@ export class FcmService {
                 modal: this.data.modal
             },
             to: token,
-            message_id: 111,
-            // tslint:disable-next-line:max-line-length
-            // to: 'fQZM3BqTS52qtsQPRPSvVk:APA91bFnI_2cQ5V9rhRPt2ZKEwKp7LEtuY18eNajfMAJOsecpXDzBdVtW0H07yNQEgLDCDyGZk98D4c176b28x6-uNub29tGFQJM63MRgfjbFt9NdCA-1F9EY8iRYDi_xmgtin7yMH69',
+            //message_id: 111,
             priority: 'high',
-            restricted_package_name: '',
-            time_to_live: 600
+            //restricted_package_name: '',
+            //time_to_live: 600
         };
 
         const httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
-                Authorization: 'key=AAAAvmQRgho:APA91bGPZFxwrmOMr2SYMfJn4AtSJLdbwrRQLUGTWSJ75oM9DpPfEJVps2isQ86RZ1GTP3yhieVAelkogSf08W3qODWs1gEUOmtLLiAESn-vsJq7m_FW6CctrW9sOLdTlFMseplxEpQ3'
+                Authorization: 'key=AAAAuMki404:APA91bHXeyRejUk4l0nSFvU1BGYk4YljFW7oZI1LSDVXnYN0d5YUGkvhGKy_XvJqArvbku-YQd6SsT9vaDKNpMffFMzU0RlKre09cBnX4RetScY1rvmm2KRNa7oxZsrwo-iEvR64uhzO'
             })
         };
 
@@ -143,8 +171,10 @@ export class FcmService {
     }
 
     private registerPush() {
-        this.requestPermission().subscribe();
+        this.requestPermission().subscribe(res => {console.log('requestPermission: ');console.log(res)});
     }
+
+    
 }
 
 

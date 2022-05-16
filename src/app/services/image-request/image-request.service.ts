@@ -27,7 +27,7 @@ export class ImageRequestService {
             this.chatService.sendMessage(res.chat.id, 'בקשה לאישור תמונה', this.userService.user.id, true).then(res => {
                 // Set counter for unread messages
                 this.counterService.setByUserId(this.chatService.interlocutor.id, +1, 'newMessages');
-                const pushData = {title: 'JoyMe', body: 'קיבלת בקשה לאישור תמונות', page: 'tabs/matches', receiver: this.chatService.interlocutor};
+                const pushData = {title: 'Polymory', body: 'קיבלת בקשה לאישור תמונות', page: 'tabs/matches', receiver: this.chatService.interlocutor};
                 // Sending push only to active users
                 if (this.chatService.interlocutor.status === 1) {
                     this.fcmService.sendPushMessage(pushData);

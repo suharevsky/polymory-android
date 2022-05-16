@@ -15,7 +15,7 @@ export class FileUploadService {
     uploadState: Observable<string>;
     user: UserModel;
     downloadURL;
-    public dimensions: any = {s: '120x120', m: '200x200', l: '600x600'};
+    public dimensions: any = {s: '120x120', l: '600x600'};
 
     constructor(
         private afStorage: AngularFireStorage,
@@ -85,7 +85,8 @@ export class FileUploadService {
         }
 
         // return  fileName;
-         return 'https://firebasestorage.googleapis.com/v0/b/joyme-19532.appspot.com/o/images%2F' + fileName + '?alt=media';
+        
+         return 'https://firebasestorage.googleapis.com/v0/b/polymatch-d1996.appspot.com/o/images%2F' + fileName + '?alt=media';
     }
 
     getImageDimensions(): object {

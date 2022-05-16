@@ -1,4 +1,4 @@
-<ion-slides #container *ngIf="images.length > 0"
+<ion-slides *ngIf="images.length > 0"
   class="slides" #profileImages
   (ionSlideDidChange)="onSlideChange()"
   (ionSlideReachStart)="onReachStart()"
@@ -15,7 +15,6 @@
       </div>
     </ion-slide>
 </ion-slides> 
-
 
 <div class="custom-pagination">
   <div *ngFor="let bullet of images; let i = index" class="pagination-bullet" [ngClass]="{'pagination-bullet-active': activeIndex === i}"></div>

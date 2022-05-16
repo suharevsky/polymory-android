@@ -1,3 +1,4 @@
+
 .ion-slides {
 
   height: 100%;
@@ -7,8 +8,13 @@
     width: 100%;
   }
 
+  .margin-center {
+    margin: 0 auto;
+  }
+
   h2 {
     margin: 0;
+    font-weight: 500;
   }
 
   .ion-slide {
@@ -32,19 +38,29 @@ ion-searchbar {
   text-align: right;
 }
 
-.cities-list ion-item {
-  width: 100%;
+.cities-list {
+  ion-item {
+    border-bottom: 1px solid #f2f2f2;
+    width: 100%;
+    cursor: pointer;
+    &:hover {
+      color: #7774c5;
+    }
+  }
 }
 
-ion-icon {
-  order: 1;
-}
 
 ion-item,
+.birthday-field,
+.cities-list,
 .item-option {
   --inner-border-width: 0;
   width: 80%;
   align-self: flex-start;
+
+  ion-label {
+    display: block;
+  }
 
   h2 {
     padding: 0;
@@ -66,13 +82,6 @@ ion-item,
   }
 }*/
 
-.btn-form {
-  width: 100%;
-  margin: 0 auto;
-  --background: #7774c5;
-  --border-radius: 0;
-}
-
 h2 {
   font-weight: bold;
   text-align: right;
@@ -82,22 +91,27 @@ h2 {
 .options {
   width: 100%;
   padding: 0 20px;
+  p {
+    margin: 0;
+  }
 }
+  
 
 .item-option {
   border-width: 1px;
   border-style: solid;
   border-color: var(--color-primary-rgb);
   border-radius: 50px;
-  padding: 16px 32px;
+  padding: 14px 0;
   margin: 12px 0;
-  text-align: right;
+  text-align: center;
   width: 100%;
-
+  cursor: pointer;
   &.active {
-    background: var(--color-primary-rgb);
-    --background: var(--color-primary-rgb);
+    background: #7774c5;
+    --background:#7774c5;
     color: #ffffff;
+    border-color: transparent;
   }
 
   span {
@@ -107,13 +121,24 @@ h2 {
 
 .option {
   width: 100%;
-  font-weight: bold;
-  margin: 84px 0;
+  //margin: 84px 0;
 }
 
-.smile {
-  font-size: 42px;
-}
+// .smile {
+//   font-size: 42px;
+//   &-item {
+//     padding: 8px 34px;
+//     border: 2px solid #ccc;
+//     border-radius: 50px;
+//     margin: 8px 12px;
+//     cursor: pointer;
+//     &.active {
+//       background-color: #7774c5;
+//       color: #fff;
+//       border-color: transparent;
+//     }
+//   }
+// }
 
 .done-icon {
   opacity: 0;
@@ -134,21 +159,24 @@ h2 {
   justify-content: flex-start;
 }
 
-.smileys-items {
-  display: flex;
-  justify-content: space-around;
+// .smileys-items {
+//   display: flex;
+//   justify-content: space-around;
+//   flex-wrap: wrap;
+// }
 
-  .smile-item {
-    cursor: pointer;
-    flex: 0 0 30%;
-    margin: 1%;
-    border-radius: 8px;
-    border: 1px dashed #d4d4d4;
-    padding: 12px 0;
-    text-align: center;
-    &.active {
-      border: 2px solid #7774c5;
-    }
+.date {
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+
+  .day, .month, .year {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-radius: 200px;
+    margin: 0 2px;
+    background: #f2f2f2;
   }
 }
 
@@ -158,22 +186,107 @@ ion-button.ion-focusable {
   --background-hover: #7774c5;
 }
 
-@media (min-width: 768px) {
-  .option {
-    margin: 60px 0;
+ion-datetime {
+  width: 100%;
+  --padding-start: 10px;
+    background: #f2f2f2 !important;
+}
+
+ion-footer { 
+  display: flex;
+
+  .btn-form {
+    width: 100%;
+    margin: 0 auto;
+    flex: 0 0 75%;
+    --background: #7774c5;
+    --border-radius: 0;
   }
 
-  .date {
+  .btn-full {
+    flex: 0 0 100%;
+  }
+  
+  .btn-back {
+    flex: 0 0 25%;
+    --background-activated: #f0f4fc;
+    --background-focused: #f0f4fc;
+    --background-hover: #f0f4fc;
+    --background: #f0f4fc;
+    color: rgb(43, 60, 77);
+  }
+}
+
+
+
+@media (min-width: 768px) {
+
+  ion-footer { 
+    top: -89px;
+  }
+
+  .birthday-field {
+    width: 100%;
+  }
+
+  // .smile-item {
+  //   margin: 8px 3px;
+  // }
+
+  .pos-center {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+
+  .item-option {
+    flex: 0 1 31%;
+    margin: 1%;
+  }
+
+  .options {
+  
+    ion-list {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+
+  .ion-slide {
+    height: 100%;
+  }
+
+  // form, .form {
+  //   &__name, &__birthday {
+  //     display: flex;
+  //     justify-content: center;
+  //     flex-wrap: wrap;
+  //     align-content: center;
+  //   }
+  // }
+
+  form {
+    height: calc(100% - 100px);
     display: flex;
     align-items: center;
-    justify-content: center;
+  }
 
-    .day, .month, .year {
-      display: flex;
-      align-items: center;
-      border: 1px solid;
-      padding: 7px 20px;
-      border-radius: 5px;
+  .form {
+    // height: calc(100% - 100px);
+    // display: flex;
+    // align-items: center;
+    &__city {
+      top:30%;
+      height: auto;
+      position: absolute;
+      display: block;
+      ion-item {
+        width: 80%;
+        align-self: flex-start;
+        margin: 0 auto;
+       
+      }
     }
   }
 }

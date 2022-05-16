@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { WindowService } from 'src/app/services/window/window.service';
@@ -7,6 +7,7 @@ import firebase from 'firebase';
 import { UserService } from 'src/app/services/user/user.service';
 import { Router } from '@angular/router';
 import { GeneralService } from 'src/app/services/general/general.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-code-verification',
@@ -18,11 +19,10 @@ export class CodeVerificationComponent implements OnInit {
   public phoneForm: FormGroup;
   public codeForm: FormGroup;
   public windowRef: any;
-  public showCodeFormStatus = 0;
+  public currentStep = 1;
   public errorMessage: string;
   public loadingSpinner = false;
-  @Input() tab;
-  @Output() tabChanged: EventEmitter<number> =   new EventEmitter();
+  isLoading$: Observable<boolean>;
 
   constructor(  
     public fb: FormBuilder,
@@ -34,38 +34,24 @@ export class CodeVerificationComponent implements OnInit {
     public router: Router,
     public generalService: GeneralService,
     ) { 
-    this.createPhoneForm();
-    this.createCodeForm()
+
+      this.isLoading$ = this.authService.isLoading$;
+
+      this.createPhoneForm();
+      this.createCodeForm()
   }
 
   ngOnInit() {
-    if(this.generalService.isDesktop()){ 
-      this.showCodeFormStatus = 1;
-    }
     this.windowRef = this.win.windowRef;
+    this.authService.currentStep.subscribe(step => this.currentStep = step);
     this.windowRef.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
       size: 'invisible'
     });
   }
 
-  logIn(phoneForm: FormGroup) {
-
-      const appVerifier = this.windowRef.recaptchaVerifier;
-      const phoneNumber = phoneForm.value.phone;
-
-      this.loadingSpinner = true;
-      this.authService.loginPhone(phoneNumber, appVerifier).then(res => {
-          this.windowRef.confirmationResult = res;
-          this.showCodeFormStatus = 2;
-      }).catch(err => {
-          if (err.code === 'auth/invalid-phone-number') {
-              this.errorMessage = 'מספר טלפון לא תקין';
-              this.presentToast(this.errorMessage);
-          }
-      }).finally(() => {
-          this.loadingSpinner = false;
-      })
-    
+  loginPhone(phone: FormGroup) {
+    this.authService.loginPhone(phone,this.windowRef.recaptchaVerifier);
+    this.authService.appVerifier.subscribe(appVerifier => this.windowRef.confirmationResult = appVerifier);
 }
 
 async presentToast(errorMessage: string, duration = 2000) {
@@ -76,82 +62,35 @@ async presentToast(errorMessage: string, duration = 2000) {
   await toast.present();
 }
 
-verifyCode(codeForm: FormGroup) {
-  let code: string = codeForm.value.code.toString().trim();
-  
-
-  if (typeof code === 'string') {
-
-      code = codeForm.value.code.toString().trim();
-
-      if (!code) {
-          this.errorMessage = 'קוד לא תקין';
-          this.presentToast(this.errorMessage);
-          return;
-      }
-
-      this.loadingSpinner = true;
-
-      this.windowRef.confirmationResult.confirm(code).then(res => {
-          this.userService.getById(res.user.uid).subscribe((user: any) => {
-              console.log(user);
-              this.loadingSpinner = false;
-              if (user) {
-                  if (user.status === 3) {
-                      this.presentToast('החשבון שלך נחסם. למידע נוסף שלח לנו הודעה בכתובת contact@polymatch.co.il', 8000);
-                      this.showCodeFormStatus = 0;
-                  } else {
-                      this.userService.setUser(user);
-                      this.authService.login(user);
-                      if(this.generalService.isDesktop()) {
-                        this.modalCtrl.dismiss();
-                        this.router.navigate(['user/highlights']);
-                      }else{
-                        this.router.navigate(['tabs/highlights']);
-                      }
-                  }
-
-              } else {
-                if(this.generalService.isDesktop()) {
-                        this.tab = "registration";
-                        this.tabChanged.emit(this.tab);
-                        this.userService.setUser({socialAuthId: res.user.uid});
-                  }else{
-                    this.router.navigate(['register-steps']).then(r => {
-                        this.tab = 'registration';
-                        this.userService.setUser({socialAuthId: res.user.uid});
-                    });
-                }
-              }
-          });
-      }).catch(err => {
-          this.loadingSpinner = false;
-
-          if (err.code === 'auth/argument-error' || err.code === 'auth/invalid-verification-code') {
-              this.errorMessage = 'קוד לא תקין';
-              this.presentToast(this.errorMessage);
-          }
-
-          if (err.code === 'auth/code-expired') {
-              this.errorMessage = 'הקוד שלך כבר פג, נסה שוב';
-              this.presentToast(this.errorMessage);
-          }
-      });
-  } else {
-      this.errorMessage = 'קוד לא תקין';
-      this.presentToast(this.errorMessage);
-  }
+close(){
+  this.modalCtrl.dismiss();
 }
+
+verifyPhoneCode(codeForm) {
+  this.authService.verifyPhoneCode(codeForm,this.windowRef.confirmationResult);
+  } 
 
   createPhoneForm() {
     this.phoneForm = this.fb.group({
-        phone: ['+972']
+      phone: ['',
+          Validators.compose([
+              Validators.required,
+              Validators.minLength(14),
+              Validators.maxLength(14)
+          ])
+      ],
     })
   }
 
   createCodeForm() {
     this.codeForm = this.fb.group({
-        code: []
+      code: ['',
+        Validators.compose([
+            Validators.required,
+            Validators.minLength(4),
+            Validators.maxLength(4)
+        ])
+      ],    
     })
   }
 }

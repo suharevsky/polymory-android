@@ -1,8 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
-// import {AuthService} from '../auth/auth.service';
 import {map, switchMap} from 'rxjs/operators';
-
 import {combineLatest, Observable, of} from 'rxjs';
 import {ArrayHelper} from '../../helpers/array.helper';
 import {UserService} from '../user/user.service';
@@ -11,6 +9,7 @@ import {DateHelper} from '../../helpers/date.helper';
 import {HttpClient} from '@angular/common/http';
 import {TableService} from '../../crud-table';
 import {environment} from '../../../environments/environment';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -32,9 +31,10 @@ export class ChatService extends TableService<UserModel> {
         @Inject(HttpClient) http,
         private db: AngularFirestore,
         public userService: UserService,
+        public authService: AuthService
     ) {
         super(http);
-        this.userService.getUser();
+        //this.user = await this.authService.currentUserSubject.toPromise();
     }
 
     async getInterlocutor(chat) {
@@ -93,6 +93,7 @@ export class ChatService extends TableService<UserModel> {
             uid1: this.userService.user.id,
             uid2: this.interlocutor.id,
             adminExists: !!(this.interlocutor.isAdmin || this.userService.user.isAdmin),
+            fakeChatActive: this.interlocutor.isFake || this.userService.user.isFake || false,
             chatId
         };
 
@@ -138,23 +139,29 @@ export class ChatService extends TableService<UserModel> {
             switchMap(c => {
                 // Unique User IDs
                 chat = c;
-
                 const uids = [this.userService.user.id === c.uid1 ? c.uid2 : c.uid1];
-
                 // Firestore User Doc Reads
-                const userDocs = uids.map(u =>
-                    this.db.doc(`users/${u}`).valueChanges()
+                const userDocs = uids.map(u => {
+                    return this.db.doc(`users/${u}`).valueChanges()
+
+                    //return this.db.collection('users', ref => ref.where('uid', '==', u)).valueChanges()
+                }
                 );
 
                 return userDocs.length ? combineLatest(userDocs) : of([]);
             }),
             map(arr => {
 
-                arr.forEach(v => (joinKeys[(v as any).id] = v));
+                arr.forEach(v => {
+                    //if(typeof v !== 'undefined') {
+                        return joinKeys[(v as any).id] = v;
+                    //}
+                });
                 chat.messages = chat.messages.map(v => {
                     const uid = this.userService.user.id === chat.uid1 ? chat.uid2 : chat.uid1;
                     return {...v, user: joinKeys[uid]};
                 });
+
                 return chat;
             })
         );
@@ -171,7 +178,9 @@ export class ChatService extends TableService<UserModel> {
         });
     }
 
-    getInbox(): Observable<any> {
+  
+
+    async getInbox(): Promise<Observable<any>> {        
 
         const uid1Messages = this.db.collection('chats', ref => ref.where('uid1', '==', this.userService.user.id)).snapshotChanges();
         const uid2Messages = this.db.collection('chats', ref => ref.where('uid2', '==', this.userService.user.id)).snapshotChanges();
@@ -183,6 +192,7 @@ export class ChatService extends TableService<UserModel> {
                 let array = docs.map((doc) => {
                     return {id: doc.payload.doc.id,...(doc.payload.doc.data() as object)};
                 });
+
                 array = this.sortInboxByTime(array);
                 return array;
             }),

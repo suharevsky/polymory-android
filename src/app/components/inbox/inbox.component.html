@@ -1,23 +1,20 @@
-<div>
-  <!--<div class="list-header">
-      <ion-text color="primary">
-          <strong>הודעות</strong>
-      </ion-text>
-  </div>-->
-
+<div class="{{currentPage}}">
   <h3 class="inbox-title desktop">
     הודעות <span class="counter" *ngIf="counter?.newMessages > 0">{{counter?.newMessages}}</span>
   </h3>
+<ion-content>
   <div class="message-list">
       <div *ngIf="inboxList.length === 0 && isLoaded" class="no-results">
-
-          <ion-icon name="chatbubbles-outline"></ion-icon>
-          עדיין אין הודעות
+          <span class="desktop">עדיין אין הודעות</span>
+          <div class="mobile">
+            <app-no-results [loading]="inboxList.length === 0 && !isLoaded" [headline]="'עדיין אין הודעות'"></app-no-results>
+          </div>
       </div>
-    <ion-grid>
+    <ion-grid *ngIf="isLoaded">
         <ng-container *ngFor="let message of inboxList">
           <ng-container *ngIf="message | async as message">
-            <ion-row (click)="goToChat(message.id, userService.user.id !== message.uid1 ? message.uid1 : message.uid2)" class="ion-align-items-center" >
+            <ion-row *ngIf="message.messages[message.messages.length - 1].user.status === 1" (click)="goToChat(message.id, userService.user.id !== message.uid1 ? message.uid1 : message.uid2)" class="ion-align-items-center">
+                <div [class.active] = "message.uid1 === activeTab || message.uid2 === activeTab" class="bg-tab"></div>
                   <ion-col size="auto">
                       <random-avatar [user]="message.messages[message.messages.length - 1].user"
                               photo="{{userService.getMainPhoto(message.messages[message.messages.length - 1].user,'s',message.messages[message.messages.length - 1].user.username)}}"
@@ -34,14 +31,10 @@
                           </ion-badge>
                           <ion-text
                                   color="medium">
-
-                              <!--<ion-icon
-                                      *ngIf="message.messages[message.messages.length - 1].delivered && (userService.user.id === message.messages[message.messages.length - 1].uid)"
-                                      name="checkmark-done-circle" color="secondary"></ion-icon>
-                              <ion-icon
-                                      *ngIf="!message.messages[message.messages.length - 1].delivered && (userService.user.id === message.messages[message.messages.length - 1].uid)"
-                                      name="checkmark-outline" color="secondary"></ion-icon>-->
-                              {{message.messages[message.messages.length - 1].content}}</ion-text>
+                                  
+                                  <ng-container *ngIf="message.messages[message.messages.length - 1].type === 'image'"><div class="picture-message"><span class="label">תמונה</span><span><ion-icon name="image-outline"></ion-icon></span></div></ng-container>
+                                  <ng-container *ngIf="message.messages[message.messages.length - 1].type !== 'image'">{{message.messages[message.messages.length - 1].content}}</ng-container>
+                          </ion-text>
                           <ion-text
                                   color="medium"> {{ message.messages[message.messages.length - 1].time }}
                               ,{{ message.messages[message.messages.length - 1].date }}</ion-text>
@@ -76,6 +69,6 @@
               </ion-label>
           </ion-item>
       </ion-list>
-      <!-- </ng-container>-->
   </div>
+</ion-content>
 </div>

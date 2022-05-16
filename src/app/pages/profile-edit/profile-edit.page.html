@@ -4,9 +4,9 @@
             <ion-button (click)="cancel()"> ביטול </ion-button>
         </ion-buttons>
         <!-- <ion-title> ערוך פרופיל </ion-title> -->
-        <ion-buttons slot="end">
+        <!-- <ion-buttons slot="end">
             <ion-button (click)="save()"> שמור </ion-button>
-        </ion-buttons>
+        </ion-buttons> -->
     </ion-toolbar>
 
     <!--<ion-toolbar class="toolbar-no-border">
@@ -39,7 +39,8 @@
           <ion-title size="large">ערוך פרופיל</ion-title>
         </ion-toolbar>
       </ion-header>
-    <div [ngSwitch]="segmentView" class="full-height">
+    <!-- <div [ngSwitch]="segmentView" class="full-height"> -->
+        <div [ngSwitch]="segmentView">
         <!-- EDIT -->
 
             <div class="segment-view" *ngSwitchCase="'0'">
@@ -65,6 +66,14 @@
 
                 <ion-list class="link list-custom">
                     <ion-list-header>
+                        <ion-label>נטייה מינית</ion-label>
+                    </ion-list-header>
+                        <ion-item lines="none" detail="true" (click)="openSexualOrientation()">
+                            <ion-label>{{userService.user.sexualOrientation.join()}}</ion-label>
+                        </ion-item>
+                </ion-list> 
+                <ion-list class="link list-custom">
+                    <ion-list-header>
                         <ion-label>רוצה להכיר</ion-label>
                     </ion-list-header>
                         <ion-item lines="none" detail="true" (click)="openPreferenceList()">
@@ -76,32 +85,37 @@
                         <ion-label>מעט עלי/נו</ion-label>
                     </ion-list-header>
                     <ion-item lines="none">
-                        <ion-textarea name="about" formControlName="about" [(ngModel)]="userService.user.about" [value]="userService.user.about" rows="3"></ion-textarea>
+                        <ion-textarea autofocus maxLength="500" name="about" formControlName="about" [(ngModel)]="userService.user.about" rows="8"></ion-textarea>
                     </ion-item>
                     <ion-item lines="none">
                         <ion-note slot="end"> {{ 500 - userService.user.about.length }} </ion-note>
                     </ion-item>
                 </ion-list>
 
-                <ion-list class="link list-custom">
+                <!-- <ion-list class="link list-custom">
                     <ion-list-header>
                         <ion-label>מחפש/ת</ion-label>
                     </ion-list-header>
                     <ion-item lines="none" (click)="openLookingFor()">
                         <ion-label>{{userService.user.lookingFor.join()}}</ion-label>
                     </ion-item>
-                </ion-list>
+                </ion-list> -->
                 </form>
+                <a (click)="save()"
+        class="btn btn-save desktop">
+    <span>שמור</span>
+    </a>
+    <!-- <a (click)="cancel()"
+        class="btn btn-cancel desktop">
+    <span>ביתול</span>
+    </a> -->
             </div>
         <!-- PREVIEW -->
         <div class="segment-view preview-container full-height" *ngSwitchCase="'1'">
             <div class="card-border full-height" *ngIf="showSlides">
             </div>
         </div>
-        <a (click)="save()"
-        class="btn desktop">
-    <span>שמור</span>
-    </a>
+        
     </div>
 
 </ng-template>

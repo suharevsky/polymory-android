@@ -1,6 +1,6 @@
 {
-	"appId": "il.co.joyme",
-	"appName": "Joyme",
+	"appId": "il.co.polymory",
+	"appName": "Polymory",
 	"bundledWebRuntime": false,
 	"npmClient": "npm",
 	"webDir": "www",

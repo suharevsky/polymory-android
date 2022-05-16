@@ -33,8 +33,8 @@
       //text-align: right;
       .chat-item-bubble .chat-text {
         border-radius: 20px 20px 0px 20px;
-        background: rgb(17, 17, 43);
-        color: #fff;
+        background: rgb(240, 242, 244);
+        color: rgb(43, 60, 77);
       }
     }
 
@@ -65,7 +65,7 @@
 
       ion-icon {
         position: relative;
-        top: 2px;
+        top: 0;
       }
     }
 
@@ -142,21 +142,43 @@ ion-footer {
     }
 
     .btn-img-send {
+      cursor: pointer;
       display: inline-block;
       position: absolute;
-      left: -3px;
-      top: 0px;
+      left: 98px;
+      top: 6px;
       font-size: 21px;
       padding: 8px 20px;
       z-index: 99999;
+      &.hidden {
+        display: none;
+      }      
     }
   }
 }
 
 
 @media (min-width: 768px)  {
+
+  
+
   ion-footer {
+    .btn-img-send {
+      display: inline-block;
+      position: absolute;
+      left: 100px;
+      top: 6px;
+      font-size: 21px;
+      padding: 8px 20px;
+      z-index: 99999;
+      &.hidden {
+        display: none;
+      }      
+    }
     .form {
+      .btn-img-send {
+        left: 150px;
+      }
       display: flex;
       button {
         font-size: 16px;

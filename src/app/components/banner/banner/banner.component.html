@@ -1,0 +1,11 @@
+<div *ngIf="user?.photos.length === 0" (click)="open()" class="banner">
+  <div class="photos">
+    <img class="photos__photo photo_1" src="/assets/img/no-results/3.png">
+    <div class="default-image">
+      <ion-icon class="add-photo-icon" name="add-outline"></ion-icon>
+      <img class="photos__photo photo_2" src="/assets/media/users/default_{{user.gender}}.png">
+    </div>
+    <img class="photos__photo photo_3" src="/assets/img/no-results/4.png">
+  </div>
+  הפרופיל שלך יהיה 75 אחוז יותר פופולרי עם תמונה <div class="btn">העלאת תמונה</div>
+</div>

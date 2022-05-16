@@ -1,7 +1,7 @@
-<ion-header *ngIf="currentIndexSlide === 0">
+<ion-header *ngIf="authService.tab === 'registration'">
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-button class="mobile" (click)="back()">
+            <ion-button *ngIf="currentIndexSlide === 0" class="mobile" (click)="back()">
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </ion-button>
             <ion-button class="desktop" (click)="close()">
@@ -13,8 +13,11 @@
 
 
 <ion-content>
-    <app-code-verification class="desktop" [tab]="tab" (tabChanged)="tabChangedHandler($event)" *ngIf="tab === 'verification'"></app-code-verification>
-    <ng-container>
+    
+    <!-- <app-sign-in *ngIf="tab === 'sign-in'"></app-sign-in>
+    <app-sign-up *ngIf="tab === 'sign-up'"></app-sign-up> -->
+    <app-code-verification class="desktop" *ngIf="authService.tab === 'verification'"></app-code-verification>
+    <ng-container *ngIf="authService.tab === 'registration'">
     <div class="ion-slides"
          #slides>
         <!-- {{myForm.value | json}} -->
@@ -22,40 +25,40 @@
             <form [formGroup]="registrationForm"
                   (ngSubmit)="submit()">
                 <input type="text" name="gender" formControlName="gender"/>
-                <input type="text" name="preference" formControlName="preference"/>
                 <div class="options">
-                    <div class="option">
                         <h2>{{userService.getGender().label}}</h2>
-                        <div class="gender smileys-items">
+                        <ion-list class="gender">
                             <div *ngFor="let gender of genders; let i = index" (click)="chooseGender(i)"
-                                 [ngClass]="{'active': gender.chosen}" class="smile-item">
-                                <div class="smile">
-                                    <ion-icon name="{{userService.getGender().icons[i]}}"></ion-icon>
-                                </div>
+                                 [ngClass]="{'active': gender.chosen}" class="item-option">
                                 <span>{{gender.title}}</span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="option">
-                        <h2>{{userService.getPreference().label}}</h2>
-                        <div class="preference smileys-items">
-                            <div *ngFor="let preference of preferences; let i = index" (click)="choosePreference(i)"
-                                 [ngClass]="{'active': preference.chosen}" class="smile-item">
-                                <div class="smile">
-                                    <ion-icon name="{{userService.getPreference().icons[i]}}"></ion-icon>
-                                </div>
-                                <span>{{preference.title}}</span>
-                            </div>
-                        </div>
-                    </div>
+                        </ion-list>
                 </div>
             </form>
         </div>
-        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 1">
+        <div class="ion-slide" *ngIf="currentIndexSlide === 1">
+            <form [formGroup]="registrationForm"
+                  (ngSubmit)="submit()">
+                <input type="text" name="sexualOrientation" formControlName="sexualOrientation"/>
+                <div class="options">
+                   
+                        <h2>{{userService.getSexualOrientation().label}}</h2>
+                        <p>ניתן לבחור ביותר מאפשרות אחת</p>
+                        <ion-list class="sexualOrientation">
+                            <div *ngFor="let sexualOrientation of sexualOrientations; let i = index" (click)="chooseSexualOrientation(i)"
+                                 [ngClass]="{'active': sexualOrientation.chosen}" class="item-option">
+                                <span>{{sexualOrientation.title}}</span>
+                            </div>
+                        </ion-list>
+                </div>
+            </form>
+        </div>
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 2">
             <form [formGroup]="registrationForm">
-                <ion-item no-lines>
+                <ion-item class="pos-center margin-center" no-lines>
                     <ion-label position="stacked"><h2>{{userService.getUsername().label}}</h2></ion-label>
                     <ion-input #focusable
+                            maxLength="25"
                             [value]="user?.username"
                             formControlName="username"
                             class="name-input"
@@ -66,51 +69,104 @@
             </form>
         </div>
 
-        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 2">
+        <div class="ion-slide" *ngIf="currentIndexSlide === 3">
+            <form [formGroup]="registrationForm"
+                  (ngSubmit)="submit()">
+                <div class="options">
+                        <h2>רשאים לפנות אלי</h2>
+                        <p>ניתן לבחור ביותר מאפשרות אחת</p>
+                        <ion-list class="preference">
+                            <div *ngFor="let preference of preferences; let i = index" (click)="choosePreference(i)"
+                                    [ngClass]="{'active': preference.chosen}" class="item-option">
+                                <span>{{preference.title}}</span>
+                            </div>
+                        </ion-list>
+                </div>
+            </form>
+        </div>
+
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 4">
             <form [formGroup]="registrationForm">
-                <ion-item no-lines>
+                <div class="pos-center">
+                <div no-lines class="birthday-field margin-center">
                     <ion-label position="stacked"><h2>
                         {{ user?.gender == 'זוג' ? userService.getBirthday().label3 :
                         userService.getBirthday().label}}
                     </h2></ion-label>
-                    <ion-datetime value="setMinimumAge()" class="datetime" #focusable cancel-text="ביטול" done-text="בוצע" name="birthday" formControlName="birthday"></ion-datetime>
-                </ion-item>
-                <ion-item no-lines *ngIf="user?.gender === 'זוג'">
-                    <ion-label position="stacked"><h2>{{userService.getBirthday1().label3}}</h2></ion-label>
-                    <ion-datetime value="setMinimumAge()" class="datetime" cancel-text="ביטול" done-text="בוצע" name="birthday1" formControlName="birthday1"></ion-datetime>
-                    <!-- <div class="date">
+                    <ng-container *ngIf="generalService.isDesktop()">
+                    <div class="date">
                         <div class="day">
                             <ion-label>יום</ion-label>
-                            <ion-select value="1" (ionChange)="getSelectValue($event)" interface="popover">
-                                <ion-select-option *ngFor="let date of dateRange.date" value="{{date}}">
-                                    {{date}}
+                            <ion-select value="{{user?.birthday?.split('-')[0]}}"  (ionChange)="setDay($event,'birthday')" interface="popover">
+                                <ion-select-option *ngFor="let date of dateRange.date" value="{{addZero(date)}}">
+                                    {{addZero(date)}}
                                 </ion-select-option>
                             </ion-select>
                         </div>
                         <div class="month">
                             <ion-label>חודש</ion-label>
-                            <ion-select value="1" interface="popover">
-                                <ion-select-option *ngFor="let month of dateRange.month" value="{{month}}">
-                                    {{month}}
+                            <ion-select value="{{user?.birthday?.split('-')[1]}}" (ionChange)="setMonth($event,'birthday')" interface="popover">
+                                <ion-select-option *ngFor="let month of dateRange.month.values; index as indexOfelement;" value="{{addZero(month)}}">
+                                    {{dateRange.month.names[indexOfelement]}}
                                 </ion-select-option>
                             </ion-select>
                         </div>
+
                         <div class="year">
                             <ion-label>שנה</ion-label>
-                            <ion-select value="1980" interface="popover">
+                            <ion-select value="{{user?.birthday?.split('-')[2]}}"  (ionChange)="setYear($event,'birthday')" interface="popover">
                                 <ion-select-option *ngFor="let year of dateRange.year" value="{{year}}">
                                     {{year}}
                                 </ion-select-option>
                             </ion-select>
                         </div>
-                    </div> -->
-                </ion-item>
+                    </div>
+                </ng-container>
+                    <ng-container *ngIf="!generalService.isDesktop()">
+                        <ion-datetime #focusable cancel-text="ביטול" done-text="בוצע" name="birthday" formControlName="birthday"></ion-datetime>
+                    </ng-container>
+                </div>
+                <div class="birthday-field margin-center" *ngIf="user?.gender === 'זוג'">
+                <ion-label position="stacked"><h2>{{userService.getBirthday1().label3}}</h2></ion-label>
+                <ng-container *ngIf="generalService.isDesktop()">
+                    <div class="date">
+                        <div class="day">
+                            <ion-label>יום</ion-label>
+                            <ion-select value="{{user?.birthday1?.split('-')[0]}}" (ionChange)="setDay($event,'birthday1')" interface="popover">
+                                <ion-select-option *ngFor="let date of dateRange.date" value="{{addZero(date)}}">
+                                    {{addZero(date)}}
+                                </ion-select-option>
+                            </ion-select>
+                        </div>
+                        <div class="month">
+                            <ion-label>חודש</ion-label>
+                            <ion-select value="{{user?.birthday1?.split('-')[1]}}" (ionChange)="setMonth($event,'birthday1')" interface="popover">
+                                <ion-select-option *ngFor="let month of dateRange.month.values; index as indexOfelement;" value="{{addZero(month)}}">
+                                    {{dateRange.month.names[indexOfelement]}}
+                                </ion-select-option>
+                            </ion-select>
+                        </div>
+                        <div class="year">
+                            <ion-label>שנה</ion-label>
+                            <ion-select value="{{user?.birthday1?.split('-')[2]}}" (ionChange)="setYear($event,'birthday1')" interface="popover">
+                                <ion-select-option *ngFor="let year of dateRange.year" value="{{year}}">
+                                    {{year}}
+                                </ion-select-option>
+                            </ion-select>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="!generalService.isDesktop()">
+                    <ion-datetime cancel-text="ביטול" done-text="בוצע" name="birthday1" formControlName="birthday1"></ion-datetime>
+                </ng-container>
+                    </div>
+                </div>
             </form>
         </div>
-        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 3">
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 5">
             <form [formGroup]="registrationForm">
                 <input name="area" formControlName="area">
-                <div class="options">
+                <div class="options pos-center">
                     <h2>{{ userService.getArea().label}}</h2>
                     <ion-list class="{{userService.getArea().class}}">
                         <div
@@ -125,45 +181,25 @@
                 </div>
             </form>
         </div>
-        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 4">
-            <form [formGroup]="registrationForm">
-                <div class="options">
-                    <h2>{{ userService.getCities().label}}</h2>
-                </div>
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 6">
+            <form [formGroup]="registrationForm" class="form__city">
+                <ion-item class="margin-center" no-lines>
+                    <ion-label position="stacked"><h2>{{ userService.getCities().label }}</h2></ion-label>
                 <ion-searchbar #focusable placeholder="חפש" (ionInput)="searchCity($event.target)" name="city"
                                formControlName="city"></ion-searchbar>
-                <ion-list class="cities-list">
+                </ion-item>
+                <ion-list class="cities-list margin-center">
                     <ion-item (click)="chooseCity(city)" *ngFor="let city of filteredCities">{{ city.title }}</ion-item>
                 </ion-list>
             </form>
         </div>
-        <div class="{{userService.getLookingFor().class}} input-slide ion-slide" *ngIf="currentIndexSlide === 5">
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 7">
             <form [formGroup]="registrationForm">
-                <input name="lookingFor" formControlName="lookingFor">
-                <div class="options">
-                    <h2>
-                        {{ userService.getArea().value == 3 ? userService.getLookingFor().label3 :
-                        userService.getLookingFor().label}}
-                    </h2>
-                    <ion-list>
-                        <div *ngFor="let lookingFor of lookingFor; let i = index"
-                             [attr.data-id]="lookingFor.title"
-                             [ngClass]="{'active': lookingFor.chosen}"
-                             class="item-option"
-                             (click)="chooseLookingFor(i)">
-                            {{lookingFor.title}}
-                        </div>
-                    </ion-list>
-                </div>
-            </form>
-        </div>
-        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 6">
-            <form [formGroup]="registrationForm">
-                <ion-item no-lines>
+                <ion-item no-lines class="margin-center pos-center">
                     <ion-label position="stacked"><h2>
                         {{ userService.getGender().value == 3 ? userService.getAbout().label3 : userService.getAbout().label}}
                     </h2></ion-label>
-                    <ion-textarea #focusable name="about" formControlName="about"
+                    <ion-textarea maxLength="500" rows="10" #focusable name="about" formControlName="about"
                                   placeholder="{{userService.getAbout().placeholder}}"></ion-textarea>
                 </ion-item>
             </form>
@@ -200,7 +236,9 @@
 </ion-content>
 
 <ng-container>
-<ion-footer *ngIf="currentIndexSlide != 7">
-    <ion-button [disabled]="registrationForm.errors" type="submit" (click)="submit()" class="btn-form">שמור</ion-button>
+<ion-footer *ngIf="currentIndexSlide != 8 && authService.tab === 'registration'">
+    <ion-button  *ngIf="currentIndexSlide != 8 && currentIndexSlide > 0" (click)="back()" class="btn-form btn-back">חזרה</ion-button>
+    <ion-button [class.btn-full] = "currentIndexSlide === 0"
+    [disabled]="registrationForm.errors" type="submit" (click)="submit()" class="btn-form">המשך</ion-button>
 </ion-footer>
 </ng-container>

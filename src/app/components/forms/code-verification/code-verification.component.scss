@@ -1,3 +1,8 @@
+.country-code {
+  direction: ltr;
+  margin-right: 8px;
+}
+
 @media (min-width: 768px) {
     .wrap {
       height: 100%;
@@ -13,6 +18,12 @@
       h2, h3 {
         font-size: 32px;
         text-align: center;
+      }
+
+      .logo{
+        &__image {
+          height: 32px;
+        }
       }
 
       h3 {

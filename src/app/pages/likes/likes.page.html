@@ -21,6 +21,7 @@
     <ion-toolbar>
         <ion-title class="page-title">{{pageTitle}}</ion-title>
     </ion-toolbar>
+   
 </ion-header>
   <!-- <div class="boost-promotion">
     <ion-text color="boost">קבל עד 100 צפיות נוספות</ion-text>
@@ -45,20 +46,14 @@
       </div>-->
 
      <!-- <ion-row>
-        <div [hidden]="isLoading" class="no-results" *ngIf="!favoriteList">
-          <ion-icon name="heart-outline"></ion-icon>
-          אין מועדפים
-        </div>
 
         <ion-col size="6" *ngFor="let favorite of favoriteList | async">
           <person-card (click)="viewProfile(favorite)" [data]="favorite"></person-card>
         </ion-col>
       </ion-row>-->
 
-      <div [hidden]="isLoading" class="no-results" *ngIf="favoriteList?.length==0">
-        <ion-icon name="heart-outline"></ion-icon>
-        אין מועדפים
-      </div>
+      <app-no-results [loading]="isLoading" *ngIf="favoriteList?.length==0" [headline]="'אין מועדפים כרגע'"></app-no-results>
+
       <ion-row class="users">
         <ion-col size="6" size-md="3" *ngFor="let favorite of favoriteList">
             <person-card [user]="favorite"></person-card>
@@ -81,7 +76,8 @@
       <!--<div *ngIf="favoriteList" class="offer-message">
         Featured profiles of the day, <br />picked just for you
       </div>-->
-      <div class="no-results" *ngIf="viewedList?.length==0"><ion-icon name="eye-outline"></ion-icon>אין צפיות</div>
+      
+      <app-no-results [loading]="isLoading" *ngIf="viewedList?.length==0" [headline]="'אין צפיות כרגע'" [buttonLabel]="'לקבל צפיות'"></app-no-results>
       <ion-row class="users">
         <ion-col size="6" size-md="3" *ngFor="let viewed of viewedList">
             <person-card [user]="viewed"></person-card>

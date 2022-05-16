@@ -2,7 +2,6 @@ import {BaseModel} from '../crud-table';
 
 export interface UserModel extends BaseModel {
     id: string;
-    uid: string;
     firstName: string;
     isAdmin: boolean;
     height: number;

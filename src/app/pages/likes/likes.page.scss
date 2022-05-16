@@ -24,11 +24,6 @@ ion-badge {
   background: var(--color-button-boost) !important;
 }
 
-.safe-area-bottom {
-  position: relative;
-  height: calc(100% - 300px);
-}
-
 .segment-custom ion-segment-button {
   color: var(--color-primary-rgb);
 
@@ -37,3 +32,4 @@ ion-badge {
   }
 
 }
+

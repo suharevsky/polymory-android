@@ -42,11 +42,7 @@ export class LikesPage implements OnInit, OnDestroy {
 
     async ngOnInit() {
         
-        //this.type = 'views';
-
         const tab =  window.location.pathname.split('/')[3] || '';
-
-        console.log(tab)
 
         if(tab === 'favorites') {
             this.type = tab;
@@ -55,10 +51,7 @@ export class LikesPage implements OnInit, OnDestroy {
         }
 
         this.userService[this.type].lastKey = 0;
-        this.getList(this.type, true);
-
-        this.userService.getUser();
-        this.isLoading = false;
+        this.getList(this.type, true);       
 
        //this.route.url.subscribe(res => console.log(res))
 
@@ -67,6 +60,10 @@ export class LikesPage implements OnInit, OnDestroy {
                 this.counter = counter;
             }
         });
+    }
+
+    ionViewWillEnter() {
+        this.generalService.currentPage.next(this.type);
     }
 
     getHighlightView() {
@@ -90,8 +87,11 @@ export class LikesPage implements OnInit, OnDestroy {
         const list = this.userService.getList(type);
 
         this.userService.joinListIdsWithUsers(list).subscribe(results => {
+            this.isLoading = false;
 
+            
             if (type === 'favorites') {
+                
                 if (init) {
                     return this.favoriteList = results;
                 }
@@ -126,10 +126,6 @@ export class LikesPage implements OnInit, OnDestroy {
                 }
             });
         return await modal.present();
-    }
-
-    ionViewWillEnter() {
-      
     }
 
     loadData(event) {

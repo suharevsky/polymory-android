@@ -4,13 +4,12 @@ import {ITableState, TableResponseModel, TableService} from '../../crud-table';
 import {UserModel} from '../../models/user.model';
 import {environment} from '../../../environments/environment';
 import {map, switchMap, take} from 'rxjs/operators';
-import {combineLatest, Observable, of} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {baseFilter} from '../../helpers/http-extensions';
 import {AngularFirestore} from '@angular/fire/firestore';
 import firebase from 'firebase';
 import {AngularFireStorage, AngularFireStorageReference} from '@angular/fire/storage';
 import {AdminConfigService} from '../admin-config/admin-config.service';
-import { AuthService } from '../auth/auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -19,19 +18,22 @@ import { AuthService } from '../auth/auth.service';
 export class UserService extends TableService<UserModel> implements OnDestroy {
 
     API_URL = `${environment.apiUrl}/users`;
+    currentUserSubject: BehaviorSubject<UserModel>;
     public user: any;
-    public dimensions: any = {s: '120x120', m: '200x200', l: '600x600'};
+    public dimensions: any = {s: '120x120', l: '600x600'};
     public photoParam = {
-        baseUrl: 'https://firebasestorage.googleapis.com/v0/b/joyme-19532.appspot.com/o/images%2F',
-        token: '?alt=media&token=a1004a1b-0db9-4d05-b8af-ea04bdfeaf09'
+        baseUrl: 'https://firebasestorage.googleapis.com/v0/b/polymatch-d1996.appspot.com/o/images%2F',
+        token: '?alt=media&token=bcaf1e9b-9829-4ac1-90c6-8a8b2a542350'
     };
+    public params;
     public username: object;
     public ref: AngularFireStorageReference;
     public highlights = {
         lastKey: undefined,
         finishLoad: false,
         length: 0,
-        restResults: []
+        restResults: [],
+        reload: false
     };
     public favorites = {
         lastKey: 0,
@@ -45,20 +47,21 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     protected http: HttpClient;
     private password: any;
     private isPay: boolean;
-    private mainPhoto: string;
+    //private mainPhoto: string;
 
     // finished = false;
 
     constructor(
-        @Inject(HttpClient) http, private db: AngularFirestore,
-        private afStorage: AngularFireStorage,
+        @Inject(HttpClient) http, public db: AngularFirestore,
+        public afStorage: AngularFireStorage,
         public adminConfigService: AdminConfigService) {
         super(http);
+        this.currentUserSubject = new BehaviorSubject<UserModel>(undefined);
         this.adminConfigService.getOnlineDuration().subscribe(res => this.USER_ONLINE_DURATION = res.onlineDuration);
     }
 
     public setOnline() {
-        if (this.isOnline(this.user.lastTimeActive)) {
+        if (this.isOnline(this.user?.lastTimeActive)) {
             this.user.lastTimeActive = Date.now();
             this.save(this.user).subscribe();
         }
@@ -124,7 +127,7 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                 );
                 return userDocs.length ? combineLatest(userDocs) : of([]);
             }), map(arr => {
-                return arr;
+                return arr.filter(el => el.status === 1);
             }),
             take(1)
         );
@@ -151,16 +154,14 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
 
         this.user.photos = this.user.photos.filter(photoEl => {
             return photoEl.id !== photo.id;
-        });
+        });        
 
         this.user.allPhotosApproved = this.allPhotosApproved();
         this.user.mainPhotoApproved = this.mainPhotoApproved();
 
-        const sb = this.update(this.user).subscribe(_ => {
+        const sb = this.save(this.user).subscribe(_ => {
             // Create a reference to the file to delete
             this.ref = this.afStorage.ref('images/' + photo.url + '_120x120');
-            this.ref.delete();
-            this.ref = this.afStorage.ref('images/' + photo.url + '_200x200');
             this.ref.delete();
             this.ref = this.afStorage.ref('images/' + photo.url + '_600x600');
             this.ref.delete();
@@ -170,13 +171,12 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
 
     public getArea(allAreasOption = false) {
         const options = [
-            {title: 'רמת הגולן והסביבה', value: 'רמת הגולן והסביבה', chosen: false},
-            {title: 'גליל והעמקים', value: 'גליל והעמקים', chosen: false},
-            {title: 'חיפה והסביבה', value: 'חיפה והסביבה', chosen: false},
-            {title: 'גוש דן והשרון', value: 'גוש דן והשרון', chosen: false},
-            {title: 'ירושלים והסביבה', value: 'ירושלים והסביבה', chosen: false},
-            {title: 'אזור הנגב', value: 'אזור הנגב', chosen: false},
-            {title: 'אילת', value: 'אילת', chosen: false},
+            {title: 'צפון', value: 'צפון', chosen: false},
+            {title: 'חיפה', value: 'חיפה', chosen: false},
+            {title: 'מרכז', value: 'מרכז', chosen: false},
+            {title: 'תל אביב', value: 'תל אביב', chosen: false},
+            {title: 'ירושלים', value: 'ירושלים', chosen: false},
+            {title: 'דרום', value: 'דרום', chosen: false},
         ];
 
         if (allAreasOption) {
@@ -226,13 +226,16 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         const age = ((new Date()).getTime() - date) / (1000 * 60 * 60 * 24 * 365);
         return +age.toString().split('.')[0];
     }
-
+ 
     public getCities() {
+
+        const cities =  this.db.collection('cities').valueChanges().pipe(map((el: any) => JSON.parse(el[0].options)));
+        
         return {
             label: 'עיר',
             placeholder: 'חפש',
             value: this.user ? this.user.city : '',
-            options: this.db.collection('cities').valueChanges()
+            options: cities
         }
     }
 
@@ -255,18 +258,27 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
             options: [
                 {title: 'גבר', value: 'גבר', chosen: false},
                 {title: 'אישה', value: 'אישה', chosen: false},
-                {title: 'זוג', value: 'זוג', chosen: false}
+                {title: 'א-בינארי', value: 'א-בינארי', chosen: false},
+                {title: 'מגדר לא קונפורמי', value: 'מגדר לא קונפורמי', chosen: false},
+                {title: 'טרנס', value: 'טרנס', chosen: false},
+                {title: 'טרנסג\'נדר', value: 'טרנסג\'נדר', chosen: false},
+                {title: 'טרנסג\'נדרית', value: 'טרנסג\'נדרית', chosen: false}
             ],
         }
     }
 
-    public getPreference(currentValue = []) {
+    public getSexualOrientation(currentValue = []) {
 
         const options = {
             options: [
-                {title: 'גבר', value: 'גבר', chosen: false},
-                {title: 'אישה', value: 'אישה', chosen: false},
-                {title: 'זוג', value: 'זוג', chosen: false}
+                {title: 'סטרייט/ית', value: 'סטרייט/ית', chosen: false},
+                {title: 'הומו', value: 'הומו', chosen: false},
+                {title: 'לסבית', value: 'לסבית', chosen: false},
+                {title: 'ביסקסואל/ית', value: 'ביסקסואל/ית', chosen: false},
+                {title: 'אסקסואל/ית', value: 'אסקסואל/ית', chosen: false},
+                {title: 'פאנסקסואל/ית', value: 'פאנסקסואל/ית', chosen: false},
+                {title: 'קוויר', value: 'קוויר', chosen: false},
+                {title: 'לא ברור', value: 'לא ברור', chosen: false}
             ]
         };
 
@@ -278,9 +290,9 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         });
 
         return {
-            label: 'רוצה להכיר...',
-            value: this.user ? this.user.preference : '',
-            class: 'preference',
+            label: 'נטייה מינית',
+            value: this.user ? this.user.sexualOrientation : '',
+            class: 'sexualOrientation',
             icons: ['male-outline', 'female-outline', 'male-female-outline'],
             options: options.options,
         }
@@ -313,10 +325,40 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                 {title: 'סקס רגיל', value: 'סקס רגיל', chosen: false},
                 {title: 'סטיות', value: 'סטיות', chosen: false},
                 {title: 'קשר רציני', value: 'קשר רציני', chosen: false},
-                {title: 'סקס און-ליין', value: 'סקס און-ליין', chosen: false},
+                {title: 'סקס', value: 'סקס', chosen: false},
                 {title: 'בילויים משותפים', value: 'בילויים משותפים', chosen: false},
                 {title: 'יחסי עבד ושליט', value: 'יחסי עבד ושליט', chosen: false},
             ],
+        }
+    }
+
+    public getPreference(currentValue = []) {
+
+        const options = {
+            options: [
+                {title: 'גבר', value: 'גבר', chosen: false},
+                {title: 'אישה', value: 'אישה', chosen: false},
+                {title: 'א-בינארי', value: 'א-בינארי', chosen: false},
+                {title: 'מגדר לא קונפורמי', value: 'מגדר לא קונפורמי', chosen: false},
+                {title: 'טרנס', value: 'טרנס', chosen: false},
+                {title: 'טרנסג\'נדר', value: 'טרנסג\'נדר', chosen: false},
+                {title: 'טרנסג\'נדרית', value: 'טרנסג\'נדרית', chosen: false}
+            ]
+        };
+
+        options.options.map(el => {
+            if (currentValue.includes(el.title)) {
+                el.chosen = true;
+                return el;
+            }
+        });
+
+        return {
+            label: 'רוצה להכיר...',
+            value: this.user ? this.user.preference : '',
+            class: 'preference',
+            icons: ['male-outline', 'female-outline', 'male-female-outline'],
+            options: options.options,
         }
     }
 
@@ -423,25 +465,22 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         return this.user;
     }
 
-    public getUser() {
-
-        if (this.user) {
-            this.db.collection('users', ref =>
-                ref.where('id', '==', this.user.id)
-            ).snapshotChanges().pipe(map(user => user[0])).subscribe(user => {
-                this.setUser(user.payload.doc.data());
-            });
-
-            return this.user;
-        }
-    }
-
     public setUsername(username) {
         this.username = username;
     }
 
+    // Set data params between pages
+    public setData(params) {
+        this.params = params;
+    }
+
+    // get data params
+    public getData() {
+        return this.params;
+    }
+
     public getSocialAuthId() {
-        return this.user.socialAuthId;
+        return this.user?.socialAuthId;
     }
 
     public getId() {
@@ -476,6 +515,8 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     }
 
     save(user) {
+        //this.currentUserSubject.next(user);
+        //this.user = user;
         return this.update(user);
     }
 
@@ -484,22 +525,21 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     }
 
     loadHighlights(filterData) {
-        //return this.http.get<UserModel[]>(this.API_URL + '/highlights');
           return this.db.collection<any>('users', ref => {
                 let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
     
                 query = query.where('status', '==', 1);
                 query = query.where('isAdmin', '==', false);
 
+
                 if (filterData.area) {
                     query = query.where('area', '==', filterData.area);
                 }
+
     
-                if (filterData?.preferences.length > 0) {
-                    query = query.where('gender', 'in', filterData.preferences);
-                }
-    
-                //if (filterData?.online) {
+                query = query.where('gender', 'in', this.user.preference);
+                    
+                if (filterData?.typeUsers === 'online' || filterData?.typeUsers === 'all') {
                     if (this.highlights.lastKey) {
                         query = query.orderBy('lastTimeActive', 'desc')
                             .startAfter((this.highlights.lastKey as any).lastTimeActive || 0)
@@ -508,7 +548,7 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                         query = query.orderBy('lastTimeActive', 'desc')
                             .limit(20);
                     }
-                //}
+                }
 
                 return query;
             })
@@ -516,20 +556,30 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                 .pipe(
                     map((response: any) => {
                         let results = [];
+
     
                         for (let item of response.docs) {
                             results.push(item.data());
                           }
 
-                          if (filterData?.withPhoto) {
-                            //mainPhotoApproved
+                          if (filterData.ageRange) {
+                            results = results.filter((el: any) => {
+                                //if (el.gender === 'גבר' || el.gender === 'אישה') {
+                                    return this.getAge(el.birthday) >= filterData.ageRange.lower
+                                        && this.getAge(el.birthday) <= filterData.ageRange.upper;
+                                //}
+    
+                            });
+                        }
+
+                          if (filterData?.typeUsers === 'withPhoto') {
                             let allUsers = results;
                             results = allUsers.filter((user: any) => user.mainPhotoApproved === 1);
-                            Array.prototype.push.apply(this.highlights.restResults,allUsers.filter((user: any) => user.mainPhotoApproved === 0)); 
+                            Array.prototype.push.apply(this.highlights.restResults,allUsers.filter((user: any) => user.mainPhotoApproved === 0 && user.id !== this.user?.id)); 
                           }
 
                         //if (filterData?.online) {
-                            if ((results[results.length - 1]?.id === (this.highlights.lastKey as any)?.id)) {    
+                            if ((results[results.length - 1]?.id === (this.highlights.lastKey as any)?.id) && typeof results[results.length - 1]?.id !== 'undefined' ) {    
                                 this.highlights.finishLoad = true;
                                 return [];
                             }
@@ -537,35 +587,16 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                         //}
 
                         if (!this.highlights.lastKey) {
-                            console.log('finish');
-
                             this.highlights.finishLoad = true;
                         }
-    
-                        if (filterData.ageRange) {
-                            results = results.filter((el: any) => {
-                                if (el.gender === 'גבר') {
-                                    return this.getAge(el.birthday) >= filterData.ageRange.lower
-                                        && this.getAge(el.birthday) <= filterData.ageRange.upper;
-                                }
-    
-                                if (el.gender === 'אישה') {
-                                    return this.getAge(el.birthday) >= filterData.ageRange.lower
-                                        && this.getAge(el.birthday) <= filterData.ageRange.upper;
-                                }
-    
-                                if (el.gender === 'זוג') {
-                                    return ((this.getAge(el.birthday) >= filterData.ageRange.lower)
-                                        && (this.getAge(el.birthday1) >= filterData.ageRange.lower))
-                                        &&
-                                        ((this.getAge(el.birthday) <= filterData.ageRange.upper)
-                                            && (this.getAge(el.birthday1) <= filterData.ageRange.upper));
-                                }
-                            });
-                        }
 
-    
-                        return results.length > 0 ? results.filter(user => user && user.id !== this.user.id) : [];
+                        // get number of active photos
+                        results = results.map(user => {
+                            user.numPhotos = user.photos.filter(photo => photo.status === 1).length;
+                            return user;
+                        });
+
+                        return results.length > 0 ? results.filter(user => user && user.id !== this.user?.id) : [];
                     }),
                 );
     }

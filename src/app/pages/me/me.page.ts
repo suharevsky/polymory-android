@@ -27,14 +27,11 @@ export class MePage implements OnInit, OnDestroy {
         private modalCtrl: ModalController,
         public http: HttpClient,
         public userService: UserService,
-        public generalSevice: GeneralService
+        public generalService: GeneralService
     ) {
     }
 
     async ngOnInit() {
-        this.userService.getUser();
-        console.log('reloaded');
-
     }
 
     ionViewDidEnter() {
@@ -42,22 +39,24 @@ export class MePage implements OnInit, OnDestroy {
     }
 
     async viewProfile(profile) {
-        if(this.generalSevice.isDesktop()) {
-            this.navCtrl.navigateForward('user/profile/' + profile.id, {queryParams:{id:  profile.id} });
-        }else {
+         if(this.generalService.isDesktop()) {
+             this.userService.setData(profile)
+             this.navCtrl.navigateForward('user/profile');
+         }else {
             const modal = await this.modalCtrl.create({
                 component: ProfilePage,
+                cssClass: 'profile-modal',
                 componentProps: {
                     profile,
                 }
             });
     
             return await modal.present();
-        }
+         }
     }
 
     async photosProfile() {
-        if(this.generalSevice.isDesktop()) {
+        if(this.generalService.isDesktop()) {
             this.navCtrl.navigateForward('user/photos')
         }else{
             const modal = await this.modalCtrl.create({
@@ -69,7 +68,7 @@ export class MePage implements OnInit, OnDestroy {
 
     async viewSettings() {
 
-        if(this.generalSevice.isDesktop()) {
+        if(this.generalService.isDesktop()) {
             this.navCtrl.navigateForward('user/settings')
         }else{
             const modal = await this.modalCtrl.create({
@@ -81,7 +80,7 @@ export class MePage implements OnInit, OnDestroy {
 
     async viewEditProfile() {
 
-        if(this.generalSevice.isDesktop()) {
+        if(this.generalService.isDesktop()) {
             this.navCtrl.navigateForward('user/edit')
         }else{
             const modal = await this.modalCtrl.create({
@@ -97,6 +96,10 @@ export class MePage implements OnInit, OnDestroy {
             cssClass: 'custom-modal-small',
         });
         return await modal.present();
+    }
+
+    ionViewWillEnter() {
+        this.generalService.currentPage.next('me');
     }
 
     ngOnDestroy(): void {

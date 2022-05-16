@@ -6,6 +6,29 @@
   }
 }
 
+.progress-bar {
+  position: relative;
+  &__percentage {
+    color: rgb(43, 60, 77);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-weight: bold;
+    z-index: 999999;
+  }
+  ion-progress-bar {
+    height: 40px;
+    --progress-background: #7774c5;
+  }
+}
+
+.chat-text img {
+  max-width: 120px;
+  max-height: 120px;
+}
+
 .user-name {
   font-weight: 400;
   font-size: 12px;
@@ -45,4 +68,32 @@ ion-content {
       }
     }
   }
+
+  .chat-item {
+    &.chat-item-outgoing {
+      .chat-body {
+        .time {
+          left: -40px;
+          right: auto;
+          top: calc(50% - 10px);
+        }
+      }
+    }
+    .chat-body {
+      cursor: default;
+      position: relative;
+      .time {
+        position: absolute;
+        right: -40px;
+        transform: translate(0, -50%);
+        top: calc(50% - 20px);
+      }
+    }
+  }
+
+  .profile-bar {
+    display: flex;
+    cursor: pointer;
+  }
 }
+

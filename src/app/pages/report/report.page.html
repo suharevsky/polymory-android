@@ -20,9 +20,9 @@
         </ion-item>
         <ion-item>
             <ion-label position="stacked">תגובות (אופציונאלי)</ion-label>
-            <ion-textarea formControlName="message" rows="6"></ion-textarea>
+            <ion-textarea maxLength="500" formControlName="message" rows="6"></ion-textarea>
         </ion-item>
-        <ion-button color="boost-bg" expand="block" (click)="send()"><ion-spinner *ngIf="loading"></ion-spinner>
-            <span *ngIf="!loading">שלח</span></ion-button>
+        <a (click)="send()" class="btn"><ion-spinner *ngIf="loading"></ion-spinner>
+            <span *ngIf="!loading">שלח</span></a>
     </form>
 </ion-content>

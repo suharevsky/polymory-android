@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController, NavController, Platform } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { ModalController, NavController } from '@ionic/angular';
 import { ProfilePage } from 'src/app/pages/profile/profile.page';
+import { GeneralService } from 'src/app/services/general/general.service';
 import {UserService} from '../../services/user/user.service';
 
 @Component({
@@ -14,8 +16,9 @@ export class PersonCardComponent implements OnInit {
   constructor(
       public userService: UserService,
       private modalCtrl: ModalController,
-      private platform: Platform,
-      private navCtrl: NavController
+      private navCtrl: NavController,
+      private generalService: GeneralService,
+      private router: Router, 
 
   ) {     
   }
@@ -26,20 +29,20 @@ export class PersonCardComponent implements OnInit {
 
   async viewProfile() {
     
-    // if(this.platform.is('desktop')) {
-    //   this.navCtrl.navigateRoot(['user/profile/' + this.user.id], { queryParams: {id:  this.user.id} } );
-    // }else{
+     if(this.generalService.isDesktop()) {
+       this.userService.setData(this.user);
+       this.router.navigate(['user/profile']);
+
+     }else{
       const modal = await this.modalCtrl.create({
         component: ProfilePage,
+        cssClass: 'profile-modal',
         componentProps: {
           profile: this.user,
         }
 
     });
     return await modal.present();
-   // }
-  
-
+    }
   }
-
 }

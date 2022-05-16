@@ -1,20 +1,9 @@
-<ion-header #header class="header-custom mobile">
+<ion-header class="header-custom mobile">
     <div class="segment" (click)="filterModal()">
         <ion-icon name="options-outline"></ion-icon>
     </div>
-    <div class="logo">
-        <div class="logo"><img class="logo__image" src="/assets/img/logo.png"></div>
-    </div>
-    <!-- <ion-toolbar class="toolbar-no-border toolbar-no-safe-area">
-        <ion-segment class="segment-custom" mode="md">
-            <div class="segment">
-                <ion-select cancel-text="ביטול" (ionChange)="onChangeFilter($event)" [(ngModel)]="filterData.status">
-                    <ion-select-option [value]="0">אונליין</ion-select-option>
-                    <ion-select-option [value]="1">עם תמונה בלבד</ion-select-option>
-                </ion-select>
-            </div>
-        </ion-segment>
-    </ion-toolbar> -->
+        <div class="logo"><img class="logo__image" src="/assets/img/logo-dark.png"></div>
+
 </ion-header>
       <!-- Loading screen -->
       <div *ngIf="isLoading" class="full-height safe-area-bottom">
@@ -42,7 +31,7 @@
 <ion-content *ngIf="!generalService.isDesktop()">
     <ng-content *ngTemplateOutlet="template"></ng-content>
 </ion-content>
-    <ng-content id="top" name="top" *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
+    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
 
     <!--<div class="boost-promotion">
       <ion-text color="boost">קבל עד 100 צפיות נוספות</ion-text>
@@ -53,49 +42,34 @@
     </div>-->
 
     <ng-template #template>
-        <ion-header class="title-margin desktop" collapse="condense">
+        <ion-header *ngIf="!isLoading" class="title-margin desktop" collapse="condense">
             <ion-toolbar>
                 <ion-title class="page-title">גילוי</ion-title>
             </ion-toolbar>
         </ion-header>
-        <app-filter (click)="filterModal()" [filterData]="filterData"></app-filter>
+        <app-filter *ngIf="!isLoading" (click)="filterModal()" [filterData]="filterData"></app-filter>
 
-        <div class="safe-area-bottom" (ionScroll)="onActivate($event)">
+        <div class="safe-area-bottom">
             <!-- USERS -->
             <div class="segment-view">
                 <div (click)="getPhotos()" *ngIf="warningMsg.active" class="warning message"
                     [innerHTML]="warningMsg.message">
                 </div>
 
-                <div [hidden]="isLoading" class="no-results" *ngIf="users?.length==0">
-                    אין תוצאות
-                </div>
+                <app-no-results *ngIf="users?.length==0" [loading]="isLoading" [headline]="'אין תוצאות '"></app-no-results>
+
                 <ion-grid>
-                    <ion-row>
-                        <ion-col size="6" size-md="4" sizeLg="3" *ngFor="let user of users">
+                <ion-row>
+                    <ng-container *ngFor="let user of users;let indexOfelement=index;">
+                        <app-banner *ngIf="indexOfelement % 20 === 0">
+                    </app-banner>
+                        
+                        <ion-col size="6" size-md="4" sizeLg="3">
                             <person-card [user]="user"></person-card>
                         </ion-col>
-                    </ion-row>
-                    <!-- <a href="#top" pageScroll class="btn btn-top">
-                        <svg 
-          fill="#fff"                  
-          version="1.1"
-          id="Capa_1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          viewBox="0 0 490.656 490.656"
-          style="enable-background: new 0 0 490.656 490.656"
-          xml:space="preserve"
-        >
-          <path
-            d="M487.536,120.445c-4.16-4.16-10.923-4.16-15.083,0L245.339,347.581L18.203,120.467c-4.16-4.16-10.923-4.16-15.083,0
-                           c-4.16,4.16-4.16,10.923,0,15.083l234.667,234.667c2.091,2.069,4.821,3.115,7.552,3.115s5.461-1.045,7.531-3.136l234.667-234.667
-                           C491.696,131.368,491.696,124.605,487.536,120.445z"
-          />
-        </svg>
-                    </a>  -->
+                </ng-container>
+            </ion-row>
+
                 </ion-grid>
                 <ion-infinite-scroll [ngStyle]="{'height.px': generalService.isDesktop() ? bottomScrollBar :''}" *ngIf="!userService.highlights.finishLoad" disabled="false" threshold="100px"
                                     (ionInfinite)="loadData($event)">
@@ -107,4 +81,3 @@
             </div>
         </div>
     </ng-template>
-

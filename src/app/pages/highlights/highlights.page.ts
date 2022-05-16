@@ -9,6 +9,8 @@ import {FilterService} from '../../services/filter/filter.service';
 import {PhotosPage} from '../photos/photos.page';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { GeneralService } from 'src/app/services/general/general.service';
+import { debounceTime, take } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-highlights',
@@ -17,25 +19,22 @@ import { GeneralService } from 'src/app/services/general/general.service';
 })
 export class HighlightsPage implements OnInit, OnDestroy {
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-    @ViewChild('header') header: any;
+
     @ViewChild(IonContent, {static: false}) content: IonContent;
 
     isLoading = true;
     user: UserModel;
     // store last document
     users = [];
-    bottomScrollBar = '1000'
+    bottomScrollBar = '800'
     warningMsg = {active: false, message: ''};
     ageRange: any = {
         lower: 18,
         upper: 75
     };
     filterData = {
-        withPhoto: true,
-        online: false,
-        preferences: [],
+        typeUsers: 'all',
         area: '',
-        status: 0,
         ageRange: {
             upper: 75,
             lower: 18
@@ -58,32 +57,32 @@ export class HighlightsPage implements OnInit, OnDestroy {
     ) {
     }
 
-    ngOnInit() {
-        console.log('ngOnInit');
-
+    async ngOnInit() {
         this.filterData = this.filterService.get(this.filterData);
-        //console.log(this.userService.highlights);
+        //console.log(this.userService.highlights);    
+        this.getResults();
+        this.fcmService.initPush();    
+    }
+
+    async getResults() {
+        this.scrollPosition = 0;
+
         this.userService.highlights = {
             lastKey: undefined,
             finishLoad: false,
             length: 0,
-            restResults: []
+            restResults: [],
+            reload: false
         };
 
-        if( this.users.length === 0) {
-            //this.users = [];
-            setTimeout(_ => {
-                this.fcmService.initPush();
-                this.userService.setOnline();
-                this.loadHighlights().subscribe(users => {
-                    this.isLoading = false;
-                    users.forEach((user: any) => this.users.push(user));
-                });
-            },3000);
-        }
-     
-    }
+        this.loadHighlights().pipe(debounceTime(900)).subscribe(users => {
 
+            this.isLoading = false;
+            users.forEach((user: any) => this.users.push(user));
+            this.userService.setOnline();
+        });
+    }
+ 
     checkIfFrozenAcc() {
         if (this.userService.user.status === 4) {
             // activate
@@ -100,7 +99,6 @@ export class HighlightsPage implements OnInit, OnDestroy {
     }
 
     hasRejectedPhotos() {
-        this.userService.getUser();
         const rejectedPhotos = this.userService.user.photos.filter(photo => photo.status === 2);
 
         if (rejectedPhotos.length > 0) {
@@ -111,15 +109,17 @@ export class HighlightsPage implements OnInit, OnDestroy {
     }
 
     ionViewWillEnter() {
+        this.generalService.currentPage.next('highlights');
+        if(this.userService.highlights.reload) {
+            // Refresh page becase user might choose difference prefference
+            this.filter()
+        }
         // Restore scroll position
         // this.content.scrollToPoint(0, this.scrollPosition);
         
-            if(this.userService.user) {
-                this.hasRejectedPhotos();
-                this.checkIfFrozenAcc();
-            }else{
-                this.authService.logout();
-            }        
+        this.hasRejectedPhotos();
+        this.checkIfFrozenAcc();
+                  
         
         // this.renderer.setStyle(this.header.el, 'webkitTransition', 'top 700ms');
     }
@@ -132,23 +132,6 @@ export class HighlightsPage implements OnInit, OnDestroy {
             this.renderer.setStyle(this.header.el, 'top', '20px');
         }
     }*/
-    onChangeFilter(e) {
-        if (this.filterData.status === 1) {
-            this.filterData.withPhoto = true;
-            this.filterData.online = false;
-        } else {
-            this.filterData.withPhoto = false;
-            this.filterData.online = true;
-        }
-        this.filter();
-    }
-
-    onActivate(event) {
-        console.log(event);
-        window.scroll(0,0);
-        //or document.body.scrollTop = 0;
-        //or document.querySelector('body').scrollTo(0,0)
-    }
 
 
     async filterModal() {
@@ -185,7 +168,7 @@ export class HighlightsPage implements OnInit, OnDestroy {
         this.filterService.set(this.filterData);
 
         this.users = [];
-        this.loadHighlights().pipe().subscribe(users => {
+        this.loadHighlights().subscribe(users => {
             users.forEach(user => this.users.push(user));
         });
     }

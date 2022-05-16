@@ -1,9 +1,11 @@
 <div (click)="viewProfile()"
   [defaultImage]="userService.getDefaultPhotoPlaceholder(user)" [lazyLoad]="userService.getMainPhoto(user,'l')"
   class="person-card background-img">
+  <div *ngIf="user.numPhotos > 0" class="num-active-photos">
+    <span> {{user.numPhotos}} </span> <ion-icon name="camera-outline"></ion-icon>
+  </div>
   <span *ngIf="userService.isOnline(user.lastTimeActive)" class="online-status active"></span>
   <div class="card-caption">
-    
       <ion-col class="caption-text">
         <div class="caption-title">
           {{user.username}} <span *ngIf="user.birthday">{{userService.getAge(user.birthday)}}</span>

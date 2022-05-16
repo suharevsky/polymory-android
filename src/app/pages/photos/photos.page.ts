@@ -12,6 +12,7 @@ import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} 
 import {Observable} from 'rxjs';
 import {finalize, map} from 'rxjs/operators';
 import { GeneralService } from 'src/app/services/general/general.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
     selector: 'app-photos',
@@ -70,11 +71,15 @@ export class PhotosPage implements OnInit {
         public toastController: ToastController,
         public actionSheetController: ActionSheetController,
         public generalService: GeneralService,
+        public authService: AuthService,
     ) {
     }
     ngOnInit() {
         this.newUser = localStorage.getItem('newUser') === 'true';
-        this.userService.getUser();
+      
+    }
+
+    ionViewWillEnter() {
         this.privatePhotos = this.userService.user.photos.filter(photo => photo.isPrivate);
         this.publicPhotos = this.userService.user.photos.filter(photo => !photo.isPrivate);
     }
@@ -88,7 +93,12 @@ export class PhotosPage implements OnInit {
     }
 
     close() {
-        this.navCtrl.back();
+        if(this.newUser) {
+            localStorage.removeItem('newUser');
+            this.navCtrl.navigateForward('/user/highlights');
+        }else{
+            this.navCtrl.back();
+        }
     }
 
     async photosProfile() {
@@ -152,18 +162,27 @@ export class PhotosPage implements OnInit {
                 this.presentToast('not a valid file: ' + file.type);
             };
             img.src = _URL.createObjectURL(file);
+
+            console.log(img.src);
             
         }
     }
 
     imageCropped(event: ImageCroppedEvent) {
         this.croppedImage = event.base64;
-
     }
 
     done() {
-        localStorage.removeItem('newUser');
+        if(this.newUser) {
+            localStorage.removeItem('newUser');
+            this.navCtrl.navigateForward('/tabs/highlights');
+        }
+        
         this.modalCtrl.dismiss();
+    }
+
+    ionViewWillLeave() {
+        console.log('LEAVING')
     }
 
     imageLoaded() {
@@ -237,11 +256,12 @@ export class PhotosPage implements OnInit {
                 this.uploadingProcess = false;
                 this.cancelUpload();
 
-                this.userService.update(this.userService.user).subscribe(() => {},
+                this.userService.save(this.userService.user).subscribe(() => {},
                 err => console.log(err),
                 () => {
                     setTimeout(() =>{
                         this.userService.user.photos = photos;
+                        //console.log(this.userService.user.photos);
                     },900)
                 });
 
@@ -342,7 +362,6 @@ export class PhotosPage implements OnInit {
         await alert.present();
 
         const {role} = await alert.onDidDismiss();
-        console.log('onDidDismiss resolved with role', role);
     }
 
     async selectImage(event, addNew = false, photo: any = '', isPrivate: boolean = false) {

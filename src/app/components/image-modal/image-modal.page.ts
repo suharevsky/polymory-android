@@ -23,6 +23,7 @@ export class ImageModalPage implements OnInit {
   constructor(private modalCtrl: ModalController) { }
 
   ngOnInit() {
+    console.log(this.img)
   }
 
   close() {

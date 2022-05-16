@@ -2,6 +2,7 @@
 
 .slides {
   height: 100%;
+  max-width: 600px;
 
   ion-slide{ 
     cursor: grab;
@@ -69,5 +70,12 @@
   padding: 12px 8px;
   border-radius: 50px;
   margin: 0 15%;
+  }
+}
+
+
+@media(min-width: 768px) {
+  ion-slide {
+    //height: 600px !important;
   }
 }

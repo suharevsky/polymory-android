@@ -36,4 +36,10 @@ export class DateHelper {
         // if (daysPassed <= 7) return `${daysPassed} days ago`;
         return new Intl.DateTimeFormat(locale).format(date);
     };
+
+    // add zero in front of numbers < 10
+    static addZero(num) {
+        if (num<10) {num = "0" + num};  
+        return num;
+    }
 }

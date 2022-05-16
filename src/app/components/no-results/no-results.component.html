@@ -1,0 +1,14 @@
+<div class="no-results">
+  <ion-spinner [hidden]="!loading" name="crescent"></ion-spinner>
+  <ng-container *ngIf="!loading">
+    <div class="users">
+      <img src="/assets/img/no-results/1.png">
+      <img src="/assets/img/no-results/5.png">
+      <img src="/assets/img/no-results/2.png">
+      <img src="/assets/img/no-results/3.png">
+      <img src="/assets/img/no-results/4.png">
+    </div>
+    <span class="headline">{{headline}}</span>
+    <button *ngIf="buttonLabel" class="btn">{{buttonLabel}}</button>
+  </ng-container>
+</div>

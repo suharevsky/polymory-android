@@ -17,9 +17,8 @@ a {
   &__name {
     font-size: 42px;
     letter-spacing: 2px;
+    margin-top: -12px;
   }
-
-  margin-bottom: 34px;
 }
 
 .moveInBottom {
@@ -27,10 +26,10 @@ a {
   animation-fill-mode: backwards; }
 
 .main-bg {
-  //background: url('../../../assets/img/main-bg.jpg');
-  background: url("../../../assets/img/main-bg.jpeg") no-repeat;
+  background: url("../../../assets/img/landing-bg.jpg") no-repeat;
   background-size: cover;
-  background-position: 60% 50%;
+  background-position: 40% 60%;
+  //background-position: 60% 50%;
   height: 100%;
   width: 100%;
   position: absolute;
@@ -107,6 +106,10 @@ ion-button {
     margin-top: 30vh;
     text-align: center;
   }
+}
+
+.safe-area-bottom, .segment-view {
+  height: 100%;
 }
 
 .logo {
@@ -304,16 +307,18 @@ ion-button {
   footer {
     border: 1px solid #f0f4fc;
     background: #f0f4fc;
+    .logo{
+      img {
+        height: 30px;
+        margin: 0px;
+      }
+    }
     nav {
       width: 55%;
       margin: 0 auto;
       font-size: 14px;
     }
   }
-
-  .main-bg {
-    background-position: top center;
-   }
   
   main.inner {
     color: #fff;
@@ -323,15 +328,23 @@ ion-button {
     display: flex;
     justify-content: space-around;
     text-align: center;
-    height: 90vh;
-    background: rgba(0, 0, 0 , .75);
+    height: 100vh;
+    background: rgba(0, 0, 0 , .6);
     position: relative;
 
   }
 
+  .arrow-to-bottom {
+    width: 75px;
+    position: absolute;
+    bottom: 40px;
+    cursor: pointer;
+  }
+
   .description {
-    font-size: 32px;
+    font-size: 34px;
     line-height: 3rem;
+    margin: 22px 0;
   }
 }
 
@@ -378,3 +391,17 @@ ion-button {
 }
 
 
+@media (max-width: 768px) {
+  .logo {
+    &__subtitle {
+      font-size: 18px;
+    }
+    &__name {
+      font-size: 26px;
+    }
+    &__image {
+      height: 48px;
+    }
+  }
+  
+}

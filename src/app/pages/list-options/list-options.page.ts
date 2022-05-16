@@ -23,11 +23,13 @@ export class ListOptionsPage implements OnInit {
     ngOnInit() {
 
         if (isObservable(this.object.options)) {
+           console.log('yes');
             this.object.options.subscribe(async (cities: Array<any>) => {
-                this.object = {...this.object, options: cities[0].options};
-                console.log(this.object);
+                console.log(cities);
+                this.object = {...this.object, options: cities};
             })
         }
+
 
         if (this.multiple) {
             this.object.options.map(el => el.chosen = this.currentValue.includes(el.value));

@@ -1,4 +1,10 @@
-<ion-content force-overscroll="false" class="me-page bg-light">
+<ion-content force-overscroll="false" class="me-page bg-light" *ngIf="!generalService.isDesktop()">
+    <ng-content *ngTemplateOutlet="template"></ng-content>
+</ion-content>
+    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
+
+<ng-template #template>
+<div force-overscroll="false" class="me-page bg-light">
     <ion-header class="title-margin desktop" collapse="condense">
         <ion-toolbar>
             <ion-title class="page-title">הפרופיל שלי</ion-title>
@@ -79,4 +85,5 @@
         </div> -->
         </div>
     </div>
-</ion-content>
+</div>
+</ng-template>

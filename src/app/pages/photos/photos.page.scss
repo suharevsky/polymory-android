@@ -43,6 +43,10 @@
     position: relative;
   }
 
+  .rules {
+    padding: 8px
+  }
+
   .label {
     &-main {
       position: absolute;
@@ -190,8 +194,5 @@ ion-buttons.options {
 @media (min-width: 768px)  {
   .edit-photo {
     height: calc(100vh - 320px);
-  }
-  .finish-registration {
-    display: none;
   }
 }

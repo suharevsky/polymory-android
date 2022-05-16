@@ -18,6 +18,7 @@ import { ImageRequestService } from 'src/app/services/image-request/image-reques
 export class ProfileImageSlidesComponent implements OnInit {
     activeIndex: number = 0;
     setSlideHeight = 0;
+    setSlideWidth = 0;
     currentEnd: number = -1;
     @Input() user: UserModel;
     @Input() images: any[] = [];
@@ -26,6 +27,8 @@ export class ProfileImageSlidesComponent implements OnInit {
     @Output() onChange = new EventEmitter();
     @ViewChild('profileImages', {static: false}) slides: IonSlides;
     @ViewChild('slideHeight') slideHeight: ElementRef;
+    @ViewChild('sliderHeight') sliderHeight: ElementRef;
+
     constructor(
         private taptic: TapticEngine, 
         public authService: AuthService, 
@@ -38,18 +41,27 @@ export class ProfileImageSlidesComponent implements OnInit {
         {}
 
     ngOnInit() {
-        setTimeout(()=>{
-            console.log(this.user);
+
+        if(this.user) {
             this.images = this.userService.getAllPhotos(this.user, true);
-            //this.cd.detectChanges();
-        },3000);
+        }else{
+            setTimeout(()=>{
+                console.log(this.user);
+                this.images = this.userService.getAllPhotos(this.user, true);
+                //this.cd.detectChanges();
+            },0);
+        }
 
         //this.userService.getListData('requestImage',this.user.id).subscribe(res => this.imageRequest = res); 
         //this.imageRequestService.checkImageRequest(this.user);     
     }
 
     ngAfterViewInit() {
-      
+        setTimeout(_ => {
+            //@ts-ignore
+            this.setSlideHeight = this.generalService.isDesktop() ? this.slideHeight.el.offsetWidth + 'px' : 'auto';
+
+        },1000);
     }
 
     onSlideChange() {

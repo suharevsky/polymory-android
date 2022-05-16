@@ -27,7 +27,6 @@ export class MatchesPage implements OnInit, OnDestroy {
                         this.viewProfile(params.sender);
                         this.paramsService.reset();
                     }
-        this.userService.getUser();
     }
     
     ngOnInit() {}

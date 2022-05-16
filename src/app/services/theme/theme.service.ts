@@ -19,9 +19,9 @@
 */
 
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { Platform } from '@ionic/angular';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { StorageService } from '../storage/storageService';
 
 const DARK_MODE_CLASS = 'dark-theme';
 
@@ -29,10 +29,10 @@ const DARK_MODE_CLASS = 'dark-theme';
   providedIn: 'root'
 })
 export class ThemeService {
-  constructor(private storage: Storage, public platform: Platform) {}
+  constructor(private storageService: StorageService, public platform: Platform) {}
 
   toggleDarkMode(isDark = false, needUpdate = true) {
-    if (needUpdate) this.storage.set(DARK_MODE_CLASS, isDark);
+    if (needUpdate) this.storageService.set(DARK_MODE_CLASS, isDark);
     document.body.classList.toggle(DARK_MODE_CLASS, isDark);
 
     if (this.platform.is('capacitor')) {
@@ -61,7 +61,7 @@ export class ThemeService {
   }
 
   getCurrentSetting() {
-    return this.storage.get(DARK_MODE_CLASS);
+    return this.storageService.get(DARK_MODE_CLASS);
   }
 
   /**
@@ -78,7 +78,7 @@ export class ThemeService {
   }
 
   restore() {
-    this.storage.get(DARK_MODE_CLASS)
+    this.storageService.get(DARK_MODE_CLASS)
       .then(val => {
         this.toggleDarkMode(val, false);
       });

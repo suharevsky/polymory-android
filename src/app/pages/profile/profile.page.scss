@@ -20,6 +20,12 @@ ion-buttons {
   }
 }
 
+.profile-info {
+  .border-bottom {
+    line-height: 1.8em;
+  }
+}
+
 .heart {
   width: 100px;
   height: 100px;
@@ -237,6 +243,18 @@ ion-buttons {
 
   .button-custom {
     margin: 0 12px;
+    --background: #fff;
+    color: var(--color-primary-rgb);
+
+    &:hover {
+      --background-hover: #7774c5;
+      color: #fff;
+      --box-shadow: 0px 15px 20px rgb(120, 117, 197, 0.55);
+    }
+
+    &:hover ion-icon {
+      color: #fff;
+    }
   }
 
   .button-lg ion-icon {
@@ -244,13 +262,6 @@ ion-buttons {
   }
 
   ion-button {
-
-    &.button-favorite {
-      span {
-        color: var(--color-primary-rgb);
-      //  color: var(--color-button-star);
-      }
-    }
 
     &.button-dislike ion-icon {
       color: var(--color-button-dislike);
@@ -278,3 +289,50 @@ ion-buttons {
   }
 }
 
+@media (min-width: 768px)  {
+  ion-buttons {
+    position: relative;
+  }
+  .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    .profile-header {
+      flex: 0 0 50%;
+    }
+
+    .profile-info{
+      flex: 0 0 50%;
+      padding: 0 40px;
+    }
+
+    .profile-header {
+      height: auto;
+      width: 50%;
+      cursor: pointer;
+    }
+  }
+
+
+
+  .border-bottom {
+    border-bottom: none;
+  }
+
+  .profile-footer {
+    margin-bottom: 0;
+    display: flex;
+    flex: 0 0 50%;
+    justify-content: space-between;
+  }
+
+  .bottom-actions {
+    padding-bottom: 0;
+    background: none;
+    bottom: 32px;
+    position: absolute;
+  }
+
+  .profile-footer {
+    margin: 0;
+  }
+}

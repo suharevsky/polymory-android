@@ -35,12 +35,10 @@ export class SettingsPage implements OnInit {
                 public generalService: GeneralService,
                 public appVersion: AppVersion,
                 public userService: UserService) {
-        this.userService.getUser();
     }
 
     ngOnInit() {
 
-        console.log('loaded');
         this.settingsService.getByUserId(this.userService.getId()).subscribe(settings => {
             this.settings = settings;
         });
@@ -83,7 +81,7 @@ export class SettingsPage implements OnInit {
     }
 
     contactUs() {
-        window.location.href = "mailto:contact@polymatch.co.il";
+        window.location.href = "mailto:aliksui.ua@gmail.com";
     }
 
     getContact() {

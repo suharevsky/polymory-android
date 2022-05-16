@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {PageService} from '../../services/page/page.service';
 import {map} from 'rxjs/operators';
-import {ModalController, NavParams} from '@ionic/angular';
+import {ModalController} from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

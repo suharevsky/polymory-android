@@ -31,14 +31,14 @@ export class GoogleSigninDirective {
 
         this.presentLoading();
         this.afAuth.signInWithPopup(new GoogleAuthProvider()).then(res => {
-            this.userService.getById(res.user.uid).subscribe(user => {
+            this.userService.getById(res.user.id).subscribe(user => {
                 if (user) {
                     this.userService.setUser(user);
                     this.authService.login(user);
                     this.navCtrl.navigate(['tabs/highlights']);
                 } else {
 
-                    this.userService.setUser({socialAuthId: res.user.uid});
+                    this.userService.setUser({socialAuthId: res.user.id});
                     // this.userService.getSocialAuthId();
                     // this.afAuth.signOut().then(_ => {
                     this.navCtrl.navigate(['register-steps']);

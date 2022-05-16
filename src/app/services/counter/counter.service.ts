@@ -15,7 +15,8 @@ export class CounterService {
 
     async setByUserId(id, defaultValue = -1, type) {
 
-        const increment = defaultValue !== 0 ? firebase.firestore.FieldValue.increment(1) : 0;
+        //const increment = defaultValue !== 0 ? firebase.firestore.FieldValue.increment(1) : 0;
+        const increment = firebase.firestore.FieldValue.increment(defaultValue);
 
         const ref = this.db.collection('users').doc(id).collection('counter').doc(id);
 
@@ -25,7 +26,6 @@ export class CounterService {
     }
 
     getByUserId(id) {
-        console.log('counter user id', id);
         return this.db.collection('users').doc(id).collection('counter').doc(id).snapshotChanges();
     }
  }

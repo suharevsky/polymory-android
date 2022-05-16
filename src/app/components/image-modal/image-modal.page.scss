@@ -6,6 +6,11 @@ ion-footer {
     margin-bottom: 10px;
 }
 
+img {
+    display: block;
+    margin: 0 auto;
+}
+
 swiper {
     height: 100%;
 }
@@ -15,6 +20,8 @@ ion-icon {
 }
 
 .btn-close {
+    position: absolute;
+    z-index: 9999999;
     ion-icon {
         margin: 0;
         border: 1px solid #fff;
@@ -23,15 +30,9 @@ ion-icon {
     }
 }
 
-
-@media (min-width: 768px)  {
-    ion-footer {
-        position: absolute;
-        .btn-close {
-            position: absolute;
-            left: 0;
-        }
-    }
-
-    .modal-wrapper{}
+img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

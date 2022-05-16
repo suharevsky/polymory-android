@@ -117,6 +117,18 @@ ion-grid {
       display: block !important;
     }
 
+    .profile-modal {
+      --backdrop-opacity: var(--ion-backdrop-opacity, 0.85) !important;
+      .modal-wrapper  {
+        height: 80vh;
+        width: 550px;
+  
+        ion-slide {
+          height: 550px;
+        }
+      }
+    }
+
     .image-modal {
       .modal-wrapper {
         width: 600px;
@@ -151,5 +163,19 @@ ion-grid {
 
     .custom-filter-form.sc-ion-modal-ios-h{
       --height: 740px;
+    }
+  }
+
+  .safe-area-bottom, 
+  .segment-view {
+    position: relative;
+    height: calc(100% - 150px);
+    width: 100%;
+  }
+
+  @media (max-width: 768px)  {
+    .safe-area-bottom, 
+    .segment-view {
+      position: initial;
     }
   }

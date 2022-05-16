@@ -1,16 +1,13 @@
 import {NgModule} from '@angular/core';
 import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
-
+import { DeviceGuard } from './guard/device/device.guard';
+import { AuthGuard } from './guard/auth/auth.guard';
 
 
 // Send unauthorized  users to login
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/landing']);
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/']);
 // Automatically log in users
-
-//Platform.ready.then(_=> {
-   // const redirectLoggedInToResults = () => Platform.is('desktop') ? redirectLoggedInTo(['/user/highlights']) : redirectLoggedInTo(['/tabs/highlights']);
-//});
 
 const redirectLoggedInToResults = () => redirectLoggedInTo(['/user/highlights'])
 
@@ -58,11 +55,15 @@ const routes: Routes = [
     },
     {
         path: 'user',
+        canActivate: [AuthGuard, DeviceGuard],
+        //...canActivate(redirectUnauthorizedToLogin),
         loadChildren: () => import('./layouts/default/default.module').then(m => m.DefaultModule)
     },
     {
         path: 'tabs',
-        loadChildren: () => import('./components/tabs/tabs.module').then(m => m.TabsPageModule)
+        loadChildren: () => import('./components/tabs/tabs.module').then(m => m.TabsPageModule),
+        canActivate: [AuthGuard],
+        //...canActivate(redirectUnauthorizedToLogin),
     },
     {
         path: 'favorites/:segment',

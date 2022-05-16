@@ -18,7 +18,6 @@
     </ion-header>
     <ion-list class="list-custom">
         <form [formGroup]="filterForm" (ngSubmit)="submit()">
-            <input formControlName="preferences" class="hidden-input">
             <ion-list class="list-custom">
                 <ion-list-header>
                     <ion-label>גילאים</ion-label>
@@ -29,17 +28,7 @@
                         <ion-label slot="end">{{f.ageRange.value.upper}}</ion-label>
                     </ion-range>
                 </ion-item>
-                <ion-list-header>
-                    <ion-label>מחפש/ת</ion-label>
-                </ion-list-header>
-                <ion-item lines="none">
-                    <div class="genders">
-                        <div *ngFor="let preference of preferences; let i = index" (click)="selectPreference(i)"
-                             [ngClass]="{'active': preference.chosen}" class="gender">
-                            {{preference.title}}
-                        </div>
-                    </div>
-                </ion-item>
+                
                 <!--<ion-list class="list-custom">
                     <ion-list-header>
                         <ion-label>PASSIONS</ion-label>
@@ -48,37 +37,45 @@
                         <ion-label>Travel, Instagram, Music</ion-label>
                     </ion-item>
                 </ion-list>-->
-                <ion-list-header>
+                <ion-list-header class="clickable">
                     <ion-label>איזור</ion-label>
                 </ion-list-header>
-                <ion-item>
+                <ion-item class="clickable">
                     <div lines="none" detail="true" (click)="openAreasList()">
                         <ion-label>{{this.filterData.area ? this.filterData.area :'כל האזורים'}}</ion-label>
                     </div>
                 </ion-item>
-
-                <ion-item>
-                    <ion-label>עם תמונה בלבד</ion-label>
-                    <ion-checkbox data-id="withPhoto" slot="end" (ionChange)="onCheckBox($event)" formControlName="withPhoto"></ion-checkbox>
-                </ion-item>
-                <ion-item>
-                    <ion-label>אונליין בלבד</ion-label>
-                    <ion-checkbox data-id="online" slot="end" (ionChange)="onCheckBox($event)" formControlName="online"></ion-checkbox>
-                </ion-item>
-                <ion-buttons>
-                    <button
-                    type="submit"
-                    class="btn">
-                        <span>חיפוש</span>
-                    </button>
-                    <div
-                        (click)="reset()"
-                        class="btn btn-tertiary">
-                    אפס סינון
-                    </div>
-                </ion-buttons>
-                
+                <ion-radio-group formControlName="typeUsers" value="filterData.typeUsers">
+                    <ion-list-header>
+                        <ion-label>משתמשים</ion-label>
+                    </ion-list-header>
+                    <ion-item>
+                        <ion-label>הכל</ion-label>
+                        <ion-radio slot="end" color="tertiary" value="all"></ion-radio>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>עם תמונה בלבד</ion-label>
+                        <ion-radio slot="end" color="tertiary" value="withPhoto"></ion-radio>
+                    </ion-item>
+        
+                    <ion-item>
+                        <ion-label>אונליין בלבד</ion-label>
+                        <ion-radio slot="end" color="tertiary" value="online"></ion-radio>
+                    </ion-item>
+                  </ion-radio-group>
             </ion-list>
+            <ion-buttons>
+                <button
+                type="submit"
+                class="btn">
+                    <span>חיפוש</span>
+                </button>
+                <div
+                    (click)="reset()"
+                    class="btn btn-tertiary">
+                אפס סינון
+                </div>
+            </ion-buttons>
         </form>
     </ion-list>
 </ion-content>

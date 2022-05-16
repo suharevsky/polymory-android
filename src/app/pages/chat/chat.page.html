@@ -18,9 +18,11 @@
             
             <div class="wrap">
                 <ng-template #template>
-                <random-avatar (click)="viewProfile(chatService.interlocutor)" [user]="chatService.interlocutor" [photo]="userService.getMainPhoto(chatService.interlocutor)" [size]="'sm'">
-                </random-avatar>
-                <div class="user-name" (click)="viewProfile(chatService.interlocutor)">{{chatService.interlocutor?.username}}</div>
+                <div class="profile-bar">
+                    <random-avatar (click)="viewProfile(chatService.interlocutor)" [user]="chatService.interlocutor" [photo]="userService.getMainPhoto(chatService.interlocutor)" [size]="'sm'">
+                    </random-avatar>
+                    <div class="user-name" (click)="viewProfile(chatService.interlocutor)">{{chatService.interlocutor?.username}}</div>
+                </div>
             </ng-template>
             </div>
         </ion-title>
@@ -37,20 +39,23 @@
             {{blockedMessage}}
         </div>
         <ng-container *ngIf="chat$ | async as chat">
+            <div class="emty-chat" *ngIf="chat.messages.length ===0">
+                <div> תגיד משהו נעים ל{{chatService.interlocutor?.username}}</div>
+            </div>
             <div class="chat-item" *ngFor="let item of chat.messages; trackBy: trackByCreated; index as i"
                  [ngClass]="{'chat-item-outgoing': item.uid !== userService.user.id}">
                 <div *ngIf="item.imageRequest === false && item?.date" class="chat-timestamp center">
                     <strong>{{item?.date}}</strong>
                 </div>
                 <div *ngIf="item.imageRequest === false" class="chat-item-inner">
-                    <!--<div class="chat-avatar" *ngIf="item.uid !== userService.user.id">
-                        <img [src]="item.avatar">
-                    </div>-->
+                  
                     <div class="chat-body">
                         <div class="chat-item-bubble" [ngClass]="{'bubble-image': item.type === 'image'}">
                             <div class="chat-text" *ngIf="item.type !== 'image'"
                                  [innerHtml]="nl2br(item.content)"></div>
-                            <ion-img tappable (click)="openPreview(item.content)" [src]="item.content" *ngIf="item.type === 'image'"></ion-img>
+                            <img (onStateChange)="lazyLoadCallback($event,getImageSrc(item.content, 'small'),i)" 
+                            [lazyLoad]="getImageSrc(item.content, 'small')" [errorImage]="imagesError[i]" tappable (click)="openPreview(getImageSrc(item.content, 'large'))" 
+                            [src]="getImageSrc(item.content, 'small')" *ngIf="item.type === 'image'"/>
                         </div>
                         <div class="chat-item-status">
                             <div *ngIf="item.uid === userService.user.id">
@@ -66,27 +71,33 @@
                     </div> -->
                 </div>
             </div>
-            <div *ngIf="!updatedDialogue" class="chat-item" >
-              <div class="chat-item-inner">
-                <div  class="chat-body">
-                    <div class="chat-item-bubble">
-                        <div class="chat-text">{{temporaryMessage}}</div>
-                    </div>
-               </div>
-               </div>
-            </div>
         </ng-container>
+        <div *ngIf="!updatedDialogue" class="chat-item" >
+            <div class="chat-item-inner">
+              <div  class="chat-body">
+                  <div class="chat-item-bubble" [class.bubble-image] = "currentMessage.type === 'image'">
+                      <div class="chat-text" *ngIf="currentMessage.type !== 'image'">{{temporaryMessage}}</div>
+                          <img style="max-width: 120px; max-height: 120px; filter: blur(2px)" *ngIf="currentMessage.type === 'image'" [src]='currentMessage.base64 | sanitizedHtml'/>
+                  </div>
+             </div>
+             </div>
+          </div>
     </div>
 </ion-content>
-
 <ion-footer *ngIf="!blockedMessage">
     <ion-toolbar class="toolbar-no-border">
-        <div class="form">
-            <ion-textarea placeholder="הודעה" rows="1" (ionChange)="validateMessage()" [(ngModel)]="newMsg"></ion-textarea>
-            <!-- <div (click)="chooseImage()" class="btn-img-send">
-                <ion-icon name="image-outline"></ion-icon>
-            </div> -->
-            <button [ngClass]="{'visible': newMsg?.length > 0}" class="btn" (click)="submit()">שלח</button>
+        <input style="display: none;" type="file" accept="image/*" (change)="fileChangeEvent($event)"/>
+    <div *ngIf="uploadPercentage != 0" class="progress-bar">
+        <div class="progress-bar__percentage"> % {{uploadPercentage * 100}}</div>
+        <ion-progress-bar [value]="uploadPercentage"></ion-progress-bar>
+    </div>
+
+        <div class="form" *ngIf="uploadPercentage === 0">
+                <ion-textarea placeholder="הודעה" rows="1" (ionChange)="validateMessage()" [(ngModel)]="currentMessage.content"></ion-textarea>
+                <div [ngClass]="{'hidden': currentMessage.content?.length > 0}" (click)="chooseImage()" class="btn-img-send">
+                    <ion-icon name="image-outline"></ion-icon>
+                </div>
+            <button [ngClass]="{'visible': currentMessage.content?.length > 0}" class="btn" (click)="sendMessage()">שלח</button>
         </div> 
         <!--<input-with-giphy
                 (onSubmit)="submit(chat?.id)"

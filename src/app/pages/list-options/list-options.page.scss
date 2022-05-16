@@ -1,8 +1,13 @@
-ion-item div {
-  padding: 18px 0;
-  width: 100%;
-  cursor: pointer;
-  ion-icon {
-    float: left;
+ion-item {
+  &:hover {
+    color: #7774c5;
+  }
+  div {
+    padding: 18px 0;
+    width: 100%;
+    cursor: pointer;
+    ion-icon {
+      float: left;
+    }
   }
 }

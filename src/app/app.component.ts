@@ -42,9 +42,10 @@ export class AppComponent {
        // this.userService.setUser(user);
        // alert(this.userService.user.id);
         this.platform.ready().then(() => {
-            if(!this.generalService.isDesktop()) {
-                this.router.navigate(['/tabs/highlights']);
-            }
+            
+            // if(!this.generalService.isDesktop() && this.userService.user.id) {
+            //     this.router.navigate(['/tabs/highlights']);
+            // }
             if(this.platform.is('android') || this.platform.is('ios')) {
                 this.updateAppService.checkForUpdate();
             }

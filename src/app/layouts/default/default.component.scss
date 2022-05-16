@@ -12,6 +12,24 @@ ion-router-outlet {
     position: relative;
 }
 
+.btn-top {
+  display: none;
+  position: fixed;
+  min-width: 48px;
+  height: 48px;
+  padding: 0px;
+  bottom: 20px;
+  box-shadow: rgba(0, 0, 0, .5) 0px 0px 31px 0px;
+  &.active {
+    display: block;
+
+  }
+  svg {
+    height: 18px;
+    transform: rotate(180deg);
+  }
+}
+
 .header-custom {
     padding: 0 24px;
     display: flex;

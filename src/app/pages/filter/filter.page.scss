@@ -16,6 +16,7 @@ ion-item {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   .gender {
     cursor: pointer;
@@ -39,6 +40,10 @@ ion-content ion-button {
 
 ion-buttons {
   justify-content: center;
+  .btn {
+    border-radius: 0;
+    flex: 1;
+  }
 }
 
 .hidden-input {
@@ -52,4 +57,14 @@ ion-label {
 ion-range {
   padding: 0;
   --ion-color-base: #7774c5 !important;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+@media (max-width: 768px)  {
+  .genders .gender {
+    width: 33%;
+  }
 }

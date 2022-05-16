@@ -15,7 +15,6 @@
     <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
 
     <ng-template #template>
-<ion-content class="settings-page bg-light">
     <ion-header class="title-margin desktop" collapse="condense">
         <ion-toolbar>
             <ion-title class="page-title">הגדרות</ion-title>
@@ -36,7 +35,7 @@
             <ion-card-content>
                 <div class="plan-title">
                     <ion-icon name="flame" class="color-gold"></ion-icon>
-                    <span class="logo-text">JoyMe</span>
+                    <span class="logo-text">Polymory</span>
                     <span class="color-gold logo-text">GOLD</span>
                 </div>
                 <div>
@@ -127,7 +126,7 @@
     <div class="ion-text-center mobile ion-padding">
         <div class="title logo-text">
             <!--<img src="assets/img/logo_small.png" width="36" alt="">-->
-            polydate
+            polymory
         </div>
         <div>הרסה <!--{{appVersion.getVersionNumber()}}--></div>
     </div>
@@ -139,5 +138,4 @@
             </ion-item>
         </ion-list>
     </div>
-</ion-content>
 </ng-template>

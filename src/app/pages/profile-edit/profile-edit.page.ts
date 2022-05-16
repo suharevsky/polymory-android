@@ -19,7 +19,6 @@ export class ProfileEditPage implements OnInit {
     user: UserModel;
     editUser: FormGroup;
     cities: Array<any>;
-    lookingFor: Array<any>;
 
     constructor(
         private fb: FormBuilder,
@@ -34,6 +33,9 @@ export class ProfileEditPage implements OnInit {
     save() {
         this.userService.save(this.userService.user).subscribe(_ => {
             this.presentToast('נשמר בהצלחה').then(r => {
+                this.userService.highlights.reload = true;
+                this.userService.highlights.finishLoad = false;
+
             })
         });
 
@@ -112,24 +114,21 @@ export class ProfileEditPage implements OnInit {
         return await modal.present();
     }
 
-    async openLookingFor() {
+    async openSexualOrientation() {
         const modal = await this.modalCtrl.create({
             component: ListOptionsPage,
             componentProps: {
-                object: this.userService.getLookingFor(),
+                object: this.userService.getSexualOrientation(),
+                currentValue: this.userService.user.preference,
                 multiple: true,
-                currentValue: this.userService.user.lookingFor,
             }
         });
 
         modal.onDidDismiss()
             .then((res) => {
                 console.log(res);
-
                 if (res.data) {
-                    this.userService.user.lookingFor = res.data.split(',');
-                    console.log(this.userService.user.lookingFor);
-
+                    this.userService.user.sexualOrientation = res.data.split(',');
                 }
             });
 
@@ -137,7 +136,6 @@ export class ProfileEditPage implements OnInit {
     }
 
     ngOnInit() {
-        this.userService.getUser();
         this.user = this.userService.user;
         this.editUser = this.fb.group(
             {

@@ -123,14 +123,14 @@
             <a class="btn select-image" (click)="selectImage($event, true, '')">העלאת תמונה</a>
         </div>
         <ion-grid *ngIf="userService.user.photos.length > 0">
-            <h2>ציבוריות</h2>
+            <!-- <h2>ציבוריות</h2> -->
             <ion-row>
-                <ion-col size="4" size-md="2" class="photo-item no-photo"
+                <ion-col size="4" size-md="3" class="photo-item no-photo"
                          *ngFor="let i of [0,1,2,3,4,5]">
                     <div *ngIf="publicPhotos[i]" (click)="selectImage($event, false, publicPhotos[i])"
                          class="photo-image background-img select-image"
                          [defaultImage]="defaultImage"
-                         [lazyLoad]="fileUploadService.getBaseUrl(publicPhotos[i].url)">
+                         [lazyLoad]="fileUploadService.getBaseUrl(publicPhotos[i].url,'l')">
                         <div class="label-main" *ngIf="publicPhotos[i].main">ראשי</div>
                         <ion-icon *ngIf="publicPhotos[i].status === 0" class="status status-waiting"
                                   name="timer-outline"></ion-icon>
@@ -149,7 +149,13 @@
             </ion-row>
         </ion-grid>
 
-        <ion-grid *ngIf="userService.user.photos.length > 0">
+        <div class="rules">
+            <p>מידות מינמליות הן 600 על 600 פיקסלים.</p>
+            <p>משקל מירבי 20 מגה בפורמט gif, jpg, png.</p>
+            <p>נא להוסיף אך ורק תמונות שאתה נמצא בהן באופן אישי, לבוש בצורה נאותה ורואים פנים שלך בצורה ברורה.</p>
+        </div>
+
+        <!-- <ion-grid *ngIf="userService.user.photos.length > 0">
             <div class="warning-box">
                 <span class="icon"><ion-icon name="alert-circle-outline"></ion-icon></span><p>תמונות עירום,  מיניות או מבחינה אחרת מותרות לשלוח <b>בפרטי</b> בלבד. תמונות שלא יתאימו לקריטוריונים המפורטים ימחקו.</p>
             </div>
@@ -178,18 +184,18 @@
                     </div>
                 </ion-col>
             </ion-row>
-        </ion-grid>
+        </ion-grid> -->
     </div>
 
 
-    <ion-button *ngIf="newUser" class="finish-registration"
+    <!-- <ion-button *ngIf="newUser" class="finish-registration"
                 expand="block"
                 fill="outline"
                 shape="round"
                 (click)="goToPhotos()"
     >
         לסיים את ההרשמה
-    </ion-button>
+    </ion-button> -->
 </ng-template>
 
 

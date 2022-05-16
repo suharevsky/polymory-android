@@ -1,32 +1,54 @@
 <div class="desktop wrap">
-  <form *ngIf="showCodeFormStatus === 1" [formGroup]="phoneForm" class="code-confirm" (ngSubmit)="logIn(phoneForm)">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button class="dismiss" (click)="close()">
+          <ion-icon name="close-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <!-- <ion-title>{{(page$ | async)?.title}}</ion-title> -->
+    </ion-toolbar>
+  </ion-header>
+  <form *ngIf="currentStep === 0" [formGroup]="phoneForm" class="code-confirm">
+    <div class="logo">
+      <img src="/assets/img/logo-dark.png" class="logo__image">
+    </div>
       <h2>הכנס את מספר הטלפון שלך</h2>
       <h3>לא משנה אם את/ה משתמש חדש או משתמש קיים, הכנס/י את מספר הטלפון שלך לכניסה מהירה</h3>
       <div class="input phone">
-          <ion-input type="phone" autofocus formControlName="phone" dir="ltr"></ion-input>
+          <ion-input type="tel" maxlength="11" mask="**-***-****" autofocus formControlName="phone" dir="ltr"></ion-input>
+          <div class="country-code">+972</div>
       </div>
       <!-- <ion-item>
         <ion-label position="stacked">Stacked Label</ion-label>
         <ion-input></ion-input>
       </ion-item> -->
       <a
-          (click)="logIn(phoneForm)"
+          (click)="loginPhone(phoneForm)"
           class="btn">
-          <ion-spinner *ngIf="loadingSpinner"></ion-spinner>
-                        <span *ngIf="!loadingSpinner">קבל קוד</span>
+          <ng-container *ngIf="isLoading$ | async; else loading">
+            <ion-spinner></ion-spinner>
+          </ng-container>
+          <ng-template #loading>
+            <span>קבל קוד</span>
+          </ng-template>
     </a>
   </form>
-
-  <form *ngIf="showCodeFormStatus === 2" [formGroup]="codeForm" (ngSubmit)="verifyCode(codeForm)">
-    <h2>אמת קוד</h2>
+  <form *ngIf="currentStep === 2" [formGroup]="codeForm">
+    <h2>אימות מספר הטלפון</h2>
+    <h3>אנא הזן את הקוד שקיבלת</h3>
       <div class="input">
-        <ion-input placeholder="הזן את הקוד כאן" formControlName="code"
+        <ion-input type="text" placeholder="הזן את הקוד כאן" formControlName="code"
                                class="form-control"
                                id="code"></ion-input>
       </div>
-   <a class="btn">
-      <ion-spinner *ngIf="loadingSpinner"></ion-spinner>
-      <span *ngIf="!loadingSpinner">אמת קוד</span>
+   <a (click)="verifyPhoneCode(codeForm)" class="btn">
+      <ng-container *ngIf="isLoading$ | async; else loading">
+        <ion-spinner></ion-spinner>
+      </ng-container>
+      <ng-template #loading>
+        <span>אמת קוד</span>
+      </ng-template>
    </a>
 </form>
 </div>

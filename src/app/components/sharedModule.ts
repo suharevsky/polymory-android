@@ -14,6 +14,11 @@ import { InboxComponent } from './inbox/inbox.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { FilterComponent } from './filter/filter.component';
 import { CodeVerificationComponent } from './forms/code-verification/code-verification.component';
+import { NoResultsComponent } from './no-results/no-results.component';
+import {IonicInputMaskModule} from "@thiagoprz/ionic-input-mask";
+import { PushAlertComponent } from './push-alert/push-alert/push-alert.component';
+import { SignInComponent } from './forms/sign-in/sign-in/sign-in.component';
+import { SignUpComponent } from './forms/sign-up/sign-up/sign-up.component';
 
 @NgModule({
   imports: [
@@ -22,12 +27,17 @@ import { CodeVerificationComponent } from './forms/code-verification/code-verifi
     IonicModule,
     LazyLoadImageModule,
     ReactiveFormsModule,
+    IonicInputMaskModule
   ],
   declarations: [
     CodeVerificationComponent,
+    SignInComponent,
+    SignUpComponent,
     RandomAvatarComponent,
     ProfileImageSlidesComponent,
+    PushAlertComponent,
     SwipeCardComponent,
+    NoResultsComponent,
     PlusIntroComponent,
     PersonCardComponent,
     InboxComponent,
@@ -39,9 +49,12 @@ import { CodeVerificationComponent } from './forms/code-verification/code-verifi
   exports: [
     CodeVerificationComponent,
     RandomAvatarComponent,
+    SignInComponent,
+    SignUpComponent,
     ProfileImageSlidesComponent,
     SwipeCardComponent,
     InboxComponent,
+    NoResultsComponent,
     PlusIntroComponent,
     PersonCardComponent,
     SpotifyHighlightsComponent,

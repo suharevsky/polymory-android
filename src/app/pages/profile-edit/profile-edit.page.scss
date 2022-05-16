@@ -6,6 +6,12 @@ form {
   margin-bottom: 200px;
 }
 
+.btn {
+    position: fixed;
+    z-index: 99999;
+    bottom: 18px;
+  }
+
 .preview-container {
   padding: 8px 8px 36px;
 }
@@ -13,6 +19,7 @@ form {
 .btn {
   display: inline-block !important;
 }
+
 
 .text-sm {
   font-size: var(--font-size-sm);
@@ -66,5 +73,14 @@ ion-footer {
   .list-custom {
     border: none;
   
+  }
+}
+
+@media (max-width: 768px)  {
+  .btn {
+    width: 100%;
+    border-radius: 0;
+    max-width: 100%;
+    bottom: 0;
   }
 }

@@ -1,13 +1,15 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {LoadingController, ModalController, ToastController} from '@ionic/angular';
+import {IonContent, LoadingController, ModalController, ToastController} from '@ionic/angular';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {WindowService} from '../../services/window/window.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth/auth.service';
-import firebase from 'firebase';
 import {UserService} from '../../services/user/user.service';
 import {PagePage} from '../page/page.page';
 import { RegisterStepsPage } from '../register-steps/register-steps.page';
+import { WindowService } from 'src/app/services/window/window.service';
+import firebase from 'firebase';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-landing',
@@ -19,11 +21,12 @@ export class LandingPage implements OnInit {
 
     phoneForm: FormGroup;
     codeForm: FormGroup;
-    windowRef: any;
-    showCodeFormStatus = 0;
+    currentStep = 0;
     errorMessage: string;
     loading;
-    loadingSpinner = false;
+    windowRef: any;
+    isLoading$: Observable<boolean>;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
 
     constructor(
         public fb: FormBuilder,
@@ -31,18 +34,25 @@ export class LandingPage implements OnInit {
         public authService: AuthService,
         public userService: UserService,
         public activatedRoute: ActivatedRoute,
-        public win: WindowService,
         private loadingCtrl: LoadingController,
         public toastController: ToastController,
+        public win: WindowService,
         public router: Router // private chatService: ChatService
     ) {
+        this.isLoading$ = this.authService.isLoading$;
+
         this.createCodeForm();
         this.createPhoneForm();
+
+        this.authService.errors
+        .pipe(map(errors => errors[0]?.phone.message))
+        .subscribe(errorMessage => errorMessage ? this.presentToast(errorMessage) : "" );
+        
     }
 
     ngOnInit() {
         this.windowRef = this.win.windowRef;
-        // firebase.initializeApp(environment.firebase);
+        this.authService.currentStep.subscribe(step => this.currentStep = step)
         this.windowRef.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
             size: 'invisible'
         });
@@ -57,7 +67,7 @@ export class LandingPage implements OnInit {
     }
 
     codeFormStatus(status: number) {
-        this.showCodeFormStatus = status;
+        this.authService.currentStep.next(status);
     }
 
     async getPage(slug) {
@@ -85,95 +95,55 @@ export class LandingPage implements OnInit {
 
     createPhoneForm() {
         this.phoneForm = this.fb.group({
-            phone: ['+972']
+            phone: ['',
+                Validators.compose([
+                    Validators.required,
+                    Validators.minLength(14),
+                    Validators.maxLength(14)
+                ])
+            ],
         })
     }
 
     createCodeForm() {
         this.codeForm = this.fb.group({
-            code: []
+            code: ['',
+                Validators.compose([
+                    Validators.required,
+                    Validators.minLength(4),
+                    Validators.maxLength(4)
+                ])
+            ],
         })
+    }
+
+    scrollBottom() {
+        this.content.scrollToBottom(500)
     }
 
     contactUs() {
-        window.location.href = "mailto:contact@polymatch.co.il";
+        window.location.href = "mailto:aliksui.ua@gmail.com";
     }
 
-    async registerForm() {
+    async entranceForm(tab) {
         const modal = await this.modalCtrl.create({
             component: RegisterStepsPage,
-            cssClass: 'dark-bg'
+            componentProps: {tab: 'verification'},
+            cssClass: 'dark-bg',
+            backdropDismiss:false
         });
+
+        modal.onDidDismiss();
+
         return await modal.present();
     }
 
-    logIn(phoneForm: FormGroup) {
-        const appVerifier = this.windowRef.recaptchaVerifier;
-        const phoneNumber = '+972' + phoneForm.value.phone;
-        this.loadingSpinner = true;
-        this.authService.loginPhone(phoneNumber, appVerifier).then(res => {
-            this.windowRef.confirmationResult = res;
-            this.showCodeFormStatus = 2;
-        }).catch(err => {
-            if (err.code === 'auth/invalid-phone-number') {
-                this.errorMessage = 'מספר טלפון לא תקין';
-                this.presentToast(this.errorMessage);
-            }
-        }).finally(() => {
-            this.loadingSpinner = false;
-        })
+    loginPhone(phone:FormGroup) {
+        this.authService.loginPhone(phone,this.windowRef.recaptchaVerifier);
+        this.authService.appVerifier.subscribe(appVerifier => this.windowRef.confirmationResult = appVerifier )
     }
 
-    verifyCode(codeForm: FormGroup) {
-        let code: string = codeForm.value.code.toString().trim();
-
-        if (typeof code === 'string') {
-
-            code = codeForm.value.code.toString().trim();
-
-            if (!code) {
-                this.errorMessage = 'קוד לא תקין';
-                this.presentToast(this.errorMessage);
-                return;
-            }
-
-            this.loadingSpinner = true;
-
-            this.windowRef.confirmationResult.confirm(code).then(res => {
-                this.userService.getById(res.user.uid).subscribe((user: any) => {
-                    this.loadingSpinner = false;
-                    if (user) {
-                        if (user.status === 3) {
-                            this.presentToast('החשבון שלך נחסם. למידע נוסף שלח לנו הודעה בכתובת contact@polymatch.co.il', 8000);
-                            this.showCodeFormStatus = 0;
-                        } else {
-                            this.userService.setUser(user);
-                            this.authService.login(user);
-                            this.router.navigate(['tabs/highlights']);
-                        }
-
-                    } else {
-                        this.router.navigate(['register-steps'],{queryParams: { tab: 'registration' }}).then(r => {
-                            this.userService.setUser({socialAuthId: res.user.uid});
-                        });
-                    }
-                });
-            }).catch(err => {
-                this.loadingSpinner = false;
-
-                if (err.code === 'auth/argument-error' || err.code === 'auth/invalid-verification-code') {
-                    this.errorMessage = 'קוד לא תקין';
-                    this.presentToast(this.errorMessage);
-                }
-
-                if (err.code === 'auth/code-expired') {
-                    this.errorMessage = 'הקוד שלך כבר פג, נסה שוב';
-                    this.presentToast(this.errorMessage);
-                }
-            });
-        } else {
-            this.errorMessage = 'קוד לא תקין';
-            this.presentToast(this.errorMessage);
-        }
+    verifyPhoneCode(codeForm: FormGroup) {
+        this.authService.verifyPhoneCode(codeForm,this.windowRef.confirmationResult)
     }
 }

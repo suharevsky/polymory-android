@@ -1,12 +1,36 @@
-<ion-content class="profile-page">
+<ion-content class="profile-page" *ngIf="!generalService.isDesktop()">
+    <ng-content *ngTemplateOutlet="template"></ng-content>
+</ion-content>
+    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
+
+    <ng-template #template>
+        <ion-header class="title-margin desktop" collapse="condense">
+            <ion-toolbar>
+                <ion-title class="page-title">גילוי</ion-title>
+                <ion-buttons slot="end">
+                    <ion-button color="primary" (click)="close()">
+                        <ion-icon name="close-outline"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+            </ion-toolbar>
+        </ion-header>
     <div class="wrap">
     <div class="profile-header">
         <profile-image-slides *ngIf="showSlides" [user]="profile"></profile-image-slides>
         <ion-buttons slot="start">
-            <ion-button class="dismiss" (click)="close()">
+            <ion-button class="dismiss mobile" color="primary" (click)="close()">
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
+        <ion-fab *ngIf="userService.user.id !== profile.id && generalService.isDesktop()" class="bottom-actions" vertical="bottom" horizontal="center"
+        slot="fixed">
+            <ion-button (click)="getChat()" class="button-custom button-icon button-star">
+                <ion-icon slot="icon-only" name="chatbubble-outline"></ion-icon>
+            </ion-button>
+            <ion-button (click)="setList('favorites')" class="button-custom button-favorite button-lg">
+                <span>{{profileFavoriteLabel}}</span>
+            </ion-button>
+        </ion-fab>
     </div>
 
     <div class="profile-info border-bottom">
@@ -49,6 +73,7 @@
                         <img class="blur" [src]="userService.getDefaultPhotoPlaceholder(profile)" alt="">
                     </div>
                 </ng-container>
+                
                 <ng-container *ngIf="imageRequestService?.imageRequest.result?.accepted">
                     <div *ngFor="let privatePhoto of privatePhotos" class="image-item">
                         <img (click)="getImage(fileUploadService.getBaseUrl(privatePhoto?.url,'l'))" [src]="fileUploadService.getBaseUrl(privatePhoto?.url)" alt="">
@@ -63,7 +88,7 @@
                 </div>
             </div>
         </div>
-        <div class="section-title">אני מחפש/ת</div>
+        <!-- <div class="section-title">אני מחפש/ת</div>
         <div class="passion-list">
             <div *ngIf="profile?.lookingFor?.length > 1">
                 <ion-button *ngFor="let lookingFor of profile?.lookingFor" fill="outline" shape="round" color="medium"
@@ -71,6 +96,20 @@
                     {{lookingFor}}
                 </ion-button>
             </div>
+        </div> -->
+
+        
+        <div class="section-title">מגדר</div>
+        <div class="passion-list">
+        <span>
+            {{profile?.gender}}
+        </span>
+        </div>
+        <div class="section-title">נטייה מינית</div>
+        <div class="passion-list">
+      <span *ngFor="let sexualOrientation of profile?.sexualOrientation">
+        {{sexualOrientation}}
+      </span>
         </div>
         <div class="section-title">רוצה להכיר</div>
         <div class="passion-list">
@@ -105,7 +144,7 @@
         </ion-button>
     </div>
 
-    <ion-fab *ngIf="userService.user.id !== profile.id" class="bottom-actions" vertical="bottom" horizontal="center"
+    <ion-fab *ngIf="userService.user.id !== profile.id && !generalService.isDesktop()" class="bottom-actions" vertical="bottom" horizontal="center"
              slot="fixed">
         <!--<ion-button color="white" class="button-custom button-icon button-dislike button-lg">
             <ion-icon slot="icon-only" name="close-sharp"></ion-icon>
@@ -121,4 +160,4 @@
         </ion-button>-->
     </ion-fab>
 </div>
-</ion-content>
+</ng-template>

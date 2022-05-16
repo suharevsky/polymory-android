@@ -1,13 +1,12 @@
 import {NgModule, APP_INITIALIZER} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {RouteReuseStrategy} from '@angular/router';
+import {RouteReuseStrategy, RouterModule} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 
 import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {TapticEngine} from '@ionic-native/taptic-engine/ngx';
-import {IonicStorageModule} from '@ionic/storage';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -30,6 +29,10 @@ import { ProfileEditPageModule } from './pages/profile-edit/profile-edit.module'
 import { TinderGoldPageModule } from './pages/tinder-gold/tinder-gold.module';
 import { ImageModalPageModule } from './components/image-modal/image-modal.module';
 import { PhotosPageModule } from './pages/photos/photos.module';
+import { IonicStorageModule } from '@ionic/storage-angular';
+import {IonicInputMaskModule} from "@thiagoprz/ionic-input-mask";
+import { DeviceGuard } from './guard/device/device.guard';
+import { AuthGuard } from './guard/auth/auth.guard';
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,11 +48,8 @@ import { PhotosPageModule } from './pages/photos/photos.module';
     }),
     AngularFirestoreModule,
     AppRoutingModule,
-    IonicStorageModule.forRoot({
-      name: 'tinder',
-      driverOrder: ['indexeddb', 'sqlite', 'websql']
-    }),
     SharedModule,
+    IonicInputMaskModule,
     PhotosPageModule,
     SettingsPageModule,
     ProfileEditPageModule,
@@ -61,11 +61,14 @@ import { PhotosPageModule } from './pages/photos/photos.module';
     }),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireMessagingModule,
+    IonicStorageModule.forRoot(),
   ],
   providers: [
     StatusBar,
     SplashScreen,
     TapticEngine,
+    DeviceGuard,
+    AuthGuard,
     Crop,
     Camera,
     File,

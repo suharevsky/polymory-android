@@ -2,35 +2,36 @@
     <div class="desktop">
     <main class="inner">
         <header>
-            <div class="logo"><img class="logo__image" src="/assets/img/logo.png"></div>
+            <div class="logo"><img alt="logo" class="logo__image" src="/assets/img/logo.png"></div>
                 <nav data-aos="fade-up-right">
                     <ul>
                         <li (click)="contactUs()">צור קשר</li>
                         <li (click)="getPage('terms-and-conditions')"><a>לתנאים</a></li>
                         <li (click)="getPage('policy')"><a>מדיניות פרטיות</a></li>
-                        <li (click)="registerForm()"><a>הרשמה חינם</a></li>
+                        <li (click)="entranceForm('sign-up')"><a>הרשמה חינם</a></li>
                     </ul>
                 </nav>
-                <a href="#" class="btn register-btn" (click)="registerForm()">
+                <a href="#" class="btn register-btn" (click)="entranceForm('sign-in')">
                     כניסה
                 </a>
         </header>
         <div class="main-bg">
 
         </div>
+        <img (click)="scrollBottom()" class="arrow-to-bottom" src="/assets/img/arrow-to-bottom.svg">
     <div class="wrap">
         <section>
-            <div class="logo"><img class="logo__image" src="/assets/img/logo.png"><div class="logo__name">polymatch</div></div>
+            <div class="logo"><img alt="logo" class="logo__image" src="/assets/img/logo.png"><div class="logo__name">Polymory</div></div>
             <div class="description">
-                תצתרפו עכשיו כדי להתחיל להתחבר לבני אדם בעלי דעות דומות
+                אתר ההכרויות לקהילה הפוליאמורית בישראל            
             </div>
-            <div class="download">
-                <a href="https://play.google.com/store/apps/details?id=il.co.polymatch&hl=he&gl=il" target="_blank"><img src="/assets/img/google_play.svg"></a>
-                <a href="/"><img src="/assets/img/pwa.png"></a>
-            </div>
-            <a href="#" class="btn register-btn" (click)="registerForm()">
+            <a href="#" class="btn register-btn" (click)="entranceForm('sign-up')">
                 הצטרפו עכשיו חינם!
             </a>
+            <!-- <div class="download">
+                <a href="https://play.google.com/store/apps/details?id=il.co.polymatch&hl=he&gl=il" target="_blank"><img src="/assets/img/google_play.svg"></a>
+                <a href="/"><img src="/assets/img/pwa.png"></a>
+            </div> -->
         </section>
     </div>
     </main>
@@ -64,7 +65,7 @@
         </section>
         <section class="devices">
             <div data-aos="fade-up-right" class="device">
-                <img class="device__img" src="/assets/img/device-1.png">
+                <img class="device__img" alt="logo" src="/assets/img/device-2.png">
             </div>
         </section>
     </section>
@@ -74,17 +75,17 @@
         <div class="section-brand">
             <div class="main-bg"></div>
             <div class="logo">
-                <img class="logo__image" src="/assets/img/logo.png">
-                <div class="logo__name">polymatch</div>
-                <div class="logo__subtitle">אפליקציה להחלפת זוגות</div>
+                <img alt="logo" class="logo__image" src="/assets/img/logo.png">
+                <div class="logo__name">Polymory</div>
+                <div class="logo__subtitle">אתר ההכרויות לקהילה הפוליאמורית בישראל</div>
             </div>
         </div>
 
         <div class="section-buttons ion-padding">
-            <div *ngIf="showCodeFormStatus === 0" class="ion-padding">
-                לחיצה על כפתור כניסה או הרשמה מהווה את הסכמתך <span (click)="getPage('terms-and-conditions')" class="link">לתנאים</span> שלנו
-            </div>
-            <div *ngIf="showCodeFormStatus === 0">
+                <div *ngIf="currentStep === 0" class="ion-padding">
+                    לחיצה על כפתור כניסה או הרשמה מהווה את הסכמתך <span (click)="getPage('terms-and-conditions')" class="link">לתנאים</span> שלנו
+                </div>
+            <div *ngIf="currentStep === 0">
                 <ion-button
                         expand="block"
                         fill="outline"
@@ -104,41 +105,35 @@
                 >
                     כניסה
                 </ion-button>
-                <!--<ion-button
-                        expand="block"
-                        fill="outline"
-                        color="white"
-                        shape="round"
-                        class="button-landing ion-margin-bottom"
-                        appGoogleSignin>
-                    <img src="/assets/img/google-logo.svg"/>
-                    כניסה באמצעות גוגל
-                </ion-button>-->
             </div>
-        
-            <form class="phone-form" *ngIf="showCodeFormStatus === 1" [formGroup]="phoneForm"
-                  (ngSubmit)="logIn(phoneForm)">
+
+            <form class="phone-form" *ngIf="currentStep === 1" [formGroup]="phoneForm"
+                  (ngSubmit)="loginPhone(phoneForm)">
                   <span class="phone-notice">למספר הזה ישלח הודע לאישור החשבון</span>
                 <div class="form-group">
                     <div class="country-code">+972</div>
-                    <ion-input type="number" #phone placeholder="הכנס מספר טלפון" formControlName="phone"
+                    <ion-input type="tel" maxlength="11" mask="**-***-****" #phone placeholder="הכנס מספר טלפון" formControlName="phone"
                                class="form-control ion-margin-vertical" id="phone"></ion-input>
                 </div>
-
                     <ion-button
                             expand="block"
                             fill="outline"
                             type="submit"
                             shape="round"
                             class="button-landing ion-margin-bottom">
-                        <ion-spinner *ngIf="loadingSpinner"></ion-spinner>
-                        <span *ngIf="!loadingSpinner">קבל קוד</span>
+                            <ng-container *ngIf="isLoading$ | async; else loading">
+                                <ion-spinner></ion-spinner>
+                            </ng-container>
+                            <ng-template #loading>
+                                <span>קבל קוד</span>
+                            </ng-template>
+
                     </ion-button>
             </form>
-            <form *ngIf="showCodeFormStatus === 2" [formGroup]="codeForm" (ngSubmit)="verifyCode(codeForm)">
+            <form *ngIf="currentStep === 2" [formGroup]="codeForm" (ngSubmit)="verifyPhoneCode(codeForm)">
                 <div class="form-group">
                     <ion-input placeholder="הזן את הקוד כאן" formControlName="code"
-                               class="form-control ion-margin-bottom"
+                               class="form-control ion-margin-bottom" type="text"
                                id="code"></ion-input>
                 </div>
                 <div class="form-group">
@@ -148,13 +143,17 @@
                             type="submit"
                             shape="round"
                             class="button-landing ion-margin-bottom">
-                        <ion-spinner *ngIf="loadingSpinner"></ion-spinner>
-                        <span *ngIf="!loadingSpinner">אמת קוד</span>
+                            <ng-container *ngIf="isLoading$ | async; else loading">
+                                <ion-spinner></ion-spinner>
+                            </ng-container>
+                        <ng-template #loading>
+                            <span>אמת קוד</span>
+                        </ng-template>
                     </ion-button>
                 </div>
             </form>
             <ion-button
-                    *ngIf="showCodeFormStatus !== 0"
+                    *ngIf="currentStep !== 0"
                     (click)="codeFormStatus(0)"
                     fill="outline"
                     type="submit"
@@ -165,6 +164,8 @@
             <!-- <ion-button fill="clear" color="white" class="button-clear">
               Trouble logging in?
             </ion-button> -->
+        
+
         </div>
     </div>
     <span id="sign-in-button"></span>
@@ -172,13 +173,16 @@
 
     </section>
     <footer class="desktop">
+        <div class="logo">
+            <img alt="logo" class="logo__image" src="/assets/img/logo-dark.png">
+        </div>
             <nav>
                 <ul>
                     <li (click)="contactUs()">צור קשר</li>
                     <li (click)="getPage('terms-and-conditions')"><a>לתנאים</a></li>
                     <li (click)="getPage('policy')"><a>מדיניות פרטיות</a></li>
-                    <li (click)="registerForm()"><a>כניסה</a></li>
-                    <li (click)="registerForm()"><a>הרשמה חינם</a></li>
+                    <li (click)="entranceForm('sign-in')"><a>כניסה</a></li>
+                    <li (click)="entranceForm('sign-up')"><a>הרשמה חינם</a></li>
                 </ul>
             </nav>
     </footer>

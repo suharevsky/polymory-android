@@ -1,6 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ModalController, NavController, NavParams, ToastController} from '@ionic/angular';
-import {UserModel} from '../../models/user.model';
 import {UserService} from '../../services/user/user.service';
 import {ActivatedRoute} from '@angular/router';
 import {ReportPage} from '../report/report.page';
@@ -20,8 +19,8 @@ import { Location } from '@angular/common';
 })
 export class ProfilePage implements OnInit  {
     // Data passed in by componentProps
-    profile: any;
-    me: UserModel;
+    @Input() profile: any;
+    me: any;
     showSlides = false;
     profileBlockLabel: string;
     profileFavoriteLabel: string;
@@ -44,12 +43,11 @@ export class ProfilePage implements OnInit  {
         public location: Location,
         //private router: Router,
         public userService: UserService) {
-            
-        console.log('load profile page');   
-        
-        this.profile = this.navParams.get('profile') || '';
 
-        this.me = this.userService.getUser();
+        this.profile = this.navParams.get('profile') || '';
+        this.profile = this.userService.getData() || this.profile;
+
+        this.me = this.userService.user;
         this.getListData('blockList');
        
         // this.userService.viewed(this.profile.id).subscribe();
@@ -59,10 +57,8 @@ export class ProfilePage implements OnInit  {
             this.route.queryParams.subscribe((params: any) => {
                 this.userService.getById(params.id).subscribe(user => {
                     this.profile = user;
-                    console.log(this.profile);
-                    this.privatePhotos = this.publicPhotos = [];
-                    
-                    this.privatePhotos = this.profile.photos.filter(photo => photo.isPrivate && photo.status === 1);
+                    this.privatePhotos = this.publicPhotos = [];                    
+                    this.privatePhotos = this.profile?.photos.filter(photo => photo.isPrivate && photo.status === 1);
                     this.publicPhotos = this.profile.photos.filter(photo => !photo.isPrivate && photo.status === 1);
 
                     this.imageRequestService.checkImageRequest(user);     
@@ -90,12 +86,16 @@ export class ProfilePage implements OnInit  {
 
 
     close() {
-        this.modalCtrl.dismiss({reloadPrevPage: this.reloadPrevPage});
+        if(this.generalService.isDesktop()) {
+            this.navCtrl.back();
+        }else{
+            this.modalCtrl.dismiss({reloadPrevPage: this.reloadPrevPage});
+        }
     }
 
     viewedProfile() {
         if (this.profile.id !== this.userService.user.id) {
-            const pushData = {title: 'JoyMe', body: 'מישהו צפה בפרופיל שלך 💜 ', page: '/tabs/likes', modal: false, sender: this.userService.user, receiver: this.profile};
+            const pushData = {title: 'Polymory', body: 'מישהו צפה בפרופיל שלך 💜 ', page: '/tabs/likes', modal: false, sender: this.userService.user, receiver: this.profile};
             this.fcmService.sendPushMessage(pushData);
             this.setList('views', false);
         }
@@ -118,7 +118,6 @@ export class ProfilePage implements OnInit  {
             type !== 'views' ? this.profile.id : this.userService.user.id,
             type !== 'views' ? this.userService.user.id : this.profile.id)
             .subscribe((res: any) => {
-
                 if (showNotification) {
                     this.presentToast(res.body.message);
                 }
@@ -166,12 +165,11 @@ export class ProfilePage implements OnInit  {
     async getChat() {
         this.chatService.setUsers(this.profile, this.me);
         this.chatService.getDialogue().subscribe(async (res: any) => {
-            // this.navCtrl.navigateForward(`/chat/${res.chat.id}/${res.chat.exists}/${this.profile.id}`);
-
             if(this.generalService.isDesktop()) {
+                this.modalCtrl.dismiss();
                 this.navCtrl.navigateForward(`user/chat/${res.chat.id}/${res.chat.exists}/${this.profile.id}`, { animated: false, queryParams: {
                     chatId: res.chat.id,
-                    dialogueExists: true,
+                    dialogueExists: res.chat.exists,
                     profileId: this.profile.id
                 }});
             }else{

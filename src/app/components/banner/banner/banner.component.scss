@@ -1,0 +1,70 @@
+.banner {
+    width: 100%;
+    height: 100px;
+    background-color: #e6e5fc;
+    border-radius: 8px;
+    margin: 18px 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 12px;
+    .btn {
+        font-size: 18px;
+        padding: 8px 24px;
+    }
+
+    .default-image {
+        display: inline-block;
+        position: relative;
+
+        .add-photo-icon {
+            position: absolute;
+            z-index: 1;
+            bottom: 34px;
+            right: 5px;
+            background: #7774c5;
+            border-radius: 50%;
+            color: #fff;
+            padding: 1px;
+            font-size: 14px;
+            border: 1px #fff solid;        
+        }
+    }
+
+    .photos__ {
+        
+        &photo {
+            padding: 8px 6px 22px;
+            background: #fff;
+            border: 1px solid #ccc;
+            transform: rotate(-6deg);
+            &.photo_1 {
+                transform: rotate(7deg);
+                margin-left: -14px;
+            }
+
+            &.photo_2 {
+                margin-bottom: 12px;
+                transform: rotate(1deg);
+                height: 100px;
+            }
+            &.photo_3 {
+                margin-right: -20px;
+            }
+        }
+    }
+  }
+
+  @media (max-width: 768px)  {
+      .banner {
+        .photos {
+            display: none;
+        }
+        .btn {
+            font-size: 16px;
+            padding: 8px 0px;
+            min-width: 130px;
+        }
+      }
+      
+  }

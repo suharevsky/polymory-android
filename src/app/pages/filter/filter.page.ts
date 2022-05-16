@@ -3,7 +3,6 @@ import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {UserService} from '../../services/user/user.service';
 import {ListOptionsPage} from '../list-options/list-options.page';
-import {UserModel} from '../../models/user.model';
 import {FilterService} from '../../services/filter/filter.service';
 
 @Component({
@@ -19,14 +18,11 @@ export class FilterPage implements OnInit {
     };
     public filterForm: FormGroup;
     public areas = [];
-    public user: UserModel;
-    public preferences = [];
+    public user: any;
     public filterData = {
         ageRange: {lower: 18, upper: 75},
         area: '',
-        online: false,
-        preferences: [],
-        withPhoto: true
+        typeUsers: 'all'
     };
 
     constructor(public modalCtrl: ModalController, private fb: FormBuilder, public filterService: FilterService, public userService: UserService) {
@@ -39,46 +35,13 @@ export class FilterPage implements OnInit {
     
     ngOnInit() {
         this.filterData = this.filterService.get(this.filterData);
-        this.filterData.preferences = this.filterData.preferences.length > 0 ? this.filterData.preferences : this.userService.getPreference().value;
-        this.preferences = this.userService.getPreference(this.filterData.preferences).options;
         this.areas = this.userService.getArea(true).options;
-
-        this.user = this.userService.getUser();
 
         this.filterForm = this.fb.group({
             ageRange: [this.filterData.ageRange],
-            withPhoto: [this.filterData.withPhoto],
-            preferences: [this.filterData.preferences],
+            typeUsers: [this.filterData.typeUsers],
             area: [this.filterData.area],
-            online: [this.filterData.online],
         });
-    }
-
-    selectPreference(i) {
-        if (this.preferences[i].chosen) {
-            this.preferences[i].chosen = false;
-            const arr = this.f.preferences.value.filter((el) => {
-                return el !== this.preferences[i].value;
-            });
-            this.f.preferences.setValue(arr);
-        } else {
-            const arr = this.f.preferences.value;
-            arr.push(this.preferences[i].value);
-            this.f.preferences.setValue(arr);
-            this.preferences[i].chosen = true;
-        }
-    }
-
-    onCheckBox(e) {
-        if(e.target.dataset.id === 'withPhoto' && this.f.withPhoto.value) {
-            this.f.online.setValue(false);
-        }else if(e.target.dataset.id === 'online' && this.f.online.value){
-            this.f.withPhoto.setValue(false);
-        }else if(e.target.dataset.id === 'online' && !this.f.online.value){
-            this.f.withPhoto.setValue(true);
-        }else if(e.target.dataset.id === 'withPhoto' && !this.f.withPhoto.value) {
-            this.f.online.setValue(true);
-        }
     }
 
     selectArea(i: number) {
@@ -129,21 +92,13 @@ export class FilterPage implements OnInit {
         });
 
         this.f.ageRange.setValue(this.ageRange);
-        this.f.preferences.setValue([]);
-        this.f.online.setValue(false);
-        this.f.withPhoto.setValue(true);
+        this.f.typeUsers.setValue('all');
         this.filterData.area = '';
 
         this.filterService.delete();
-
-        this.preferences = this.preferences.map((el) => {
-            el.chosen = false;
-            return el
-        });
     }
 
     close() {
         this.modalCtrl.dismiss();
     }
-
 }

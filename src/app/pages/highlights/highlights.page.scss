@@ -14,24 +14,10 @@
   }
 }
 
-.btn-top {
-    position: fixed;
-    min-width: 48px;
-    height: 48px;
-    padding: 0px;
-    bottom: 20px;
-    box-shadow: rgba(0, 0, 0, .5) 0px 0px 31px 0px;
-    svg {
-      height: 18px;
-      margin-top: 14px;
-      transform: rotate(180deg);
-    }
+app-banner {
+  width: 100%;
+  cursor: pointer;
 }
-
-// .safe-area-bottom, 
-// .segment-view {
-//   height: 100%;
-// }
 
 .header-custom {
   padding: 0 24px;
@@ -40,9 +26,10 @@
   justify-content: space-between;
   height: 72px;
 
-  .title.logo {
-    margin: 0;
-    color: var(--color-primary-rgb)
+  .logo {
+    img {
+      height: 32px;
+    }
   }
   ion-icon {
     font-size: 32px;
@@ -50,6 +37,12 @@
     }
 }
 
+.safe-area-bottom, 
+  .segment-view {
+    height: calc(100% - 250px);
+  }
+
+.safe-area-bottom, 
 .segment-custom {
   display: flex;
   margin: 0 18px;
@@ -68,5 +61,13 @@
 
   &.warning {
     background: #d85151b5;
+  }
+}
+
+
+@media (max-width: 768px)  {
+  .safe-area-bottom {
+    height: 100%;
+    margin: 0;
   }
 }
