@@ -10,6 +10,12 @@ import { UserService } from 'src/app/services/user/user.service';
 export class FilterComponent implements OnInit {
 
   @Input()filterData: any;
+
+  public usersType = {
+    all: 'הכל',
+    withPhoto: 'עם תמונה בלבד',
+    online: 'אונליין בלבד'
+  } 
   public filterOptions = {
     active: false
   };
@@ -19,6 +25,7 @@ export class FilterComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
   }
   
 }
