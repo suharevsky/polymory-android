@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AppVersion } from '@ionic-native/app-version/ngx';
+import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 //import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 import { map } from 'rxjs/operators';

@@ -50,8 +50,7 @@ export class ProfilePage implements OnInit  {
 
     ngOnInit() {
         this.profile = this.navParams.get('profile');
-
-        this.images = this.userService.getAllPhotos(this.profile, true);
+        this.images = this.userService.getAllPhotos(this.profile, this.profile.id !== this.userService.user.id);
     }
 
     async getImage(img) {

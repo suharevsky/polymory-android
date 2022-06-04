@@ -508,7 +508,7 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     getAllPhotos(user, approvedOnly = false) {
 
         // Get only approved photos (others, not personal)
-        if (approvedOnly && this.user.id !== user.id) {
+        if (approvedOnly) {
             user.photos = user.photos.filter(photo => photo.status === 1);
             
             if (user.photos.length === 0) {
@@ -520,13 +520,12 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                 });
             }
         }
+
         
         if (user.photos.length > 0) {
             return user.photos.map(photo => {
                 photo = {...photo, ...{url: this.photoParam.baseUrl + photo.id + '_600x600' + this.photoParam.token}};
-                if (photo.status === 1) {
                     return photo;
-                }
             });
 
         }else{

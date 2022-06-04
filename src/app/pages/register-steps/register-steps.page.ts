@@ -9,8 +9,6 @@ import {AuthService} from '../../services/auth/auth.service';
 //import {UniqueUsernameValidator} from '../../validators/unique-username.validator';
 import {PhotosPage} from '../photos/photos.page';
 import { GeneralService } from 'src/app/services/general/general.service';
-import { ArrayHelper } from 'src/app/helpers/array.helper';
-import { DateHelper } from 'src/app/helpers/date.helper';
 import { FilterService } from 'src/app/services/filter/filter.service';
 import { format } from 'date-fns';
 import { parseISO } from 'date-fns/esm';
@@ -37,20 +35,7 @@ export class RegisterStepsPage implements OnInit {
     public preferences: any;
     public dateValue = format(new Date(),'yyy-MM-dd');
     public formattedString = '';
-    public dateRange = {
-        date: ArrayHelper.range(1,31),
-        month: {
-            values: ArrayHelper.range(1,12),
-            names: ['ינואר', 'פברואר', 'מרץ','אפריל','מאי', 'יוני','יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'],
-        },
-        year: ArrayHelper.range(1960,new Date().getFullYear() - 18),
-    }
-    public slideOpts = {
-        // initialSlide: 7,
-        speed: 400,
-        // allowTouchMove: false,
-        // lockSwipes: false
-    };
+    public slideOpts = {};
 
     public form = {
         isValid: false,
@@ -72,6 +57,7 @@ export class RegisterStepsPage implements OnInit {
         //private uniqueUsernameValidator: UniqueUsernameValidator,
     ) {
         this.setDefaultDate();
+        //this.user = this.userService.user;
     }
 
     // convenience getter for easy access to form fields
@@ -82,7 +68,6 @@ export class RegisterStepsPage implements OnInit {
     setDefaultDate() {
         const date = new Date();
         date.setFullYear(date.getFullYear() - 18);
-        console.log(date);
         this.dateValue = format(parseISO(format(date,'yyyy-MM-dd')), 'yyyy-MM-dd');
         this.formattedString = format(parseISO(format(date,'yyyy-MM-dd')), 'yyyy MM dd');
     }
@@ -131,7 +116,7 @@ export class RegisterStepsPage implements OnInit {
 
         this.steps[2] = {
             username: [
-                this.user?.username,
+                this.user.username ? this.user.username : '',
                 Validators.compose([
                     Validators.required,
                     Validators.minLength(2)
@@ -407,6 +392,9 @@ export class RegisterStepsPage implements OnInit {
     }
 
     slideNext() {
+        console.log(this.user)
+        console.log(this.userService.user)
+
         if(this.currentIndexSlide === 7) {
             this.goToPhotos();
         }else{

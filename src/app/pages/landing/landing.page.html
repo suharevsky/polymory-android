@@ -13,7 +13,16 @@
                 <div *ngIf="currentStep === 0" class="ion-padding">
                     לחיצה על כפתור כניסה או הרשמה מהווה את הסכמתך <span (click)="getPage('terms-and-conditions')" class="link">לתנאים</span> שלנו
                 </div>
+                 
             <div *ngIf="currentStep === 0">
+                <!-- <ion-button
+                appGoogleSignin
+                expand="block"
+                fill="outline"
+                shape="round"
+                class="button-landing ion-margin-bottom">
+                Login with Google
+        </ion-button> -->
                 <ion-button
                         expand="block"
                         fill="outline"

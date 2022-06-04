@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AlertController, ModalController, NavController} from '@ionic/angular';
 import {ThemeService} from '../../services/theme/theme.service';
 import {AuthService} from '../../services/auth/auth.service';
-import {AppVersion} from '@ionic-native/app-version/ngx';
+import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
 import {UserService} from '../../services/user/user.service';
 import {UserModel} from '../../models/user.model';
 import {SettingsService} from '../../services/user/settings/settings.service';
@@ -24,7 +24,7 @@ export class SettingsPage implements OnInit {
     };
     public isDark: boolean;
     public settings: any;
-
+    public appVersionNuber;
 
     constructor(public modalCtrl: ModalController,
                 public settingsService: SettingsService,
@@ -37,16 +37,16 @@ export class SettingsPage implements OnInit {
                 public userService: UserService) {
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+
+        this.appVersionNuber = await this.appVersion.getVersionNumber();
 
         this.settingsService.getByUserId(this.userService.getId()).subscribe(settings => {
             this.settings = settings;
         });
 
-        this.themeService.getCurrentSetting()
-            .then(val => {
-                this.isDark = val;
-            })
+        this.isDark = await this.themeService.getCurrentSetting()
+
     }
 
     close() {

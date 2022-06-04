@@ -10,6 +10,7 @@ import { WindowService } from 'src/app/services/window/window.service';
 import firebase from 'firebase';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 
 @Component({
     selector: 'app-landing',
@@ -148,5 +149,9 @@ export class LandingPage implements OnInit {
 
     verifyPhoneCode(codeForm: FormGroup) {
         this.authService.verifyPhoneCode(codeForm)
+    }
+
+    ionViewDidEnter() {
+        GoogleAuth.initialize();
     }
 }
