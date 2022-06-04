@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import {UserService} from '../../services/user/user.service';
 
 @Component({
   selector: 'app-no-results',
@@ -10,7 +11,9 @@ export class NoResultsComponent implements OnInit {
   @Input() buttonLabel: string;
   @Input() loading: boolean;
 
-  constructor() { 
+  constructor(
+    public userService: UserService,
+  ) { 
   }
 
   ngOnInit() {}

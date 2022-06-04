@@ -9,6 +9,6 @@
       <img src="/assets/img/no-results/4.png">
     </div>
     <span class="headline">{{headline}}</span>
-    <button *ngIf="buttonLabel" class="btn">{{buttonLabel}}</button>
+    <button *ngIf="buttonLabel && !userService.isPremium()" class="btn">{{buttonLabel}}</button>
   </ng-container>
 </div>
