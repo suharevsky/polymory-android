@@ -4,7 +4,7 @@ import {ITableState, TableResponseModel, TableService} from '../../crud-table';
 import {UserModel} from '../../models/user.model';
 import {environment} from '../../../environments/environment';
 import {map, switchMap, take} from 'rxjs/operators';
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of, pipe} from 'rxjs';
 import {baseFilter} from '../../helpers/http-extensions';
 import {AngularFirestore} from '@angular/fire/firestore';
 import firebase from 'firebase';
@@ -14,6 +14,7 @@ import {AdminConfigService} from '../admin-config/admin-config.service';
 @Injectable({
     providedIn: 'root'
 })
+
 
 export class UserService extends TableService<UserModel> implements OnDestroy {
 
@@ -39,25 +40,31 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         lastKey: 0,
         finishLoad: false,
     };
+    public likes = {
+        lastKey: 0,
+        finishLoad: false,
+    };
     public views = {
         lastKey: 0,
         finishLoad: false,
     };
-    USER_ONLINE_DURATION = 0;
+    settings : {
+        onlineDuration: 0,
+        paymentActive: true
+    }
     protected http: HttpClient;
     private password: any;
-    private isPay: boolean;
+    private payed = false;
     //private mainPhoto: string;
-
     // finished = false;
-
     constructor(
-        @Inject(HttpClient) http, public db: AngularFirestore,
+        @Inject(HttpClient) http, 
+        public db: AngularFirestore,
         public afStorage: AngularFireStorage,
         public adminConfigService: AdminConfigService) {
         super(http);
         this.currentUserSubject = new BehaviorSubject<UserModel>(undefined);
-        this.adminConfigService.getOnlineDuration().subscribe(res => this.USER_ONLINE_DURATION = res.onlineDuration);
+        this.adminConfigService.getOnlineDuration().pipe(take(1)).subscribe(res => this.settings = res);
     }
 
     public setOnline() {
@@ -65,6 +72,31 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
             this.user.lastTimeActive = Date.now();
             this.save(this.user).subscribe();
         }
+    }
+
+    public getMatch() {
+        let $one = this.db.collection("matches", ref => ref.where("uid1","==",this.user.id).where('uid1_showed_splash', '==', false).limit(1)).valueChanges({ idField: 'eventId' });
+        let $two = this.db.collection("matches", ref => ref.where("uid2","==",this.user.id).where('uid2_showed_splash', '==', false).limit(1)).valueChanges({ idField: 'eventId' });
+
+        return combineLatest($one,$two).pipe(
+            map(([one, two]) => [...one, ...two])
+        ).pipe(map(res => res[0]))
+    }
+
+    setMatch(uid1, uid2) {
+        const data = {
+            created: Date.now(),
+            uid1,
+            uid2,
+            uid1_showed_splash: false,
+            uid2_showed_splash: false,
+        }
+
+        this.db.collection("matches").doc(uid1 + uid2).set(data);
+    }
+
+    public closeSplash(data) {
+        this.db.collection('matches').doc(data.eventId).set(data,{merge: true})
     }
 
     public setUser(user) {
@@ -79,13 +111,24 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         };
     }
 
-    getList(type) {
+    setBillingData(data) {
+        //data = {...data, ...{uid: this.user.id}};
+        this.db.collection('billing').doc(this.user.id).set({...{receipt: data.transaction.receipt}, ...{uid: this.user.id}},{merge:true})
+    }
+
+    getList(type,byProfileId = false) {
         let query: any;
 
         query = this.db.collectionGroup(type, (ref) => {
 
-            let q = ref.where('myId', '==', this.user.id)
+            let q;
+            if(byProfileId) {
+                 q = ref.where('profileId', '==', this.user.id)
                 .orderBy('time', 'desc');
+            }else{
+                 q = ref.where('myId', '==', this.user.id)
+                .orderBy('time', 'desc');
+            }
 
             if (this[type].lastKey !== 0) {
                 q = ref.startAfter(this[type].lastKey)
@@ -111,10 +154,10 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     }
 
     public isOnline(lastTimeActive) {
-        return (this.USER_ONLINE_DURATION * 60000) + lastTimeActive >= Date.now();
+        return (this.settings.onlineDuration * 60000) + lastTimeActive >= Date.now();
     }
 
-    joinListIdsWithUsers(list$: Observable<any>) {
+    joinListIdsWithUsers(list$: Observable<any>,userIdProperty = 'profileId') {
         //let list;
 
         return list$.pipe(
@@ -123,7 +166,7 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                 //list = l;
                 // Firestore User Doc Reads
                 const userDocs = l.map(u =>
-                    this.db.doc(`users/${u.profileId}`).valueChanges()
+                    this.db.doc(`users/${u[userIdProperty]}`).valueChanges()
                 );
                 return userDocs.length ? combineLatest(userDocs) : of([]);
             }), map(arr => {
@@ -133,8 +176,35 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         );
     }
 
-    getBlackList(userId) {
+    getMatches() {
+        let $one = this.db.collection("matches", ref => ref.where("uid1","==",this.user.id).limit(50).orderBy('created','desc')).valueChanges();
+        let $two = this.db.collection("matches", ref => ref.where("uid2","==",this.user.id).limit(50).orderBy('created','desc')).valueChanges();
+
+        let matches$ = combineLatest($one,$two).pipe(
+            map(([one, two]) => [...one, ...two])
+        ).pipe(
+            map((arr:any) => {
+                console.log(arr)
+                return arr.sort((a, b) => (a.created < b.created) ? 1 : -1)
+            })
+        );
+        
+
+        return matches$.pipe(
+            switchMap(l => {
+                const userDocs = l.map((u:any) =>{
+                    let userId = this.user.id != u.uid1 ? u.uid1 : u.uid2;
+                    return this.db.doc(`users/${userId}`).valueChanges()
+                });
+                return userDocs.length ? combineLatest(userDocs) : of([]);
+            }), map(arr => {
+                console.log(arr);
+                return arr.filter((el:any) => el.status === 1);
+            }),
+            take(1)
+        );
     }
+
 
     allPhotosApproved() {
         const photos = this.user.photos.filter(photo => {
@@ -219,6 +289,11 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
 
     getListData(type, userId) {
         return this.http.get<any>(this.API_URL + '/list/' + type + '/' + this.user.id + '/' + userId);
+    }
+
+    //uid1 the one who liked
+    getLike(uid1,uid2) {
+        return this.db.collection('users').doc(uid1).collection('likes').doc(uid2).get()
     }
 
     getAge(birthday) {
@@ -376,6 +451,7 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
 
     getMainPhoto(user, dimensions = 's', approved = true) {
 
+
         if (user) {
 
             let photo:any = [];
@@ -396,54 +472,63 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
 
             let fileName = this.photoParam.baseUrl + photo.url + '_';
 
+
             let fileNameWithDimentions = '';
 
             if (dimensions === 's') {
                 fileNameWithDimentions = fileName + this.dimensions[dimensions];
             }
-
-            if (dimensions === 'm') {
-                fileNameWithDimentions = fileName + this.dimensions[dimensions];
-            }
+            // if (dimensions === 'm') {
+            //     fileNameWithDimentions = fileName + this.dimensions[dimensions];
+            // }
 
             if (dimensions === 'l') {
                 fileNameWithDimentions = fileName + this.dimensions[dimensions];
             }
-
             return fileNameWithDimentions + this.photoParam.token;
         }
     }
 
+
+    public isPremium():boolean {
+        var d = new Date();
+
+
+        if(!this.settings.paymentActive ) {
+            return true;
+        }
+        return (new Date(this.user.registrationDate).getTime() > d.setDate(d.getDate()-2)) || 
+        this.getPayed() || this.user.gender === 'אישה' || this.user.isFake;
+    }
     public getDefaultPhotoPlaceholder(user):string {
         return '../../../assets/media/users/default_' + user.gender + '.png'
     }
+
 
     getAllPhotos(user, approvedOnly = false) {
 
         // Get only approved photos (others, not personal)
         if (approvedOnly && this.user.id !== user.id) {
             user.photos = user.photos.filter(photo => photo.status === 1);
-
+            
             if (user.photos.length === 0) {
                 return [{url: '../../../assets/media/users/default_' + user.gender + '.png'}];
             } else {
-                let photos = user.photos.map((photo, index) => {
-                    //user.photos[index].url = this.photoParam.baseUrl + photo.id + '_600x600' + this.photoParam.token;
+                return user.photos.map(photo => {
                     photo = {photo, url: this.photoParam.baseUrl + photo.id + '_600x600' + this.photoParam.token};
                     return photo;
                 });
-                return photos;
             }
         }
-
+        
         if (user.photos.length > 0) {
-            user.photos.map(photo => {
-                photo.url = this.photoParam.baseUrl + photo.id + '_600x600' + this.photoParam.token;
+            return user.photos.map(photo => {
+                photo = {...photo, ...{url: this.photoParam.baseUrl + photo.id + '_600x600' + this.photoParam.token}};
                 if (photo.status === 1) {
                     return photo;
                 }
             });
-            return user.photos;
+
         }else{
             return [{url: '../../../assets/media/users/default_' + user.gender + '.png'}];
         }
@@ -457,8 +542,13 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         this.update(this.user).subscribe();
     }
 
-    public getIsPay(): boolean {
-        return this.isPay;
+    public getPayed(): boolean {
+        return this.payed;
+    }
+
+
+    public setPayed(prop:boolean) {
+        this.payed = prop
     }
 
     public getUserById(id) {
@@ -531,11 +621,9 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                 query = query.where('status', '==', 1);
                 query = query.where('isAdmin', '==', false);
 
-
                 if (filterData.area) {
                     query = query.where('area', '==', filterData.area);
                 }
-
     
                 query = query.where('gender', 'in', this.user.preference);
                     

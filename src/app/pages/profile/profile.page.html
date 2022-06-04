@@ -1,36 +1,12 @@
-<ion-content class="profile-page" *ngIf="!generalService.isDesktop()">
-    <ng-content *ngTemplateOutlet="template"></ng-content>
-</ion-content>
-    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
-
-    <ng-template #template>
-        <ion-header class="title-margin desktop" collapse="condense">
-            <ion-toolbar>
-                <ion-title class="page-title">גילוי</ion-title>
-                <ion-buttons slot="end">
-                    <ion-button color="primary" (click)="close()">
-                        <ion-icon name="close-outline"></ion-icon>
-                    </ion-button>
-                </ion-buttons>
-            </ion-toolbar>
-        </ion-header>
+<ion-content class="profile-page">
     <div class="wrap">
     <div class="profile-header">
-        <profile-image-slides *ngIf="showSlides" [user]="profile"></profile-image-slides>
+        <profile-image-slides *ngIf="showSlides" [images]="images" [user]="profile"></profile-image-slides>
         <ion-buttons slot="start">
-            <ion-button class="dismiss mobile" color="primary" (click)="close()">
+            <ion-button class="dismiss" color="primary" (click)="close()">
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-fab *ngIf="userService.user.id !== profile.id && generalService.isDesktop()" class="bottom-actions" vertical="bottom" horizontal="center"
-        slot="fixed">
-            <ion-button (click)="getChat()" class="button-custom button-icon button-star">
-                <ion-icon slot="icon-only" name="chatbubble-outline"></ion-icon>
-            </ion-button>
-            <ion-button (click)="setList('favorites')" class="button-custom button-favorite button-lg">
-                <span>{{profileFavoriteLabel}}</span>
-            </ion-button>
-        </ion-fab>
     </div>
 
     <div class="profile-info border-bottom">
@@ -42,14 +18,10 @@
         <span *ngIf="profile.birthday">{{userService.getAge(profile.birthday)}}</span>
         <span *ngIf="profile.birthday1">,{{userService.getAge(profile.birthday1)}}</span>
       </span>
-            <!--<span class="icon-verified">
-              <ion-icon name="checkmark-outline"></ion-icon>
-            </span>-->
+            
         </div>
         <div class="profile-user-info">
-            <!--<div class="info-item">
-              <ion-icon name="briefcase-outline"></ion-icon>job_title
-            </div>-->
+            
             <div class="info-item">
                 <ion-icon name="location-outline"></ion-icon>
                 {{profile?.area + ', ' + profile?.city}}
@@ -88,16 +60,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="section-title">אני מחפש/ת</div>
-        <div class="passion-list">
-            <div *ngIf="profile?.lookingFor?.length > 1">
-                <ion-button *ngFor="let lookingFor of profile?.lookingFor" fill="outline" shape="round" color="medium"
-                            size="small">
-                    {{lookingFor}}
-                </ion-button>
-            </div>
-        </div> -->
-
         
         <div class="section-title">מגדר</div>
         <div class="passion-list">
@@ -117,19 +79,13 @@
         {{preference}}
       </span>
         </div>
-        <div class="section-title">מעט עלי/נו</div>
+        <div class="section-title">מעט עלי</div>
         <div class="border-bottom">
             {{profile?.about}}
         </div>
     </div>
 
     <div *ngIf="userService.user.id !== profile.id" class="profile-footer border-bottom">
-
-        <!--<ion-button (click)="favorite(true)" fill="clear" expand="block" size="small">
-            <div class="button-label">
-                {{profileFavoriteLabel}}
-            </div>
-        </ion-button>-->
         <ion-button (click)="setList('blockList')" class="report-btn" fill="clear" expand="block" color="medium"
                     size="small">
             <div class="button-label">
@@ -144,20 +100,19 @@
         </ion-button>
     </div>
 
-    <ion-fab *ngIf="userService.user.id !== profile.id && !generalService.isDesktop()" class="bottom-actions" vertical="bottom" horizontal="center"
+    <ion-fab *ngIf="userService.user.id !== profile.id" class="bottom-actions" vertical="bottom" horizontal="center"
              slot="fixed">
-        <!--<ion-button color="white" class="button-custom button-icon button-dislike button-lg">
-            <ion-icon slot="icon-only" name="close-sharp"></ion-icon>
-        </ion-button>-->
+
         <ion-button (click)="getChat()" color="white" class="button-custom button-icon button-star">
             <ion-icon slot="icon-only" name="chatbubble-outline"></ion-icon>
         </ion-button>
         <ion-button (click)="setList('favorites')" color="white" class="button-custom button-favorite button-lg">
             <span>{{profileFavoriteLabel}}</span>
         </ion-button>
-        <!--<ion-button color="white" class="button-custom button-icon button-like button-lg">
-            <div class="heart"></div>
-        </ion-button>-->
+        <ion-button (click)="setList('likes', false)" color="white" class="button-custom button-icon button-like">
+            <ion-icon *ngIf="!profileILiked" name="heart-outline"></ion-icon>
+            <ion-icon *ngIf="profileILiked" name="heart"></ion-icon>
+        </ion-button>
     </ion-fab>
 </div>
-</ng-template>
+</ion-content>

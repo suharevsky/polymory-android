@@ -1,4 +1,4 @@
-<ion-header class="header-custom mobile">
+<ion-header class="header-custom">
     <div class="segment" (click)="filterModal()">
         <ion-icon name="options-outline"></ion-icon>
     </div>
@@ -28,26 +28,16 @@
 
 
 
-<ion-content *ngIf="!generalService.isDesktop()">
-    <ng-content *ngTemplateOutlet="template"></ng-content>
-</ion-content>
-    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
+<ion-content>
 
-    <!--<div class="boost-promotion">
-      <ion-text color="boost">קבל עד 100 צפיות נוספות</ion-text>
+    <!-- <div class="boost-promotion">
+      <ion-text color="boost">קבל יותר צפיות</ion-text>
 
       <ion-button expand="block" shape="round" color="boost-bg">
         סופר בוסט עכשיו
       </ion-button>
-    </div>-->
+    </div> -->
 
-    <ng-template #template>
-        <ion-header *ngIf="!isLoading" class="title-margin desktop" collapse="condense">
-            <ion-toolbar>
-                <ion-title class="page-title">גילוי</ion-title>
-            </ion-toolbar>
-        </ion-header>
-        <app-filter *ngIf="!isLoading" (click)="filterModal()" [filterData]="filterData"></app-filter>
 
         <div class="safe-area-bottom">
             <!-- USERS -->
@@ -71,7 +61,7 @@
             </ion-row>
 
                 </ion-grid>
-                <ion-infinite-scroll [ngStyle]="{'height.px': generalService.isDesktop() ? bottomScrollBar :''}" *ngIf="!userService.highlights.finishLoad" disabled="false" threshold="100px"
+                <ion-infinite-scroll *ngIf="!userService.highlights.finishLoad" disabled="false" threshold="100px"
                                     (ionInfinite)="loadData($event)">
                     <ion-infinite-scroll-content
                             loadingSpinner="bubbles"
@@ -80,4 +70,4 @@
                 </ion-infinite-scroll>
             </div>
         </div>
-    </ng-template>
+</ion-content>

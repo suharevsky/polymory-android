@@ -3,7 +3,9 @@
     --bullet-background: var(--ion-color-medium-shade) !important;
   }
 }
-
+.header-title {
+  font-size: 28px;
+}
 .plus-intro {
   &.swiper-container {
     padding-bottom: 32px;

@@ -1,4 +1,4 @@
-<ion-header class="mobile">
+<ion-header>
     <ion-toolbar class="toolbar-no-border">
         <ion-title class="page-title">הגדרות</ion-title>
         <ion-buttons slot="end">
@@ -9,23 +9,9 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="!generalService.isDesktop()">
-    <ng-content *ngTemplateOutlet="template"></ng-content>
-</ion-content>
-    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
-
-    <ng-template #template>
-    <ion-header class="title-margin desktop" collapse="condense">
-        <ion-toolbar>
-            <ion-title class="page-title">הגדרות</ion-title>
-            <ion-buttons slot="end">
-                <ion-button (click)="close()">
-                    <ion-icon name="close-outline"></ion-icon>
-                </ion-button>
-            </ion-buttons>
-        </ion-toolbar>
-    </ion-header>
-    <ion-header collapse="condense mobile">
+<ion-content>
+    
+    <ion-header collapse="condense">
         <ion-toolbar>
           <ion-title size="large">הגדרות</ion-title>
         </ion-toolbar>
@@ -123,7 +109,7 @@
         </ion-item>
     </ion-list>
 
-    <div class="ion-text-center mobile ion-padding">
+    <div class="ion-text-center ion-padding">
         <div class="title logo-text">
             <!--<img src="assets/img/logo_small.png" width="36" alt="">-->
             polymory
@@ -138,4 +124,4 @@
             </ion-item>
         </ion-list>
     </div>
-</ng-template>
+</ion-content>

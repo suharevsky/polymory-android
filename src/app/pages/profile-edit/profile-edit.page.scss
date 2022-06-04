@@ -1,23 +1,11 @@
-form {
-  padding-bottom: 48px;
-}
+
 
 .list-custom.last-child {
   margin-bottom: 200px;
 }
 
-.btn {
-    position: fixed;
-    z-index: 99999;
-    bottom: 18px;
-  }
-
 .preview-container {
   padding: 8px 8px 36px;
-}
-
-.btn {
-  display: inline-block !important;
 }
 
 
@@ -81,6 +69,7 @@ ion-footer {
     width: 100%;
     border-radius: 0;
     max-width: 100%;
+    //bottom: 60px;
     bottom: 0;
   }
 }

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <access origin="*" />
+  
+  <feature name="AppVersion">
+    <param name="android-package" value="uk.co.whiteoctober.cordova.AppVersion"/>
+  </feature>
+
+  <feature name="Camera">
+    <param name="android-package" value="org.apache.cordova.camera.CameraLauncher"/>
+  </feature>
+
+  <feature name="CropPlugin">
+    <param name="android-package" value="com.jeduan.crop.CropPlugin"/>
+  </feature>
+
+  <feature name="File">
+    <param name="android-package" value="org.apache.cordova.file.FileUtils"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="InAppBrowser">
+    <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser"/>
+  </feature>
+
+  <feature name="Market">
+    <param name="android-package" value="com.xmartlabs.cordova.market.Market"/>
+  </feature>
+
+  <feature name="InAppBillingPlugin">
+    <param name="android-package" value="cc.fovea.PurchasePlugin"/>
+  </feature>
+
+  <feature name="AndroidSmsRetriever">
+    <param name="android-package" value="com.codingsans.ionic.smsRetriever.AndroidSmsRetriever"/>
+  </feature>
+
+  
+</widget>

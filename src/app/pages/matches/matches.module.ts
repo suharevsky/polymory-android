@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { MatchesPage } from './matches.page';
 
 import { SharedModule } from '../../components/sharedModule';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    SharedModule
+    SharedModule,
+    LazyLoadImageModule,
   ],
   declarations: [MatchesPage]
 })

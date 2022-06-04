@@ -8,14 +8,15 @@ import {DateHelper} from '../../helpers/date.helper';
 import {CounterService} from '../../services/counter/counter.service';
 import {FcmService} from '../../services/fcm/fcm.service';
 import {ProfilePage} from '../profile/profile.page';
-import { debounceTime, map, take, tap } from 'rxjs/operators';
-import {Camera, CameraOptions} from '@awesome-cordova-plugins/camera/ngx';
+import { map, take } from 'rxjs/operators';
 
 import { ImageModalPage } from 'src/app/components/image-modal/image-modal.page';
 import { GeneralService } from 'src/app/services/general/general.service';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { StateChange } from 'ng-lazyload-image';
+import { Camera, CameraOptions } from '@awesome-cordova-plugins/camera/ngx';
+import { TinderGoldPage } from '../tinder-gold/tinder-gold.page';
 
 
 @Component({
@@ -64,24 +65,15 @@ export class ChatPage implements OnInit {
         public fcmService: FcmService,
         public navParams: NavParams,
         public generalService: GeneralService,
-        private camera: Camera,
         private afStorage: AngularFireStorage,
         private route: ActivatedRoute,
+        private camera: Camera,
         
 
     ) {
         this.chatId = this.navParams.get('chatId');
         this.dialogueExists = this.navParams.get('chatExists');
         this.interlocutorId = this.navParams.get('profileId');
-
-        if(this.generalService.isDesktop()) {
-            this.route.queryParams.subscribe((params: any) => {
-                this.chatId = params.chatId;
-                this.dialogueExists = params.dialogueExists;
-                this.interlocutorId  = params.profileId;
-            });
-        }
-
         this.init();
     }
 
@@ -93,11 +85,7 @@ export class ChatPage implements OnInit {
     ngOnInit() {}
 
     close() {
-        if(this.generalService.isDesktop()) {
-            this.navCtrl.back();
-        }else{
-            this.modalCtrl.dismiss();
-        }
+        this.modalCtrl.dismiss();
     }
 
     ionViewDidLeave() {
@@ -110,7 +98,6 @@ export class ChatPage implements OnInit {
     }
 
     async openPreview(img) {
-        console.log(img);
         const modal = await this.modalCtrl.create({
             component: ImageModalPage,
             componentProps: {
@@ -124,12 +111,7 @@ export class ChatPage implements OnInit {
     }
 
     chooseImage() {
-
-        const element: HTMLElement = document.querySelector('input[type=file]') as HTMLElement;
-         element.click();
-       // const sourceType = this.camera.PictureSourceType.CAMERA;
-
-       /*
+       
         const options: CameraOptions = {
             quality: 100,
             destinationType: this.camera.DestinationType.DATA_URL,
@@ -139,47 +121,23 @@ export class ChatPage implements OnInit {
             sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
         };
         this.camera.getPicture(options).then((imageData) => {
-       
-            //alert(JSON.stringify(imageData))
-            this.currentMessage.content = 'data:image/jpeg;base64,' + imageData;
-            this.typeMessage = 'image';
-            // this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
-            // this.imageChangedEvent = this.imageBase64;
-            // this.imgLoaded = true;
-            this.submit();
+
+            this.fileChangeEvent('data:image/jpeg;base64,' + imageData);
         }, (err) => {
             // Handle error
             
             //alert(JSON.stringify(err))
         });
-        */
+        
     }
 
     async fileChangeEvent(event: any) {
 
-        this.updatedDialogue = false;
-        const _URL = window.URL || window.webkitURL;
-
-        let img = new Image();
-
-        img.src = _URL.createObjectURL(event.target.files[0]);
-        const fileSize = event.target.files[0].size;
-
-        this.currentMessage.base64 = img.src;
         this.currentMessage.type = 'image';
 
         this.scrollToBottom(500,true)
 
-        const toBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-        
-        const file = event.target.files[0];
-        let src = await toBase64(file);
-
+        let src = event;
              // create a random id
         const randomId = Math.random().toString(36).substring(2);
         // create a reference to the storage bucket location
@@ -191,7 +149,7 @@ export class ChatPage implements OnInit {
         let task = ref.putString(base64result, 'base64', {
             contentType: 'image/jpeg'
         });
-        
+
         // AngularFireUploadTask provides observable
         // to get uploadProgress value
         let uploadProgress;
@@ -283,12 +241,8 @@ export class ChatPage implements OnInit {
 
         this.subscription = this.chat$.pipe().subscribe(chat => {
 
-            console.log(this.currentMessage);
-
             this.currentMessage.type = '';
             this.updatedDialogue = true;
-
-            this.fcmService.getOptionsByUserId(this.interlocutorId);
 
             if (chat.messages.length > 0) {
                 this.imageRequestMessage = chat.messages.filter(msg => msg.imageRequest && !msg.delivered && this.userService.user.id !== msg.uid);
@@ -324,19 +278,13 @@ export class ChatPage implements OnInit {
     }
 
     async viewProfile(profile) {
-
-        if(this.generalService.isDesktop()) {
-            this.userService.setData(profile);
-            this.navCtrl.navigateForward('user/profile');
-        }else{
-            const modal = await this.modalCtrl.create({
-                component: ProfilePage,
-                componentProps: {
-                    profile,
-                }
-            });
-            return await modal.present();
-        }
+        const modal = await this.modalCtrl.create({
+            component: ProfilePage,
+            componentProps: {
+                profile,
+            }
+        });
+        return await modal.present();
     }
 
     ionViewWillEnter() {
@@ -350,7 +298,7 @@ export class ChatPage implements OnInit {
                 if (!res.empty) {
                     this.blockedMessage = 'המשתמש הוסיף אותך לרשימה השחורה';
                 } else {
-                    if (this.dialogueExists) {
+                    if (this.dialogueExists && this.userService.isPremium()) {
                         this.getDialogue();
                     }
                 }
@@ -365,6 +313,21 @@ export class ChatPage implements OnInit {
             this.presentToast(this.errMessage);
             return;
         }
+    }
+
+    async viewSubscriptionGold() {
+        const modal = await this.modalCtrl.create({
+            component: TinderGoldPage,
+            cssClass: 'custom-modal-small',
+        });
+        modal.onWillDismiss().then((res:any) => {
+            this.userService.setPayed(res.data.payed);
+            if(res.data.payed){
+                this.getDialogue()
+            }
+        })
+
+        return await modal.present();
     }
 
     sendMessage() {

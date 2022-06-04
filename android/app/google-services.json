@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "793648489294",
+    "project_id": "polymatch-d1996",
+    "storage_bucket": "polymatch-d1996.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793648489294:android:67d6c2484594c45fa1341f",
+        "android_client_info": {
+          "package_name": "il.co.polymory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "793648489294-e0sbpo0le6bsejj61l2npjrs7ul7ql5c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcNzkmA3qMJlsBFVmfl4gWUp0gXGS9xu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793648489294-e0sbpo0le6bsejj61l2npjrs7ul7ql5c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

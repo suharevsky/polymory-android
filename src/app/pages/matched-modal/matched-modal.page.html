@@ -1,0 +1,31 @@
+<ion-content force-overscroll="false">
+  <ion-buttons class="upper">
+    <div class="dismiss" (click)="close()">
+      <ion-icon name="close-outline"></ion-icon>
+    </div>
+  </ion-buttons>
+
+  <div class="matched-container">
+    <div [style.backgroundImage]="'url(' + userService.getMainPhoto(user,'l')+ ')'" class="background-img full-height"></div>
+    <div class="matched-overlay">
+      <div class="matched-title">
+        <div class="text-match">
+          <div>מאתמה!</div>
+          <div>מאתמה!</div>
+          <div>מאתמה!</div>
+        </div>
+      </div>
+      <div class="matched-input">
+        <div class="label">
+          <div>
+            <p>שניכם עשיתם לייק אחד לשני</p>
+          </div>
+        </div>
+      </div>
+
+        <ion-button fill="clear" color="white" (click)="viewProfile()">
+          צפה בפרופיל
+        </ion-button>
+    </div>
+  </div>
+</ion-content>

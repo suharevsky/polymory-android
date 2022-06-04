@@ -77,11 +77,10 @@ export class SettingsPage implements OnInit {
         });
 
         await alert.present();
-
     }
 
     contactUs() {
-        window.location.href = "mailto:aliksui.ua@gmail.com";
+        window.location.href = "mailto:aliksui.ua@gmail.com?subject=" + this.userService.user.id;
     }
 
     getContact() {

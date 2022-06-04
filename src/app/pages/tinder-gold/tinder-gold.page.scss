@@ -1,50 +1,70 @@
 .header-title {
   text-align: center;
   margin: 24px auto 16px;
-  font-size: 20px;
+  font-size: 28px;
+  color: rgb(119, 116, 197);
 }
 
 .slides-intro {
   min-height: 100px;
 }
 
-ion-content.bg-image {
-  //--background-image: url('../assets/img/subscription-bg.jpg');
-  // background: url("../../../assets/img/subscription-bg.jpg") no-repeat;
-  // --background: url("../../../assets/img/subscription-bg.jpg") no-repeat;
-  background-size: contain;
-  background-position: center;
-}
 
-.bg-color {
-  //background: var(--ion-color-boost-gradient);
-  // height: 100%;
-  //background: linear-gradient(#085078, #85d8ce); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+.plans {
+  display: flex;
+  justify-content: space-around;
 }
-
 .price-tag {
+  position: relative;
+  box-shadow: 0 6px 9px rgba(0, 0, 0, 0.19);
   text-align: center;
-  margin: 16px;
-  border: 1px solid var(--ion-color-gold);
-  padding: 16px;
+  flex: 1;
+  //border: 1px solid rgb(119, 116, 197);
+  padding: 8px;
   border-radius: var(--swipe-card-border-radius);
-  background-color: rgba(var(--ion-color-gold-rgb), 0.1);
+  background-color: rgba(64, 61, 163, 0.1);
+
+  &.active {
+    border: 1px solid rgb(119, 116, 197);
+  }
+
+  .label {
+    position: absolute;
+    background: #7774c5;
+    color: #fff;
+    padding: 4px 14px;
+    top: -18px;
+    left: -2px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+
+  .num-months {
+    font-size: 16px;
+  }
 
   .plan-name {
     font-size: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 8px;
   }
 
   .number-big {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
 
 .button-group {
+  margin: 32px auto;
   width: 240px;
-  margin: 0 auto;
+  .continue {
+    --background: rgb(119, 116, 197);;
+  }
+}
+
+.btn-close {
+  color: #8d8d8d;
 }
 
 .text-lg {
-  font-size: 20px;
+  font-size: 16px;
 }

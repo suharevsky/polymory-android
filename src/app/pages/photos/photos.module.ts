@@ -8,7 +8,6 @@ import { PhotosPageRoutingModule } from './photos-routing.module';
 
 import { PhotosPage } from './photos.page';
 import {ImageCropperComponent} from '../../components/image-cropper/image-cropper.component';
-//import {FabricjsEditorModule} from '../../components/angular-editor-fabric-js/src/lib/angular-editor-fabric-js.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- import it
 
 @NgModule({
@@ -17,7 +16,6 @@ import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- import it
         FormsModule,
         IonicModule,
         PhotosPageRoutingModule,
-       // FabricjsEditorModule,
         LazyLoadImageModule,
     ],
   declarations: [PhotosPage, ImageCropperComponent],

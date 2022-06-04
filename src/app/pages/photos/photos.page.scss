@@ -1,9 +1,6 @@
 .photos-edit {
   padding: 4px;
   cursor: pointer;
-  .toggle-icon {
-    //--background: var(--ion-color-boost-gradient);
-  }
 
   .btn {
     margin: 0 auto;
@@ -44,7 +41,7 @@
   }
 
   .rules {
-    padding: 8px
+    padding: 8px 0
   }
 
   .label {
@@ -100,43 +97,10 @@
   }
 }
 
-
-.edit-photo {
-  width: 100%;
-  height: calc(100vh - 180px);
-  ion-button {
-    margin: 30px;
-  }
-}
-
-.btn-edit-photos {
-  ion-button {
-    height: 48px;
-    flex: 1;
-  }
-
-  ion-icon {
-    font-size: 32px;
-  }
-
-  ion-img {
-    height: 32px;
-  }
-}
-
 .blur-photo ion-img {
   margin: 0 auto;
   display: block;
 }
-
-.canvas-container {
-  display: block;
-  margin: 0 auto;
-}
-
-/*input[type=file] {
-  display: none;
-}*/
 
 .blur-field {
   display: block;
@@ -152,39 +116,6 @@ ion-buttons.options {
 
   margin-top: 32px;
   justify-content: center;
-}
-
-.mask-list {
-  display: flex;
-  height: 60px;
-
-  .mask {
-    flex: 1 0 auto;
-    background: #ffffff;
-    border-radius: 4px;
-    margin: 4px;
-    position: relative;
-
-    .rectangle {
-      width: 48px;
-      height: 16px;
-      background: #3f51b5;
-      position: absolute;
-      transform: translate(-50%, -50%);
-      left: 50%;
-      top: 50%;
-    }
-
-
-    ion-img {
-      height: auto;
-      width: 48px;
-      position: absolute;
-      transform: translate(-50%, -50%);
-      left: 50%;
-      top: 50%;
-    }
-  }
 }
 
 .finish-registration {

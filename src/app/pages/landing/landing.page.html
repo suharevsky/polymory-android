@@ -1,86 +1,14 @@
 <ion-content force-overscroll="false" class="landing-page bg-gradient">
-    <div class="desktop">
-    <main class="inner">
-        <header>
-            <div class="logo"><img alt="logo" class="logo__image" src="/assets/img/logo.png"></div>
-                <nav data-aos="fade-up-right">
-                    <ul>
-                        <li (click)="contactUs()">צור קשר</li>
-                        <li (click)="getPage('terms-and-conditions')"><a>לתנאים</a></li>
-                        <li (click)="getPage('policy')"><a>מדיניות פרטיות</a></li>
-                        <li (click)="entranceForm('sign-up')"><a>הרשמה חינם</a></li>
-                    </ul>
-                </nav>
-                <a href="#" class="btn register-btn" (click)="entranceForm('sign-in')">
-                    כניסה
-                </a>
-        </header>
-        <div class="main-bg">
-
-        </div>
-        <img (click)="scrollBottom()" class="arrow-to-bottom" src="/assets/img/arrow-to-bottom.svg">
-    <div class="wrap">
-        <section>
-            <div class="logo"><img alt="logo" class="logo__image" src="/assets/img/logo.png"><div class="logo__name">Polymory</div></div>
-            <div class="description">
-                אתר ההכרויות לקהילה הפוליאמורית בישראל            
-            </div>
-            <a href="#" class="btn register-btn" (click)="entranceForm('sign-up')">
-                הצטרפו עכשיו חינם!
-            </a>
-            <!-- <div class="download">
-                <a href="https://play.google.com/store/apps/details?id=il.co.polymatch&hl=he&gl=il" target="_blank"><img src="/assets/img/google_play.svg"></a>
-                <a href="/"><img src="/assets/img/pwa.png"></a>
-            </div> -->
-        </section>
-    </div>
-    </main>
-    <div class="wrap">
-    <section class="how-it-works section">
-        <section>
-            <h2>- איך זה עובד</h2>
-            <div class="description"> המקום המושלם למצוא את ההתאמה האידיאלית שלך בהתבסס על מטרות החיים שלך, העדפות מיניות, אורח חיים, אישיות והרגלים.</div>
-            <ul class="list">
-                <li><span class="num">1</span>
-                    <div>
-                    <h3>תקשר בתנאים שלך</h3>
-                    <div class="text">
-                        תתחברו בסביבה בטוחה ומאובטחת. תהנה מצ'אטים פרטיים ומשיחות אישיות בזמן שלך.
-                    </div>
-                </div>
-                </li>
-                <li><span class="num">2</span>
-                    <div>
-                        <h3>הכירו את האנשים האידיאליים </h3>
-                        <div class="text">מהפכת היכרויות בפעולה. התחבר עם אלה שאתה תואם או בדוק תאימות עם אלה שאתה כבר מכיר רק על ידי חיפוש שלהם באמצעות מזהה פרופיל.</div>
-                    </div>
-                </li>
-                <li><span class="num">3</span>
-                    <div>
-                        <h3>פרטיות מלאה</h3>
-                        <div class="text">הסתר את התמונות שלך והשתמש בשם בדוי כדי להישאר אנונימי לחברים ובני משפחה.</div>
-                    </div>
-                </li>
-            </ul>
-        </section>
-        <section class="devices">
-            <div data-aos="fade-up-right" class="device">
-                <img class="device__img" alt="logo" src="/assets/img/device-2.png">
-            </div>
-        </section>
-    </section>
-</div>
-</div>
     <div class="vertical-layout safe-area-bottom ">
         <div class="section-brand">
             <div class="main-bg"></div>
+            <div class="gradient-bg"></div>
             <div class="logo">
                 <img alt="logo" class="logo__image" src="/assets/img/logo.png">
                 <div class="logo__name">Polymory</div>
                 <div class="logo__subtitle">אתר ההכרויות לקהילה הפוליאמורית בישראל</div>
             </div>
-        </div>
-
+        </div> 
         <div class="section-buttons ion-padding">
                 <div *ngIf="currentStep === 0" class="ion-padding">
                     לחיצה על כפתור כניסה או הרשמה מהווה את הסכמתך <span (click)="getPage('terms-and-conditions')" class="link">לתנאים</span> שלנו
@@ -91,9 +19,7 @@
                         fill="outline"
                         shape="round"
                         class="button-landing ion-margin-bottom"
-                        (click)="codeFormStatus(1)"
-                >
-
+                        (click)="codeFormStatus(1)">
                     הרשמה חינם
                 </ion-button>
                 <ion-button
@@ -169,21 +95,4 @@
         </div>
     </div>
     <span id="sign-in-button"></span>
-    <section>
-
-    </section>
-    <footer class="desktop">
-        <div class="logo">
-            <img alt="logo" class="logo__image" src="/assets/img/logo-dark.png">
-        </div>
-            <nav>
-                <ul>
-                    <li (click)="contactUs()">צור קשר</li>
-                    <li (click)="getPage('terms-and-conditions')"><a>לתנאים</a></li>
-                    <li (click)="getPage('policy')"><a>מדיניות פרטיות</a></li>
-                    <li (click)="entranceForm('sign-in')"><a>כניסה</a></li>
-                    <li (click)="entranceForm('sign-up')"><a>הרשמה חינם</a></li>
-                </ul>
-            </nav>
-    </footer>
 </ion-content>

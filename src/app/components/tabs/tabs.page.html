@@ -8,7 +8,7 @@
     </ion-tab-button>
 
     <ion-tab-button tab="highlights" class="color-gold">
-      <ion-icon name="grid-outline"></ion-icon>
+      <ion-icon name="people"></ion-icon>
     </ion-tab-button>
 
     <ion-tab-button tab="matches">
@@ -17,7 +17,7 @@
     </ion-tab-button>
 
     <ion-tab-button tab="me">
-      <ion-icon name="person"></ion-icon>
+      <img class="profile-img" src="{{this.userService.getMainPhoto(this.userService.user, 'l', false)}}">
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

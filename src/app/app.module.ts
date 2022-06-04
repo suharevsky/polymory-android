@@ -1,12 +1,13 @@
-import {NgModule, APP_INITIALIZER} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {RouteReuseStrategy, RouterModule} from '@angular/router';
+import {RouteReuseStrategy} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 
 import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {TapticEngine} from '@ionic-native/taptic-engine/ngx';
+import { InAppPurchase2 } from '@awesome-cordova-plugins/in-app-purchase-2/ngx';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -23,7 +24,6 @@ import { AppVersion } from '@ionic-native/app-version/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Market } from '@ionic-native/market/ngx';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { DefaultModule } from './layouts/default/default.module';
 import { SettingsPageModule } from './pages/settings/settings.module';
 import { ProfileEditPageModule } from './pages/profile-edit/profile-edit.module';
 import { TinderGoldPageModule } from './pages/tinder-gold/tinder-gold.module';
@@ -31,8 +31,8 @@ import { ImageModalPageModule } from './components/image-modal/image-modal.modul
 import { PhotosPageModule } from './pages/photos/photos.module';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import {IonicInputMaskModule} from "@thiagoprz/ionic-input-mask";
-import { DeviceGuard } from './guard/device/device.guard';
 import { AuthGuard } from './guard/auth/auth.guard';
+import { FilterPageModule } from './pages/filter/filter.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -53,9 +53,9 @@ import { AuthGuard } from './guard/auth/auth.guard';
     PhotosPageModule,
     SettingsPageModule,
     ProfileEditPageModule,
+    FilterPageModule,
     TinderGoldPageModule,
     ImageModalPageModule,
-    DefaultModule,
     ServiceWorkerModule.register('combined-sw.js', {
       enabled: environment.production,
     }),
@@ -67,7 +67,6 @@ import { AuthGuard } from './guard/auth/auth.guard';
     StatusBar,
     SplashScreen,
     TapticEngine,
-    DeviceGuard,
     AuthGuard,
     Crop,
     Camera,
@@ -75,6 +74,7 @@ import { AuthGuard } from './guard/auth/auth.guard';
     AppVersion,
     InAppBrowser,
     Market,
+    InAppPurchase2,
     /*{
         provide: APP_INITIALIZER,
         useFactory: appInitializer,

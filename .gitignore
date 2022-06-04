@@ -9,6 +9,7 @@
 *.sublime-project
 *.sublime-workspace
 .DS_Store
+.firebase-messaging-sw.js
 Thumbs.db
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/

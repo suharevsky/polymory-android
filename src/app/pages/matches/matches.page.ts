@@ -5,6 +5,10 @@ import {Subscription} from 'rxjs';
 import {UserService} from '../../services/user/user.service';
 import { ParamsService } from 'src/app/services/params/params.service';
 import { ProfilePage } from '../profile/profile.page';
+import { CounterService } from 'src/app/services/counter/counter.service';
+import { ChatService } from 'src/app/services/chat/chat.service';
+import { GeneralService } from 'src/app/services/general/general.service';
+import { ChatPage } from '../chat/chat.page';
 
 @Component({
     selector: 'app-matches',
@@ -14,22 +18,52 @@ import { ProfilePage } from '../profile/profile.page';
 export class MatchesPage implements OnInit, OnDestroy {
     public segmentView = '0';
     public messages;
+    public matches$;
     public user;
     private subscriptions: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
+    public inboxList = [];
+    public isLoaded = false;
+    public hasMessages = true;
+    public counter: any;
+    public currentPage: string;
+    public activeTab;
 
     constructor(private navCtrl: NavController,
                 public modalCtrl: ModalController,
-                //private routerService: RouterService,
                 public paramsService: ParamsService,
+                public counterService: CounterService,
+                private generalService: GeneralService,
+                public chatService: ChatService,
                 public userService: UserService) {
-                    let params = this.paramsService.getAll();
-                    if(params?.modal && params.sender) {
-                        this.viewProfile(params.sender);
-                        this.paramsService.reset();
-                    }
+        let params = this.paramsService.getAll();
+        this.matches$ = this.userService.getMatches();
+        if(params?.modal && params.sender) {
+            this.viewProfile(params.sender);
+            this.paramsService.reset();
+        }
     }
     
-    ngOnInit() {}
+    ngOnInit() {
+        this.chatService.inbox.currentIndex = 0;
+   
+        this.inboxList = [];
+
+        this.counterService.getByUserId(this.userService.user?.id).subscribe(result => {
+            this.counter = result.payload.data();
+        });
+
+        this.generalService.activeInboxTab.subscribe( activeInboxTab => this.activeTab = activeInboxTab)
+        this.generalService.currentPage.subscribe(currentPage => this.currentPage = currentPage);
+
+        this.chatService.getInbox().then(res => res.subscribe(res => {
+            this.isLoaded = true;
+            this.inboxList = res;
+            
+            if (this.inboxList.length === 0) {
+                this.hasMessages = false;
+            }
+        }))
+    }
 
     async viewProfile(profile) {
         const modal = await this.modalCtrl.create({
@@ -42,6 +76,53 @@ export class MatchesPage implements OnInit, OnDestroy {
         return await modal.present();
         // this.navCtrl.navigateForward(`/profile/${user.id}`, user);
     }
+
+    goToMatchedChat(profile) {
+        this.chatService.setUsers(profile, this.userService.user);
+        this.chatService.getDialogue().subscribe(async (res: any) => {
+            
+        const modal = await this.modalCtrl.create({
+            component: ChatPage,
+            componentProps: {
+                chatId: res.chat.id,
+                chatExists: res.chat.exists,
+                profileId: profile.id
+            }
+        });    
+        return await modal.present();
+        });
+    }
+
+    async goToChat(id, profileId) {
+        this.generalService.activeInboxTab.next(profileId)
+  
+          const modal = await this.modalCtrl.create({
+              component: ChatPage,
+              keyboardClose: false,
+              componentProps: {
+                  chatId: id,
+                  chatExists: true,
+                  profileId
+              }
+          });
+      
+          // await modal.onDidDismiss();
+      
+          return await modal.present();
+        
+  }
+  
+    loadData(event) {
+          setTimeout(_ => {
+              event.target.complete().then(res => {
+                  this.chatService.getInbox().then(res => res.subscribe(inboxList => {
+                      for (const element of inboxList) {
+                          this.inboxList.push(element);
+                      }
+                  }))
+              });
+          }, 500);
+      }
 
     ionViewDidEnter() {
         //this.routerService.toggleSwipeBack(false);

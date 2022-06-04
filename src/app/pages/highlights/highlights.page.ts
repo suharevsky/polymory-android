@@ -1,16 +1,18 @@
 import {Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {UserService} from '../../services/user/user.service';
 import {Subscription} from 'rxjs';
-import {IonContent, IonInfiniteScroll, ModalController, NavController, ToastController} from '@ionic/angular';
+import {IonContent, IonInfiniteScroll, ModalController, NavController, Platform, ToastController} from '@ionic/angular';
 import {FilterPage} from '../filter/filter.page';
 import {FcmService} from '../../services/fcm/fcm.service';
 import {UserModel} from '../../models/user.model';
 import {FilterService} from '../../services/filter/filter.service';
 import {PhotosPage} from '../photos/photos.page';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { GeneralService } from 'src/app/services/general/general.service';
-import { debounceTime, take } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { UpdateAppService } from 'src/app/services/update-app/update-app.service';
+import { MatchedModalPage } from '../matched-modal/matched-modal.page';
+import { modalEnterZoomOut, modalLeaveZoomIn } from 'src/app/animations/animations';
+import { debounce, debounceTime, delay, take } from 'rxjs/operators';
+
 
 @Component({
     selector: 'app-highlights',
@@ -45,7 +47,6 @@ export class HighlightsPage implements OnInit, OnDestroy {
 
     constructor(
         public userService: UserService,
-        private authService: AuthService,
         private modalCtrl: ModalController,
         public navCtrl: NavController,
         public fcmService: FcmService,
@@ -54,14 +55,18 @@ export class HighlightsPage implements OnInit, OnDestroy {
         public element: ElementRef,
         public renderer: Renderer2,
         public generalService: GeneralService,
+        public platform: Platform,
+        public updateAppService: UpdateAppService
     ) {
     }
 
     async ngOnInit() {
         this.filterData = this.filterService.get(this.filterData);
-        //console.log(this.userService.highlights);    
         this.getResults();
-        this.fcmService.initPush();    
+        this.fcmService.initPush();
+        if(this.platform.is('android') || this.platform.is('ios')) {
+            this.updateAppService.checkForUpdate();
+        }
     }
 
     async getResults() {
@@ -75,7 +80,7 @@ export class HighlightsPage implements OnInit, OnDestroy {
             reload: false
         };
 
-        this.loadHighlights().pipe(debounceTime(900)).subscribe(users => {
+        this.loadHighlights().subscribe(users => {
 
             this.isLoading = false;
             users.forEach((user: any) => this.users.push(user));
@@ -144,17 +149,10 @@ export class HighlightsPage implements OnInit, OnDestroy {
         modal.onDidDismiss()
             .then((res) => {
                 if (res.data) {
-                    if(this.generalService.isDesktop()) {
-                        document.body.scrollTop = 0;
-                        document.documentElement.scrollTop = 0
+                    this.content.scrollToTop().then(_ => {
                         this.filterData = {...this.filterData, ...res.data};
                         this.filter();
-                    }else{
-                        this.content.scrollToTop().then(_ => {
-                            this.filterData = {...this.filterData, ...res.data};
-                            this.filter();
-                        });
-                    }
+                    });
                 }
             });
         return await modal.present();
@@ -172,6 +170,37 @@ export class HighlightsPage implements OnInit, OnDestroy {
             users.forEach(user => this.users.push(user));
         });
     }
+
+    ionViewDidEnter(){
+        this.checkMatch();    
+    }
+
+    async checkMatch() {
+        this.userService.getMatch().subscribe((result:any)=> {
+            if(result) {
+                let key = Object.keys(result).find(key => result[key] === this.userService.user.id);
+                if(!result[key + '_showed_splash']) {
+                    result[key + '_showed_splash'] = true;
+                    this.userService.closeSplash(result)
+                    let matchedProfileId = result[key] === result.uid1 ? result.uid2 : result.uid1;
+                    this.userService.getItemById(matchedProfileId).pipe(delay(500)).subscribe(user => this.showSplashMatch(user));
+                }
+            }
+        })
+    }
+
+    async showSplashMatch(user) {
+        const modal = await this.modalCtrl.create({
+            component: MatchedModalPage,
+            enterAnimation: modalEnterZoomOut,
+            leaveAnimation: modalLeaveZoomIn,
+            componentProps: {
+                user
+            }
+        })
+        modal.present();
+    }
+
 
     ionViewDidLeave() {
         // Save scroll position

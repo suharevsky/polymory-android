@@ -1,29 +1,33 @@
 {
-	"appId": "il.co.polymory",
-	"appName": "Polymory",
-	"bundledWebRuntime": false,
-	"npmClient": "npm",
-	"webDir": "www",
-	"cordova": {},
-	"plugins": {
-	  "SplashScreen": {
-		"launchShowDuration": 0
-	  },
-	  "PushNotifications": {
-		"presentationOptions": [
-		  "badge",
-		  "sound",
-		  "alert"
-		]
-	  },
-	  "GoogleAuth": {
-		"scopes": [
-		  "profile",
-		  "email"
-		],
-		"serverClientId": "817722655258-mo6tgeu3ai24ivaen21cfddbjkhf9o90.apps.googleusercontent.com",
-		"forceCodeForRefreshToken": true
-	  }
-	}
+  "appId": "il.co.polymory",
+  "appName": "Polymory",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {},
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "androidScaleType": "CENTER_CROP",
+      "splashFullScreen": true,
+      "splashImmersive": false,
+      "backgroundColor": "#ffffff"
+    },
+
+    "PushNotifications": {
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
+    },
+    "GoogleAuth": {
+      "scopes": [
+        "profile",
+        "email"
+      ],
+      "serverClientId": "817722655258-mo6tgeu3ai24ivaen21cfddbjkhf9o90.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
+    }
   }
-  
+}

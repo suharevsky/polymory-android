@@ -1,8 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
-import { ModalController, NavController } from '@ionic/angular';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { ProfilePage } from 'src/app/pages/profile/profile.page';
-import { GeneralService } from 'src/app/services/general/general.service';
 import {UserService} from '../../services/user/user.service';
 
 @Component({
@@ -12,14 +10,11 @@ import {UserService} from '../../services/user/user.service';
 })
 export class PersonCardComponent implements OnInit {
   @Input() user: any;
+  @Output() reloadEvent = new EventEmitter<string>();
 
   constructor(
       public userService: UserService,
       private modalCtrl: ModalController,
-      private navCtrl: NavController,
-      private generalService: GeneralService,
-      private router: Router, 
-
   ) {     
   }
 
@@ -29,11 +24,6 @@ export class PersonCardComponent implements OnInit {
 
   async viewProfile() {
     
-     if(this.generalService.isDesktop()) {
-       this.userService.setData(this.user);
-       this.router.navigate(['user/profile']);
-
-     }else{
       const modal = await this.modalCtrl.create({
         component: ProfilePage,
         cssClass: 'profile-modal',
@@ -42,7 +32,14 @@ export class PersonCardComponent implements OnInit {
         }
 
     });
+
+    modal.onDidDismiss().then(result => {
+      console.log(result);
+      this.reloadEvent.emit(result.data.reloadPrevPage);
+    });
+
+    
     return await modal.present();
-    }
+    
   }
 }

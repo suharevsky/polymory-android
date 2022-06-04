@@ -35,7 +35,7 @@ export class PlusIntroComponent implements OnInit {
             {
                 iconName: 'mail-unread-outline',
                 // title: 'Swipe Around the World',
-                body: 'לשלוח הודעות למשתמשים'
+                body: 'לשלוח הודעות לכל משתמש'
             },
             /* {
                iconName: 'key-sharp',

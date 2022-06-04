@@ -1,4 +1,4 @@
-import {Component, NgZone, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {IonRouterOutlet, Platform} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
@@ -6,8 +6,9 @@ import {ThemeService} from './services/theme/theme.service';
 import {RouterService} from './services/router.service';
 import {UserService} from './services/user/user.service';
 import { UpdateAppService } from './services/update-app/update-app.service';
-import { Router } from '@angular/router';
 import { GeneralService } from './services/general/general.service';
+import { PaymentService } from './services/payment/payment.service';
+
 
 @Component({
     selector: 'app-root',
@@ -27,7 +28,7 @@ export class AppComponent {
         public userService: UserService,
         public updateAppService: UpdateAppService,
         public generalService: GeneralService,
-        private router: Router
+        public paymentService: PaymentService
        // private ngZone: NgZone,
     ) {
         this.initializeApp();
@@ -39,29 +40,20 @@ export class AppComponent {
     }
 
     async initializeApp() {
-       // this.userService.setUser(user);
-       // alert(this.userService.user.id);
         this.platform.ready().then(() => {
-            
-            // if(!this.generalService.isDesktop() && this.userService.user.id) {
-            //     this.router.navigate(['/tabs/highlights']);
-            // }
-            if(this.platform.is('android') || this.platform.is('ios')) {
-                this.updateAppService.checkForUpdate();
-            }
-            this.statusBar.styleDefault();
-            this.themeService.toggleDarkMode(true);
-            this.splashScreen.hide();
 
+          this.statusBar.styleDefault();
+          this.themeService.toggleDarkMode(true);
+          this.splashScreen.hide();
+          this.paymentService.init();
             /*Network.addListener('networkStatusChange', (status) => {
-                this.ngZone.run(() => {
-                    // This code will run in Angular's execution context
-                    this.networkStatus = status.connected ? 'Online' : 'Offline';
-                    console.log(this.networkStatus);
-                });
-            });*/
+              this.ngZone.run(() => {
+                  // This code will run in Angular's execution context
+                  this.networkStatus = status.connected ? 'Online' : 'Offline';
+                  console.log(this.networkStatus);
+              });
+          });*/
         });
         // this.themeService.restore();
-        this.themeService.toggleDarkMode(true);
     }
 }

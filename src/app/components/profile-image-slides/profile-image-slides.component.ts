@@ -28,6 +28,7 @@ export class ProfileImageSlidesComponent implements OnInit {
     @ViewChild('profileImages', {static: false}) slides: IonSlides;
     @ViewChild('slideHeight') slideHeight: ElementRef;
     @ViewChild('sliderHeight') sliderHeight: ElementRef;
+    imageRequest = {result: {accepted: false}, empty: true}; 
 
     constructor(
         private taptic: TapticEngine, 
@@ -42,24 +43,14 @@ export class ProfileImageSlidesComponent implements OnInit {
 
     ngOnInit() {
 
-        if(this.user) {
-            this.images = this.userService.getAllPhotos(this.user, true);
-        }else{
-            setTimeout(()=>{
-                console.log(this.user);
-                this.images = this.userService.getAllPhotos(this.user, true);
-                //this.cd.detectChanges();
-            },0);
-        }
-
-        //this.userService.getListData('requestImage',this.user.id).subscribe(res => this.imageRequest = res); 
-        //this.imageRequestService.checkImageRequest(this.user);     
+        this.userService.getListData('requestImage',this.user.id).subscribe(res => this.imageRequest = res); 
+        this.imageRequestService.checkImageRequest(this.user);     
     }
 
     ngAfterViewInit() {
         setTimeout(_ => {
             //@ts-ignore
-            this.setSlideHeight = this.generalService.isDesktop() ? this.slideHeight.el.offsetWidth + 'px' : 'auto';
+            this.setSlideHeight = 'auto';
 
         },1000);
     }

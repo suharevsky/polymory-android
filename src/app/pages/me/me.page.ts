@@ -1,5 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ModalController, NavController} from '@ionic/angular';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {ModalController} from '@ionic/angular';
 import {SettingsPage} from '../settings/settings.page';
 import {ProfileEditPage} from '../profile-edit/profile-edit.page';
 import {TinderGoldPage} from '../tinder-gold/tinder-gold.page';
@@ -20,14 +20,15 @@ export class MePage implements OnInit, OnDestroy {
 
     public lineChartLegend = true;
     public lineChartType = 'line';
+    public mainPhoto;
     private subscriptions: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
     constructor(
-        private navCtrl: NavController,
         private modalCtrl: ModalController,
         public http: HttpClient,
         public userService: UserService,
-        public generalService: GeneralService
+        public generalService: GeneralService,
+        private ref: ChangeDetectorRef
     ) {
     }
 
@@ -35,59 +36,47 @@ export class MePage implements OnInit, OnDestroy {
     }
 
     ionViewDidEnter() {
+        this.mainPhoto = this.userService.getMainPhoto(this.userService.user, 'l', false);
         this.showSlides = true;
     }
 
-    async viewProfile(profile) {
-         if(this.generalService.isDesktop()) {
-             this.userService.setData(profile)
-             this.navCtrl.navigateForward('user/profile');
-         }else {
-            const modal = await this.modalCtrl.create({
-                component: ProfilePage,
-                cssClass: 'profile-modal',
-                componentProps: {
-                    profile,
-                }
-            });
-    
-            return await modal.present();
-         }
+    async viewProfile() {
+
+        const modal = await this.modalCtrl.create({
+            component: ProfilePage,
+            cssClass: 'profile-modal',
+            componentProps: {
+                profile: this.userService.user
+            }
+        });
+
+        return await modal.present();
     }
 
     async photosProfile() {
-        if(this.generalService.isDesktop()) {
-            this.navCtrl.navigateForward('user/photos')
-        }else{
-            const modal = await this.modalCtrl.create({
-                component: PhotosPage,
-            });
-            return await modal.present();
-        }
+        const modal = await this.modalCtrl.create({
+            component: PhotosPage,
+        });
+
+        modal.onDidDismiss().then(_ => {
+            this.mainPhoto = this.userService.getMainPhoto(this.userService.user, 'l', false)
+        });
+        
+        return await modal.present();
     }
 
     async viewSettings() {
-
-        if(this.generalService.isDesktop()) {
-            this.navCtrl.navigateForward('user/settings')
-        }else{
-            const modal = await this.modalCtrl.create({
-                component: SettingsPage,
-            });
-            return await modal.present();
-        }
+        const modal = await this.modalCtrl.create({
+            component: SettingsPage,
+        });
+        return await modal.present();
     }
 
     async viewEditProfile() {
-
-        if(this.generalService.isDesktop()) {
-            this.navCtrl.navigateForward('user/edit')
-        }else{
-            const modal = await this.modalCtrl.create({
-                component: ProfileEditPage,
-            });
-            return await modal.present();
-        }
+        const modal = await this.modalCtrl.create({
+            component: ProfileEditPage,
+        });
+        return await modal.present();   
     }
 
     async viewSubscriptionGold() {
@@ -95,7 +84,12 @@ export class MePage implements OnInit, OnDestroy {
             component: TinderGoldPage,
             cssClass: 'custom-modal-small',
         });
-        return await modal.present();
+
+        modal.onWillDismiss().then((res:any) => {
+            this.userService.setPayed(res.data.payed);
+        })
+
+        await modal.present();
     }
 
     ionViewWillEnter() {

@@ -1,36 +1,123 @@
-<ion-header>
-    <!--<ion-toolbar class="toolbar-no-border toolbar-no-safe-area">
-        <ion-segment class="segment-custom" [(ngModel)]="segmentView" mode="md">
-            <ion-segment-button value="0">
-                <ion-label>
-                    Messages
-                    <div class="segment-badge">6</div>
-                </ion-label>
-            </ion-segment-button>
-            <ion-segment-button value="1">
-                <ion-label>
-                    Matches
-                    <div class="segment-badge">3</div>
-                </ion-label>
-            </ion-segment-button>
-        </ion-segment>
-    </ion-toolbar>-->
-    <ion-toolbar>
-        <ion-title>הודעות</ion-title>
-    </ion-toolbar>
-</ion-header>
 
-<ion-content>
-    <ion-header collapse="condense">
-        <ion-toolbar class="header-custom">
-            <ion-title size="large">הודעות</ion-title>
-        </ion-toolbar>
-    </ion-header>
+<ion-header translucent="true" collapse="fade">
+  <ion-toolbar>
+    <ion-title>הודעות</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">הודעות</ion-title>
+    </ion-toolbar>
+  </ion-header>
+    
     <div [ngSwitch]="segmentView" class="safe-area-bottom">
+      <!-- <ion-header collapse="condense">
+        <ion-toolbar class="header-custom">
+          <ion-title size="large">הודעות</ion-title>
+        </ion-toolbar>
+      </ion-header> -->
+
         <!-- MESSAGES -->
-        <div *ngSwitchCase="'0'">
+        <!-- <div *ngSwitchCase="'0'">
             <app-inbox></app-inbox>
+        </div> -->
+        <!-- FEED -->
+        <div *ngIf="(matches$ | async)?.length > 0">
+          <div class="list-header">
+            <ion-text color="primary">
+              <strong>התאמות</strong>
+            </ion-text>
+          </div>
+          <div class="scroll-horizontal matches-list">
+            <!-- <div class="scroll-item matches-item matches-item-likes">
+              <div class="profile-image">
+                <div class="profile-image-inner">
+                  <random-avatar [size]="'lg'"></random-avatar>
+                </div>
+  
+                <div class="likes-count">
+                  99+
+                </div>
+                <div class="like-gold">
+                  <ion-icon name="heart"></ion-icon>
+                </div>
+              </div>
+              <div class="scroll-item-title text-ellipsis">אהבו אותי</div>
+            </div> -->
+            <div class="scroll-item matches-item" *ngFor="let user of matches$| async" (click)="goToMatchedChat(user)">
+              <div class="profile-image">
+                <random-avatar [photo]="userService.getMainPhoto(user)" [size]="'lg'"></random-avatar>
+              </div>
+              <div class="scroll-item-title text-ellipsis">{{ user.username }}</div>
+            </div>
+          </div>
         </div>
+        
+  <div class="message-list">
+    <div *ngIf="inboxList.length === 0 && isLoaded" class="no-results">
+          <app-no-results [loading]="inboxList.length === 0 && !isLoaded" [headline]="'עדיין אין הודעות'"></app-no-results>
+    </div>
+  <ion-grid *ngIf="isLoaded">
+      <ng-container *ngFor="let message of inboxList">
+        <ng-container *ngIf="message | async as message">
+          <ion-row *ngIf="message.messages[message.messages.length - 1].user.status === 1" (click)="goToChat(message.id, userService.user.id !== message.uid1 ? message.uid1 : message.uid2)" class="ion-align-items-center">
+              <div [class.active] = "message.uid1 === activeTab || message.uid2 === activeTab" class="bg-tab"></div>
+                <ion-col size="auto">
+                    <random-avatar [user]="message.messages[message.messages.length - 1].user"
+                            photo="{{userService.getMainPhoto(message.messages[message.messages.length - 1].user,'s',message.messages[message.messages.length - 1].user.username)}}"
+                            [size]="'lg'"></random-avatar>
+                </ion-col>
+                <ion-col class="message-item-text">
+                    <div>
+                        <div class="user-name"
+                             *ngIf="!message.adminExists">{{message.messages[message.messages.length - 1].user.username}} {{userService.getAge(message.messages[message.messages.length - 1].user.birthday)}}
+                            <span *ngIf="userService.getAge(message.messages[message.messages.length - 1].user.birthday1)">, {{userService.getAge(message.messages[message.messages.length - 1].user.birthday1)}}</span>
+                        </div>
+                        <ion-badge class="user-name"
+                                   *ngIf="message.adminExists && !userService.user.isAdmin">{{message.messages[message.messages.length - 1].user.username}}
+                        </ion-badge>
+                        <ion-text
+                                color="medium">
+                                
+                                <ng-container *ngIf="message.messages[message.messages.length - 1].type === 'image'"><div class="picture-message"><span class="label">תמונה</span><span><ion-icon name="image-outline"></ion-icon></span></div></ng-container>
+                                <ng-container *ngIf="message.messages[message.messages.length - 1].type !== 'image'">{{message.messages[message.messages.length - 1].content}}</ng-container>
+                        </ion-text>
+                        <ion-text
+                                color="medium"> {{ message.messages[message.messages.length - 1].time }}
+                            ,{{ message.messages[message.messages.length - 1].date }}</ion-text>
+                        <ion-badge
+                                *ngIf="message.messages[message.messages.length - 1].unreadCounter > 0"
+                                class="counter">{{ message.messages[message.messages.length - 1].unreadCounter }}</ion-badge>
+                    </div>
+                </ion-col>
+              </ion-row>
+        </ng-container>
+  </ng-container>
+
+    <ion-infinite-scroll *ngIf="chatService.inbox.currentIndex < chatService.inbox.arrIds.length" disabled="false" threshold="100px" (ionInfinite)="loadData($event)">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="טוען נתונים..."></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+</ion-grid>
+    <ion-list *ngIf="!isLoaded" id="skeleton">
+        <ion-item *ngFor="let item of [].constructor(20)">
+            <ion-thumbnail slot="start">
+                <ion-skeleton-text></ion-skeleton-text>
+            </ion-thumbnail>
+            <ion-label>
+                <h3>
+                    <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+                </h3>
+                <p>
+                    <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+                </p>
+                <p>
+                    <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+                </p>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+</div>
 
     </div>
 

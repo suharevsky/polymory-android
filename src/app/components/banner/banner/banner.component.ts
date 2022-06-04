@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ModalController, NavController } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { PhotosPage } from 'src/app/pages/photos/photos.page';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { GeneralService } from 'src/app/services/general/general.service';
@@ -18,7 +18,6 @@ export class BannerComponent implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     public generalService: GeneralService,
-    private navCtrl: NavController,
     public authService: AuthService,
     public userService: UserService,
 
@@ -31,15 +30,10 @@ export class BannerComponent implements OnInit {
 
   async open() {
 
-      if(this.generalService.isDesktop()) {
-        this.navCtrl.navigateForward(['user/photos']);
-      }else{
-        const modal = await this.modalCtrl.create({
-          component: PhotosPage,
-      });
-        return await modal.present();
-      }
-
+    const modal = await this.modalCtrl.create({
+      component: PhotosPage,
+    });
+    return await modal.present();
   }
  
   ngOnInit() {

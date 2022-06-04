@@ -1,19 +1,19 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {IonSlides, LoadingController, ModalController, NavController, NavParams, ToastController} from '@ionic/angular';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {IonDatetime, IonSlides, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UserModel} from '../../models/user.model';
 import {UserService} from '../../services/user/user.service';
-import {range, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {first} from 'rxjs/operators';
 import {AuthService} from '../../services/auth/auth.service';
 //import {UniqueUsernameValidator} from '../../validators/unique-username.validator';
 import {PhotosPage} from '../photos/photos.page';
-import {BirthdayValidator} from '../../validators/birthday.validator';
 import { GeneralService } from 'src/app/services/general/general.service';
-import { ActivatedRoute } from '@angular/router';
 import { ArrayHelper } from 'src/app/helpers/array.helper';
 import { DateHelper } from 'src/app/helpers/date.helper';
 import { FilterService } from 'src/app/services/filter/filter.service';
+import { format } from 'date-fns';
+import { parseISO } from 'date-fns/esm';
 
 @Component({
     selector: 'app-register-steps',
@@ -24,17 +24,19 @@ export class RegisterStepsPage implements OnInit {
     @ViewChild('focusable') focusable;
     // @ts-ignore
     @ViewChild('slides') slides: IonSlides;
+    @ViewChild(IonDatetime, { static: true }) datetime: IonDatetime;
 
     public user;
     public registrationForm: FormGroup;
     public steps: any = [];
-    public addZero = DateHelper.addZero;
     public cities: any;
     public filteredCities: any;
     public areas = [];
     public genders: any;
     public sexualOrientations: any;
     public preferences: any;
+    public dateValue = format(new Date(),'yyy-MM-dd');
+    public formattedString = '';
     public dateRange = {
         date: ArrayHelper.range(1,31),
         month: {
@@ -67,10 +69,9 @@ export class RegisterStepsPage implements OnInit {
         public generalService: GeneralService,
         private modalCtrl: ModalController,
         public filterService: FilterService,
-        private route: ActivatedRoute,
         //private uniqueUsernameValidator: UniqueUsernameValidator,
-        private birthdayValidator: BirthdayValidator,
     ) {
+        this.setDefaultDate();
     }
 
     // convenience getter for easy access to form fields
@@ -78,12 +79,20 @@ export class RegisterStepsPage implements OnInit {
         return this.registrationForm.controls;
     }
 
-    adultCalculation() {
-        return '1997-07-16T19:20:30.45+01:00';
+    setDefaultDate() {
+        const date = new Date();
+        date.setFullYear(date.getFullYear() - 18);
+        console.log(date);
+        this.dateValue = format(parseISO(format(date,'yyyy-MM-dd')), 'yyyy-MM-dd');
+        this.formattedString = format(parseISO(format(date,'yyyy-MM-dd')), 'yyyy MM dd');
+    }
+
+    dateChanged(value) {
+        this.dateValue = value;
+        this.formattedString = format(parseISO(format(new Date(value),'yyyy-MM-dd')), 'yyyy MM dd');
     }
 
     ngOnInit() {
-
         this.initForm();
         this.areas = this.userService.getArea().options;
         this.cities = this.userService.getCities().options;
@@ -98,31 +107,6 @@ export class RegisterStepsPage implements OnInit {
             duration: 2000
         });
         toast.present();
-    }
-
-    setDay(e,field) {
-        const arr = this.f[field].value.split('-');
-        const res = arr[0] + "-" + e.target.value + "-" + arr[2];
-        this.user[field] = res;
-        console.log(res);
-        this.f[field].setValue(res);
-    }
-
-    setMonth(e,field) {
-        const arr = this.f[field].value.split('-');
-        const res = e.target.value + "-" + arr[1] + "-" + arr[2];
-        this.user[field] = res;
-        console.log(res);
-        this.f[field].setValue(res);
-    }
-
-
-    setYear(e,field) {
-        const arr = this.f[field].value.split('-');
-        const res = arr[0] + "-" + arr[1] + "-" + e.target.value;
-        this.user[field] = res;
-        console.log(res);
-        this.f[field].setValue(res);
     }
 
     initForm() {
@@ -163,10 +147,10 @@ export class RegisterStepsPage implements OnInit {
 
         this.steps[4] = {
             birthday: [
-                this.user?.birthday ? this.user?.birthday : '00-00-0000',
+                this.user?.birthday ? this.user?.birthday : this.dateValue,
                 Validators.compose([
                     Validators.required,
-                ]), [this.birthdayValidator.adultValidator()]
+                ])
             ]
         };
 
@@ -244,10 +228,6 @@ export class RegisterStepsPage implements OnInit {
 
                 if (this.f[key].errors?.minlength) {
                     errorMessage = '"' + errorFields[key] + '"' + ' נדרש מינימום ' + this.f[key].errors?.minlength.requiredLength + ' אותיות';
-                }
-
-                if (this.f[key].errors?.notAdult) {
-                    errorMessage = 'הגיל שלך מתחת לגיל 18';
                 }
 
                 /*if (this.f[key].errors?.valueExists) {
@@ -331,15 +311,10 @@ export class RegisterStepsPage implements OnInit {
     }
 
     async photosProfile() {
-        if(this.generalService.isDesktop()) {
-            this.modalCtrl.dismiss();
-            this.navCtrl.navigateRoot('user/photos')
-        } else {
-            const modal = await this.modalCtrl.create({
-                component: PhotosPage,
-            });
-            return await modal.present();
-        }
+        const modal = await this.modalCtrl.create({
+            component: PhotosPage,
+        });
+        return await modal.present();
     }
 
     back() {

@@ -1,4 +1,4 @@
-<ion-header *ngIf="!generalService.isDesktop()">
+<ion-header>
   <ion-toolbar class="toolbar-no-border toolbar-no-safe-area">
     <ion-segment class="segment-custom" (click)="getHighlightView()" [(ngModel)]="highlightView" mode="md">
       <ion-segment-button value="0">
@@ -7,22 +7,14 @@
       <ion-segment-button value="1">
         <ion-label>צפו בי<ion-badge>{{counter?.views > 0 ? counter?.views : ''}}</ion-badge></ion-label>
       </ion-segment-button>
+      <ion-segment-button value="2">
+        <ion-label>אהבו אותי</ion-label>
+      </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="!generalService.isDesktop()">
-  <ng-content *ngTemplateOutlet="template"></ng-content>
-</ion-content>
-  <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
-
-<ng-template #template>
-  <ion-header class="title-margin desktop" collapse="condense">
-    <ion-toolbar>
-        <ion-title class="page-title">{{pageTitle}}</ion-title>
-    </ion-toolbar>
-   
-</ion-header>
+<ion-content>
   <!-- <div class="boost-promotion">
     <ion-text color="boost">קבל עד 100 צפיות נוספות</ion-text>
 
@@ -34,7 +26,7 @@
   <div [ngSwitch]="highlightView" class="safe-area-bottom">
     <!-- LIKES -->
     <div class="segment-view" *ngSwitchCase="0">
-      <ion-header collapse="condense mobile">
+      <ion-header collapse="condense">
         <ion-toolbar class="header-custom">
           <ion-title size="large">מועדפים</ion-title>
         </ion-toolbar>
@@ -56,7 +48,7 @@
 
       <ion-row class="users">
         <ion-col size="6" size-md="3" *ngFor="let favorite of favoriteList">
-            <person-card [user]="favorite"></person-card>
+            <person-card (reloadEvent)="reloadFavorites()" [user]="favorite"></person-card>
         </ion-col>
     </ion-row>
       <ion-infinite-scroll *ngIf="!userService[this.type].finishLoad" disabled="false" threshold="400px" (ionInfinite)="loadData($event)">
@@ -68,7 +60,7 @@
     </div>
     <!-- TOP PICKS -->
     <div class="segment-view" *ngSwitchCase="1">
-      <ion-header collapse="condense mobile">
+      <ion-header collapse="condense">
         <ion-toolbar class="header-custom">
           <ion-title size="large">צפו בי</ion-title>
         </ion-toolbar>
@@ -80,7 +72,28 @@
       <app-no-results [loading]="isLoading" *ngIf="viewedList?.length==0" [headline]="'אין צפיות כרגע'" [buttonLabel]="'לקבל צפיות'"></app-no-results>
       <ion-row class="users">
         <ion-col size="6" size-md="3" *ngFor="let viewed of viewedList">
-            <person-card [user]="viewed"></person-card>
+            <person-card (reloadEvent)="reloadFavorites()" [user]="viewed"></person-card>
+        </ion-col>
+    </ion-row>
+      <ion-infinite-scroll *ngIf="!userService[this.type].finishLoad" disabled="false" threshold="400px" (ionInfinite)="loadData($event)">
+        <ion-infinite-scroll-content
+                loadingSpinner="bubbles"
+                loadingText="טוען נתונים...">
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
+
+    <div class="segment-view" *ngSwitchCase="2">
+      <ion-header collapse="condense">
+        <ion-toolbar class="header-custom">
+          <ion-title size="large">אהבו אותי</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <app-no-results [loading]="isLoading" *ngIf="likeList?.length==0" [headline]="'אין לייקים כרגע'" [buttonLabel]="'לקבל לייקים'"></app-no-results>
+      <ion-row class="users">
+        <ion-col size="6" size-md="3" *ngFor="let like of likeList">
+            <person-card (reloadEvent)="reloadFavorites()" [user]="like"></person-card>
         </ion-col>
     </ion-row>
       <ion-infinite-scroll *ngIf="!userService[this.type].finishLoad" disabled="false" threshold="400px" (ionInfinite)="loadData($event)">
@@ -91,4 +104,4 @@
       </ion-infinite-scroll>
     </div>
   </div>
-</ng-template>
+</ion-content>

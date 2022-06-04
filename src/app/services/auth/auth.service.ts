@@ -13,14 +13,14 @@ import { HttpClient } from '@angular/common/http';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AdminConfigService } from '../admin-config/admin-config.service';
+import { SmsRetriever } from '@awesome-cordova-plugins/sms-retriever';
+import firebase from 'firebase';
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService extends UserService implements OnDestroy {
-    // public fields
-    //isLoading$: Observable<boolean>;
     isLoadingSubject: BehaviorSubject<boolean>;
     private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
     private authLocalStorageToken = 'authLocalStorageToken';
@@ -28,6 +28,8 @@ export class AuthService extends UserService implements OnDestroy {
     currentStep: BehaviorSubject<number>;
     public errors: BehaviorSubject<any>;
     public tab = 'verification';
+    public OTP;
+    confirmationResult: firebase.auth.ConfirmationResult;
 
     currentUser$: Observable<UserModel>;
 
@@ -41,7 +43,8 @@ export class AuthService extends UserService implements OnDestroy {
         public toastController: ToastController,
         @Inject(HttpClient) http, public db: AngularFirestore,
         public afStorage: AngularFireStorage,
-        public adminConfigService: AdminConfigService
+        public adminConfigService: AdminConfigService,
+
     ) {
         super(http, db, afStorage, adminConfigService);
         this.errors = new BehaviorSubject<any>([]);
@@ -49,9 +52,12 @@ export class AuthService extends UserService implements OnDestroy {
         this.currentStep = new BehaviorSubject<number>(0);
         this.appVerifier = new BehaviorSubject<any>('');
         this.currentUser$ = this.currentUserSubject.asObservable();
-        //this.isLoading$ = this.isLoadingSubject.asObservable();
         const subscr = this.getUserByToken().subscribe();
         this.unsubscribe.push(subscr);
+
+        // SmsRetriever.getAppHash()
+        // .then((res: any) => alert(JSON.stringify(res)))
+        // .catch((error: any) => alert(JSON.stringify(error)));
 
         this.errors.subscribe(errors => {
             if(errors[0]?.message) {
@@ -73,11 +79,22 @@ export class AuthService extends UserService implements OnDestroy {
         let phoneNumber = phoneForm.value.phone.replace(/\(/g,"").replace(/\)/g,"").replace(/\-/g,"");
 
         phoneNumber = '+972' + phoneNumber;
+
+        // SmsRetriever.startWatching()
+        //     .then((res: any) => {
+        //         alert('test: ' + JSON.stringify(res));
+        //       alert(JSON.stringify(res));
+        //       this.processSMS(res);
+        //     })
+        //     .catch((error: any) => alert(JSON.stringify(error)));
+
         this.isLoadingSubject.next(true);
         return this.fireAuth.signInWithPhoneNumber(phoneNumber, appVerifier).then(res => {
             this.appVerifier.next(res);
             this.currentStep.next(2);
+            
         }).catch(err => {
+            alert(JSON.stringify(err))
             if (err.code === 'auth/invalid-phone-number') {
       
                 this.addError({
@@ -97,7 +114,21 @@ export class AuthService extends UserService implements OnDestroy {
         })
     }
 
-    verifyPhoneCode(codeForm, confirmationResult) {
+    processSMS(data) {
+        // Design your SMS with App hash so the retriever API can read the SMS without READ_SMS permission
+        // Attach the App hash to SMS from your server, Last 11 characters should be the App Hash
+        // After that, format the SMS so you can recognize the OTP correctly
+        // Here I put the first 6 character as OTP
+        const message = data.Message;
+        if (message != -1) {
+            this.OTP = message.slice(0, 6);
+            alert(this.OTP);
+            //this.OTPmessage = 'OTP received. Proceed to register';
+            this.presentToast('SMS received with correct app hash');
+        }
+    }
+
+    verifyPhoneCode(codeForm) {
         let code = codeForm.value.code.toString().trim() + "";
 
         if (typeof code === 'string') {
@@ -114,7 +145,8 @@ export class AuthService extends UserService implements OnDestroy {
 
             this.isLoadingSubject.next(true);
 
-            confirmationResult.confirm(code).then(res => {
+
+            this.confirmationResult.confirm(code).then(res => {
                 this.userService.getById(res.user.uid).subscribe((user: any) => {
 
                     if (user) {
@@ -129,28 +161,18 @@ export class AuthService extends UserService implements OnDestroy {
                         } else {
                             this.userService.setUser(user);
                             this.login(user);
-                            setTimeout(()=> {
-                                this.generalService.isDesktop() ? 
-                                    this.router.navigate(['user/highlights']).then(_ => this.modalCtrl.dismiss()): 
-                                    this.router.navigate(['tabs/highlights']).then(_ => this.modalCtrl.dismiss())
-                                }, 900)
-                                this.isLoadingSubject.next(false);
+                            this.router.navigate(['tabs/highlights']).then(_ => this.modalCtrl.dismiss())
+                            this.isLoadingSubject.next(false);
 
                         }
 
                     } else {
                        // new user
                        this.isLoadingSubject.next(false);
-
-                        if(this.generalService.isDesktop()) {
-                                this.tab = 'registration';
-                                this.userService.setUser({socialAuthId: res.user.uid});                         
-                        }else{
-                            this.router.navigate(['register-steps']).then(r => {
-                                this.tab = 'registration';
-                                this.userService.setUser({socialAuthId: res.user.uid});
-                            });
-                        }
+                        this.router.navigate(['register-steps']).then(r => {
+                            this.tab = 'registration';
+                            this.userService.setUser({socialAuthId: res.user.uid});
+                        });
                     }
                 });
             }).catch(err => {

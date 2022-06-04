@@ -23,11 +23,19 @@ ion-tab-button {
 
     &.tab-selected {
       color: #7774c5 !important;
+      img {
+        border: 2px solid #7774c5;
+      }
     }
 
   .rotate-45 {
     transform: rotate(45deg);
   }
+}
+
+.profile-img {
+  height: 32px;
+  border-radius: 50%;
 }
 
 ion-tabs {

@@ -10,6 +10,7 @@ import {HttpClient} from '@angular/common/http';
 import {TableService} from '../../crud-table';
 import {environment} from '../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
+import { Platform } from '@ionic/angular';
 
 @Injectable({
     providedIn: 'root'
@@ -31,7 +32,8 @@ export class ChatService extends TableService<UserModel> {
         @Inject(HttpClient) http,
         private db: AngularFirestore,
         public userService: UserService,
-        public authService: AuthService
+        public authService: AuthService,
+        public platform: Platform
     ) {
         super(http);
         //this.user = await this.authService.currentUserSubject.toPromise();
@@ -88,13 +90,15 @@ export class ChatService extends TableService<UserModel> {
             type
         };
 
+
         const data = {
             message,
             uid1: this.userService.user.id,
             uid2: this.interlocutor.id,
             adminExists: !!(this.interlocutor.isAdmin || this.userService.user.isAdmin),
             fakeChatActive: this.interlocutor.isFake || this.userService.user.isFake || false,
-            chatId
+            chatId,
+            platform: this.platform.is('android') ? 'android' : 'web',
         };
 
         this.http.post(this.API_URL + '/send', data).subscribe();

@@ -1,20 +1,11 @@
-<ion-content force-overscroll="false" class="me-page bg-light" *ngIf="!generalService.isDesktop()">
-    <ng-content *ngTemplateOutlet="template"></ng-content>
-</ion-content>
-    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
+<ion-content force-overscroll="false" class="me-page bg-light">
 
-<ng-template #template>
 <div force-overscroll="false" class="me-page bg-light">
-    <ion-header class="title-margin desktop" collapse="condense">
-        <ion-toolbar>
-            <ion-title class="page-title">הפרופיל שלי</ion-title>
-        </ion-toolbar>
-    </ion-header>
     <div class="vertical-layout safe-area-bottom">
         <div class="section-upper">
-            <div class="me-header" (click)="viewProfile(userService.user)">
+            <div class="me-header" (click)="viewProfile()">
                 <ion-avatar class="avatar">
-                    <img [lazyLoad]="userService.getMainPhoto(userService.user, 'l', false)" [defaultImage]="userService.getDefaultPhotoPlaceholder(userService.user)">
+                    <img [lazyLoad]="mainPhoto" [defaultImage]="userService.getDefaultPhotoPlaceholder(userService.user)">
                 </ion-avatar>
                 <div>
                     <div class="me-title">{{userService.user?.username}} {{userService.getAge(userService.user?.birthday)}}
@@ -70,20 +61,19 @@
         </div>
         <div class="section-lower has-oval">
            
-                    <!-- <div class="section-lower has-oval" (click)="viewSubscriptionGold()">
+        <div *ngIf="!userService.isPremium()" class="section-lower has-oval" (click)="viewSubscriptionGold()">
 
-                        <div class="slide-intro">
-                            <plus-intro *ngIf="showSlides"></plus-intro>
-                        </div>
-                        <div class="ion-text-center">
-                            <ion-button
-                                    color="white"
-                                    class="button-custom text-primary button-tinder-plus">
-                                רכוש מנוי כעת
-                            </ion-button>
-                        </div>
-        </div> -->
+            <div class="slide-intro">
+                <plus-intro *ngIf="showSlides"></plus-intro>
+            </div>
+            <div class="ion-text-center">
+                <button
+                        class="btn">
+                    רכוש מנוי כעת
+            </button>
+            </div>
+        </div>
         </div>
     </div>
 </div>
-</ng-template>
+</ion-content>

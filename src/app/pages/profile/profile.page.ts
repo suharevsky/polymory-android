@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ModalController, NavController, NavParams, ToastController} from '@ionic/angular';
 import {UserService} from '../../services/user/user.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ReportPage} from '../report/report.page';
 import {ChatService} from '../../services/chat/chat.service';
 import {ChatPage} from '../chat/chat.page';
@@ -25,15 +25,17 @@ export class ProfilePage implements OnInit  {
     profileBlockLabel: string;
     profileFavoriteLabel: string;
     reloadPrevPage = false;
+    profileILiked = false;
+    profileLikedMe = false;
     public privatePhotos = [];
     public publicPhotos = [];
-
+    public images = [];
     constructor(
         public navParams: NavParams,
-        public navCtrl: NavController,
         public modalCtrl: ModalController,
         public chatModalCtrl: ModalController,
-        private route: ActivatedRoute,
+        public reportModalCtrl: ModalController,
+        public imageModalCtrl: ModalController,
         public chatService: ChatService,
         public toastController: ToastController,
         private fcmService: FcmService,
@@ -41,39 +43,19 @@ export class ProfilePage implements OnInit  {
         public generalService: GeneralService,
         public imageRequestService: ImageRequestService,
         public location: Location,
-        //private router: Router,
+        public router: Router,
         public userService: UserService) {
 
-        this.profile = this.navParams.get('profile') || '';
-        this.profile = this.userService.getData() || this.profile;
+    }
 
-        this.me = this.userService.user;
-        this.getListData('blockList');
-       
-        // this.userService.viewed(this.profile.id).subscribe();
-        this.getListData('favorites');
+    ngOnInit() {
+        this.profile = this.navParams.get('profile');
 
-        if (!this.profile?.id) {
-            this.route.queryParams.subscribe((params: any) => {
-                this.userService.getById(params.id).subscribe(user => {
-                    this.profile = user;
-                    this.privatePhotos = this.publicPhotos = [];                    
-                    this.privatePhotos = this.profile?.photos.filter(photo => photo.isPrivate && photo.status === 1);
-                    this.publicPhotos = this.profile.photos.filter(photo => !photo.isPrivate && photo.status === 1);
-
-                    this.imageRequestService.checkImageRequest(user);     
-
-                    this.viewedProfile();
-                    this.showSlides = true;
-                });
-            });
-        }else{
-            this.viewedProfile();
-        }
+        this.images = this.userService.getAllPhotos(this.profile, true);
     }
 
     async getImage(img) {
-        const modal = await this.modalCtrl.create({
+        const modal = await this.imageModalCtrl.create({
             component: ImageModalPage,
             componentProps: {
                 img
@@ -84,13 +66,8 @@ export class ProfilePage implements OnInit  {
         modal.present();
     }
 
-
-    close() {
-        if(this.generalService.isDesktop()) {
-            this.navCtrl.back();
-        }else{
-            this.modalCtrl.dismiss({reloadPrevPage: this.reloadPrevPage});
-        }
+    close() {        
+        this.modalCtrl.dismiss({reloadPrevPage: this.reloadPrevPage});
     }
 
     viewedProfile() {
@@ -101,19 +78,31 @@ export class ProfilePage implements OnInit  {
         }
     }
 
-    ngOnInit() {
-    }
-
     // Known issue of using ion-slides in a modal template
     // https://github.com/ionic-team/ionic/issues/17522#issuecomment-557890661
     ionViewDidEnter() {
         this.showSlides = true;
+        this.getListData('blockList');
+        this.getListData('likes');
+        this.profileILikedFn();
+        this.profileLikedMeFn();
+        // this.userService.viewed(this.profile.id).subscribe();
+        this.getListData('favorites');
     }
 
     setList(type, showNotification: boolean = true) {
+        if(this.profileILiked && type === 'likes') return false;
         if (type === 'favorites') {
             this.reloadPrevPage = true;
         }
+
+        if(type === 'likes') {
+            this.profileILiked = true;
+            if(this.profileLikedMe && this.profileILiked) {
+                this.userService.setMatch(this.userService.user.id,this.profile.id);
+            }
+        }
+
         this.userService.setList(type,
             type !== 'views' ? this.profile.id : this.userService.user.id,
             type !== 'views' ? this.userService.user.id : this.profile.id)
@@ -142,8 +131,15 @@ export class ProfilePage implements OnInit  {
         });
     }
 
+    profileLikedMeFn() {
+        this.userService.getLike(this.profile.id, this.userService.user.id).subscribe(res => this.profileLikedMe = res.exists)
+    }
+    profileILikedFn() {
+        this.userService.getLike(this.userService.user.id,this.profile.id).subscribe(res => this.profileILiked = res.exists)
+    }
+
     async getReportForm() {
-        const modal = await this.modalCtrl.create({
+        const modal = await this.reportModalCtrl.create({
             component: ReportPage,
             swipeToClose: true,
             componentProps: {
@@ -165,28 +161,16 @@ export class ProfilePage implements OnInit  {
     async getChat() {
         this.chatService.setUsers(this.profile, this.me);
         this.chatService.getDialogue().subscribe(async (res: any) => {
-            if(this.generalService.isDesktop()) {
-                this.modalCtrl.dismiss();
-                this.navCtrl.navigateForward(`user/chat/${res.chat.id}/${res.chat.exists}/${this.profile.id}`, { animated: false, queryParams: {
-                    chatId: res.chat.id,
-                    dialogueExists: res.chat.exists,
-                    profileId: this.profile.id
-                }});
-            }else{
-                const modal = await this.chatModalCtrl.create({
-                    component: ChatPage,
-                    componentProps: {
-                        chatId: res.chat.id,
-                        chatExists: res.chat.exists,
-                        profileId: this.profile.id
-                    }
-                });
-    
-                // await modal.onDidDismiss();
-    
-                return await modal.present();
-            }
             
+        const modal = await this.chatModalCtrl.create({
+            component: ChatPage,
+            componentProps: {
+                chatId: res.chat.id,
+                chatExists: res.chat.exists,
+                profileId: this.profile.id
+            }
+        });    
+        return await modal.present();
         });
     }
 

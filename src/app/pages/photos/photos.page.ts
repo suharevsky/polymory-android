@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {UserService} from '../../services/user/user.service';
 import {Camera, CameraOptions} from '@awesome-cordova-plugins/camera/ngx';
 import {Crop} from '@ionic-native/crop/ngx';
@@ -6,7 +6,6 @@ import { File } from '@awesome-cordova-plugins/file/ngx';
 import {ActionSheetController, AlertController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {FileUploadService} from '../../services/file-upload/file-upload.service';
 import {ImageCroppedEvent, ImageTransform} from '../../interfaces/image-cropper';
-import {FabricjsEditorComponent} from '../../components/angular-editor-fabric-js/src/lib/angular-editor-fabric-js.component';
 import {UserModel} from '../../models/user.model';
 import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from '@angular/fire/storage';
 import {Observable} from 'rxjs';
@@ -21,7 +20,6 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class PhotosPage implements OnInit {
 
-    @ViewChild('canvas', {static: false}) canvas: FabricjsEditorComponent;
     public user: UserModel;
     public croppedImagepath = '';
     public uploadingProcess = false;
@@ -40,11 +38,7 @@ export class PhotosPage implements OnInit {
         maximumImagesCount: 1,
         quality: 70
     };
-    public masks = [
-        'https://firebasestorage.googleapis.com/v0/b/joyme-19532.appspot.com/o/masks%2F1_600x600.png?alt=media&token=5f4c1804-aa4f-472e-aa84-a2e443bd032e',
-        'https://firebasestorage.googleapis.com/v0/b/joyme-19532.appspot.com/o/masks%2F2_600x600.png?alt=media&token=4accdac2-414e-4f0e-a43a-efde5bfa182b',
-        'https://firebasestorage.googleapis.com/v0/b/joyme-19532.appspot.com/o/masks%2F3_600x600.png?alt=media&token=a7ee88c6-52f7-45e4-be42-5ffe2a61a57a'
-    ];
+  
     public imageChangedEvent: any = '';
     public croppedImage: any = '';
     public canvasRotation = 0;
@@ -72,6 +66,7 @@ export class PhotosPage implements OnInit {
         public actionSheetController: ActionSheetController,
         public generalService: GeneralService,
         public authService: AuthService,
+        private _ngZone: NgZone
     ) {
     }
     ngOnInit() {
@@ -92,15 +87,6 @@ export class PhotosPage implements OnInit {
         await toast.present();
     }
 
-    close() {
-        if(this.newUser) {
-            localStorage.removeItem('newUser');
-            this.navCtrl.navigateForward('/user/highlights');
-        }else{
-            this.navCtrl.back();
-        }
-    }
-
     async photosProfile() {
         const modal = await this.modalCtrl.create({
             component: PhotosPage,
@@ -114,26 +100,7 @@ export class PhotosPage implements OnInit {
         this.navCtrl.navigateForward('/tabs/highlights');
     }
 
-    addImageOnCanvas(url) {
-        this.canvas.confirmClear();
-        this.setCanvasImage(this.croppedImage);
-        this.canvas.addImageOnCanvas(url);
-    }
-
     setSegment(segment) {
-        if (segment === 3) {
-
-            setTimeout(() => {
-                const element: HTMLElement = document.querySelector('.add-image-on-canvas') as HTMLElement;
-                element.click();
-            });
-
-        } else if (segment === 2) {
-
-            setTimeout(() => {
-                this.setBlur();
-            });
-        }
         this.segment = segment;
     }
 
@@ -141,31 +108,6 @@ export class PhotosPage implements OnInit {
         this.segment = 1;
         this.imgLoaded = false;
         this.croppedImage = null;
-    }
-
-    fileChangeEvent(event: any): void {
-        const _URL = window.URL || window.webkitURL;
-        let file, img;
-
-        // tslint:disable-next-line:no-conditional-assignment
-        if ((file = event.target.files[0])) {
-            img = new Image();
-            img.onload = (e: any) => {
-                if (e.path[0].height < 590 || e.path[0].width < 590) {
-                    this.presentToast('שגיאה: התמונה קטנה מדי');
-                } else {
-                    this.imageChangedEvent = event;
-                    this.imgLoaded = true;
-                }
-            };
-            img.onerror = () => {
-                this.presentToast('not a valid file: ' + file.type);
-            };
-            img.src = _URL.createObjectURL(file);
-
-            console.log(img.src);
-            
-        }
     }
 
     imageCropped(event: ImageCroppedEvent) {
@@ -181,10 +123,6 @@ export class PhotosPage implements OnInit {
         this.modalCtrl.dismiss();
     }
 
-    ionViewWillLeave() {
-        console.log('LEAVING')
-    }
-
     imageLoaded() {
         this.showCropper = true;
     }
@@ -198,19 +136,11 @@ export class PhotosPage implements OnInit {
         this.flipAfterRotate();
     }
 
-    public getImgPolaroid(event) {
-        this.canvas.getImgPolaroid(event);
-    }
-
     public rasterize() {
         this.defaultImage = '';
         this.defaultImage = this.croppedImage;
         let src = '';
-        if (this.segment === 3) {
-            src = this.canvas.rasterize();
-        } else {
-            src = this.croppedImage;
-        }
+        src = this.croppedImage;
 
         this.uploadFile(src);
     }
@@ -272,18 +202,6 @@ export class PhotosPage implements OnInit {
         // this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
     }
 
-    public addFigure(figure) {
-        this.canvas.confirmClear();
-        this.setCanvasImage(this.croppedImage);
-
-        setTimeout(() => {
-            this.canvas.addFigure(figure);
-        });
-    }
-
-    setCanvasImage(url) {
-        this.canvas.setCanvasImage(url);
-    }
 
     setZoom() {
         const scale = this.scale;
@@ -293,12 +211,8 @@ export class PhotosPage implements OnInit {
         };
     }
 
-    setBlur() {
-        const imageBlur = document.querySelector('.blur-photo').querySelector('img');
-        imageBlur.style.filter = `blur(${this.blur}px)`;
-    }
+    async pickImage(sourceType) {
 
-    pickImage(sourceType) {
         const options: CameraOptions = {
             quality: 100,
             destinationType: this.camera.DestinationType.DATA_URL,
@@ -307,15 +221,15 @@ export class PhotosPage implements OnInit {
             correctOrientation: true,
             sourceType
         };
-        this.camera.getPicture(options).then((imageData) => {
-            // imageData is either a base64 encoded string or a file URI
-            // If it's base64 (DATA_URL):
-            this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
 
-            // this.cropImage(base64Image);
-            // this.uploadFile(base64Image);
+        this.camera.getPicture(options).then((imageData) => {
+            this._ngZone.run(() => {
+                this.imgLoaded = true;
+            });            
+            // imageData is either a base64 encoded string or a file URI
+            this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
             this.imageChangedEvent = this.imageBase64;
-            this.imgLoaded = true;
+
         }, (err) => {
             // Handle error
         });
@@ -360,38 +274,37 @@ export class PhotosPage implements OnInit {
         });
 
         await alert.present();
-
-        const {role} = await alert.onDidDismiss();
     }
 
     async selectImage(event, addNew = false, photo: any = '', isPrivate: boolean = false) {
 
         this.isPrivateSelectedImage = isPrivate;
- 
+
         if (event.target.classList.contains('select-image')) {
             if (addNew) {
-                if(this.generalService.isDesktop()) {
-                    const element: HTMLElement = document.querySelector('input[type=file]') as HTMLElement;
-                    element.click();
-                }else{
-                    const actionSheet = await this.actionSheetController.create({
-                        header: 'העלאת תמונה מ...',
-                        buttons: [{
-                            text: 'גלריה',
+                const actionSheet = await this.actionSheetController.create({
+                    header: 'העלאת תמונה מ...',
+                    buttons: [{
+                        text: 'גלריה',
+                        handler: () => {
+                            this.pickImage(this.camera.PictureSourceType.PHOTOLIBRARY);
+                        }
+                    },
+                        {
+                            text: 'מצלמה',
                             handler: () => {
-                                const element: HTMLElement = document.querySelector('input[type=file]') as HTMLElement;
-                                element.click();
+                                this.pickImage(this.camera.PictureSourceType.CAMERA);
                             }
                         },
-                            {
-                                text: 'ביטול',
-                                role: 'cancel'
-                            }
-                        ]
-                    });
-    
-                    await actionSheet.present();
-                }
+                        {
+                            text: 'ביטול',
+                            role: 'cancel'
+                        }
+                    ]
+                });
+
+                await actionSheet.present();
+                
 
             } else if(!photo.main) {
                 const buttonOptions = {

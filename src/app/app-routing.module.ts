@@ -1,15 +1,13 @@
 import {NgModule} from '@angular/core';
 import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
-import { DeviceGuard } from './guard/device/device.guard';
 import { AuthGuard } from './guard/auth/auth.guard';
 
 
 // Send unauthorized  users to login
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/']);
 // Automatically log in users
-
-const redirectLoggedInToResults = () => redirectLoggedInTo(['/user/highlights'])
+const redirectLoggedInToResults = () => redirectLoggedInTo(['/tabs/highlights'])
 
 
 
@@ -52,12 +50,6 @@ const routes: Routes = [
         path: 'profile',
         loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfilePageModule)
 
-    },
-    {
-        path: 'user',
-        canActivate: [AuthGuard, DeviceGuard],
-        //...canActivate(redirectUnauthorizedToLogin),
-        loadChildren: () => import('./layouts/default/default.module').then(m => m.DefaultModule)
     },
     {
         path: 'tabs',

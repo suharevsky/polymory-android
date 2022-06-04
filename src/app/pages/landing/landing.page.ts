@@ -24,9 +24,10 @@ export class LandingPage implements OnInit {
     currentStep = 0;
     errorMessage: string;
     loading;
-    windowRef: any;
     isLoading$: Observable<boolean>;
     @ViewChild(IonContent, {static: false}) content: IonContent;
+    recaptchaVerifier: firebase.auth.RecaptchaVerifier;
+
 
     constructor(
         public fb: FormBuilder,
@@ -38,8 +39,9 @@ export class LandingPage implements OnInit {
         public toastController: ToastController,
         public win: WindowService,
         public router: Router // private chatService: ChatService
+
     ) {
-        this.isLoading$ = this.authService.isLoading$;
+        this.isLoading$ = this.authService.isLoadingSubject;
 
         this.createCodeForm();
         this.createPhoneForm();
@@ -51,11 +53,11 @@ export class LandingPage implements OnInit {
     }
 
     ngOnInit() {
-        this.windowRef = this.win.windowRef;
         this.authService.currentStep.subscribe(step => this.currentStep = step)
-        this.windowRef.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
-            size: 'invisible'
+        this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
+            size: 'invisible',
         });
+
     }
 
     async presentToast(errorMessage: string, duration = 2000) {
@@ -126,6 +128,7 @@ export class LandingPage implements OnInit {
     }
 
     async entranceForm(tab) {
+        this.authService.currentStep.next(0);
         const modal = await this.modalCtrl.create({
             component: RegisterStepsPage,
             componentProps: {tab: 'verification'},
@@ -139,11 +142,11 @@ export class LandingPage implements OnInit {
     }
 
     loginPhone(phone:FormGroup) {
-        this.authService.loginPhone(phone,this.windowRef.recaptchaVerifier);
-        this.authService.appVerifier.subscribe(appVerifier => this.windowRef.confirmationResult = appVerifier )
+        this.authService.loginPhone(phone,this.recaptchaVerifier);
+        this.authService.appVerifier.subscribe(appVerifier => this.authService.confirmationResult = appVerifier )
     }
 
     verifyPhoneCode(codeForm: FormGroup) {
-        this.authService.verifyPhoneCode(codeForm,this.windowRef.confirmationResult)
+        this.authService.verifyPhoneCode(codeForm)
     }
 }

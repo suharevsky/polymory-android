@@ -1,4 +1,4 @@
-<ion-header class="mobile">
+<ion-header>
      <ion-toolbar class="toolbar-no-border">
         <ion-buttons slot="start">
             <ion-button (click)="cancel()"> ביטול </ion-button>
@@ -18,23 +18,8 @@
         </ion-buttons>
     </ion-toolbar>-->
 </ion-header>
-<ion-content class="bg-light" *ngIf="!generalService.isDesktop()">
-    <ng-content *ngTemplateOutlet="template"></ng-content>
-</ion-content>
-    <ng-content *ngTemplateOutlet="generalService.isDesktop()?template:null"></ng-content>
-
-    <ng-template #template>
-    <ion-header class="title-margin" collapse="condense desktop">
-        <ion-toolbar class="header-custom">
-            <ion-title class="page-title">ערוך פרופיל</ion-title>
-            <ion-buttons slot="end">
-                <ion-button (click)="close()">
-                    <ion-icon name="close-outline"></ion-icon>
-                </ion-button>
-            </ion-buttons>
-        </ion-toolbar>
-    </ion-header>
-    <ion-header collapse="condense mobile">
+<ion-content class="bg-light"> 
+    <ion-header collapse="condense">
         <ion-toolbar>
           <ion-title size="large">ערוך פרופיל</ion-title>
         </ion-toolbar>
@@ -82,7 +67,7 @@
                 </ion-list>
                 <ion-list class="list-custom">
                     <ion-list-header>
-                        <ion-label>מעט עלי/נו</ion-label>
+                        <ion-label>מעט עלי</ion-label>
                     </ion-list-header>
                     <ion-item lines="none">
                         <ion-textarea autofocus maxLength="500" name="about" formControlName="about" [(ngModel)]="userService.user.about" rows="8"></ion-textarea>
@@ -100,15 +85,8 @@
                         <ion-label>{{userService.user.lookingFor.join()}}</ion-label>
                     </ion-item>
                 </ion-list> -->
+                <a (click)="save()" class="btn btn-save"><span>שמור</span></a>
                 </form>
-                <a (click)="save()"
-        class="btn btn-save desktop">
-    <span>שמור</span>
-    </a>
-    <!-- <a (click)="cancel()"
-        class="btn btn-cancel desktop">
-    <span>ביתול</span>
-    </a> -->
             </div>
         <!-- PREVIEW -->
         <div class="segment-view preview-container full-height" *ngSwitchCase="'1'">
@@ -118,7 +96,7 @@
         
     </div>
 
-</ng-template>
+</ion-content>
 <!--
 <ion-footer>
     <ion-button (click)="save()"
