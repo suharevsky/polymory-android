@@ -20,7 +20,6 @@ import { Location } from '@angular/common';
 export class ProfilePage implements OnInit  {
     // Data passed in by componentProps
     @Input() profile: any;
-    me: any;
     showSlides = false;
     profileBlockLabel: string;
     profileFavoriteLabel: string;
@@ -142,7 +141,7 @@ export class ProfilePage implements OnInit  {
             component: ReportPage,
             swipeToClose: true,
             componentProps: {
-                fromId: this.me.id,
+                fromId: this.userService.user.id,
                 onId: this.profile.id
             }
         });
@@ -158,7 +157,8 @@ export class ProfilePage implements OnInit  {
     }
 
     async getChat() {
-        this.chatService.setUsers(this.profile, this.me);
+        
+        this.chatService.setUsers(this.profile, this.userService.user);
         this.chatService.getDialogue().subscribe(async (res: any) => {
             
         const modal = await this.chatModalCtrl.create({
