@@ -3,7 +3,7 @@
     <ion-toolbar class="toolbar-no-border">
         <ion-title class="page-title">הגדרות</ion-title>
         <ion-buttons slot="end">
-            <ion-button (click)="done()">
+            <ion-button *ngIf="!imgLoaded" (click)="done()">
                 בוצע
             </ion-button>
         </ion-buttons>
@@ -16,7 +16,7 @@
         </ion-toolbar>
       </ion-header>
  
-    <div *ngIf="imgLoaded" style="height:200px;" class="cropped-box">
+    <div *ngIf="imgLoaded" class="cropped-box">
         <div *ngIf="segment === 1" class="edit-photo">
             <image-cropper
             [imageChangedEvent]="imageChangedEvent"
@@ -39,12 +39,14 @@
             (loadImageFailed)="loadImageFailed()"
             ></image-cropper>
         </div>
-        
         <ion-buttons class="options">
             <div class="btn btn-tertiary" (click)="cancelUpload()">ביטול</div>
-            <div class="btn" (click)="rasterize()">
-                <ion-spinner *ngIf="uploadingProcess"></ion-spinner>
-                <span *ngIf="!uploadingProcess">העלה</span></div>
+            <div *ngIf="!uploadingProcess" class="btn" (click)="rasterize()">
+                <span>העלה</span>
+            </div>
+            <div *ngIf="uploadingProcess" class="btn">
+                <ion-spinner></ion-spinner>
+            </div>
         </ion-buttons>
     </div>
     <div *ngIf="!imgLoaded" class="photos-edit">

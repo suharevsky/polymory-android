@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar>
-        <ion-title>סיונן</ion-title>
+        <ion-title>סינון</ion-title>
         <ion-buttons slot="end">
             <ion-button (click)="close()">
                 <ion-icon name="close-outline"></ion-icon>
@@ -13,7 +13,7 @@
 <ion-content>
     <ion-header collapse="condense">
         <ion-toolbar>
-            <ion-title size="large">סיונן</ion-title>
+            <ion-title size="large">סינון</ion-title>
         </ion-toolbar>
     </ion-header>
     <ion-list class="list-custom">
@@ -40,8 +40,8 @@
                 <ion-list-header class="clickable">
                     <ion-label>איזור</ion-label>
                 </ion-list-header>
-                <ion-item class="clickable">
-                    <div lines="none" detail="true" (click)="openAreasList()">
+                <ion-item class="clickable" (click)="openAreasList()">
+                    <div lines="none" detail="true">
                         <ion-label>{{this.filterData.area ? this.filterData.area :'כל האזורים'}}</ion-label>
                     </div>
                 </ion-item>
@@ -64,18 +64,18 @@
                     </ion-item>
                   </ion-radio-group>
             </ion-list>
-            <ion-buttons>
-                <button
-                type="submit"
-                class="btn">
-                    <span>חיפוש</span>
-                </button>
-                <div
-                    (click)="reset()"
-                    class="btn btn-tertiary">
-                אפס סינון
-                </div>
-            </ion-buttons>
+                <ion-buttons>
+                    <button
+                    type="submit"
+                    class="btn">
+                        <span>חיפוש</span>
+                    </button>
+                    <div
+                        (click)="reset()"
+                        class="btn btn-tertiary">
+                    אפס סינון
+                    </div>
+                </ion-buttons>
         </form>
     </ion-list>
 </ion-content>

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ModalController, NavController} from '@ionic/angular';
+import {ActionSheetController, ModalController, NavController} from '@ionic/angular';
 //import {RouterService} from '../../services/router.service';
 import {Subscription} from 'rxjs';
 import {UserService} from '../../services/user/user.service';
@@ -26,10 +26,10 @@ export class MatchesPage implements OnInit, OnDestroy {
     public hasMessages = true;
     public counter: any;
     public currentPage: string;
-    public activeTab;
 
     constructor(private navCtrl: NavController,
                 public modalCtrl: ModalController,
+                public actionSheetController: ActionSheetController,
                 public paramsService: ParamsService,
                 public counterService: CounterService,
                 private generalService: GeneralService,
@@ -38,7 +38,7 @@ export class MatchesPage implements OnInit, OnDestroy {
         let params = this.paramsService.getAll();
         this.matches$ = this.userService.getMatches();
         if(params?.modal && params.sender) {
-            this.viewProfile(params.sender);
+            //this.viewProfile(params.sender);
             this.paramsService.reset();
         }
     }
@@ -52,7 +52,6 @@ export class MatchesPage implements OnInit, OnDestroy {
             this.counter = result.payload.data();
         });
 
-        this.generalService.activeInboxTab.subscribe( activeInboxTab => this.activeTab = activeInboxTab)
         this.generalService.currentPage.subscribe(currentPage => this.currentPage = currentPage);
 
         this.chatService.getInbox().then(res => res.subscribe(res => {
@@ -63,6 +62,40 @@ export class MatchesPage implements OnInit, OnDestroy {
                 this.hasMessages = false;
             }
         }))
+    }
+
+    async presentActionSheet(user: any, inbox) {
+
+        let res = await this.userService.getListData('blockList', user.id).toPromise();
+        let blackListLabel = res.body.label;
+
+        const actionSheet = await this.actionSheetController.create({
+          cssClass: 'my-custom-class',
+          buttons: [ {
+            text: blackListLabel,
+            data: 10,
+            handler: () => {
+                this.userService.setList('blockList',user.id,this.userService.user.id).toPromise();
+                blackListLabel = res.body.label;
+                console.log(blackListLabel)
+            }
+          },{
+            text: ' למחוק את השיחה עם ' + user.username,
+            data: 10,
+            handler: () => {
+                this.chatService.deleteInboxById(inbox)
+            }
+          }, {
+            text: 'ביתול',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancel clicked');
+            }
+          }]
+        });
+        await actionSheet.present();
+    
+        const { role, data } = await actionSheet.onDidDismiss();
     }
 
     async viewProfile(profile) {

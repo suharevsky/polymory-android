@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AdminConfigService } from '../admin-config/admin-config.service';
-import { SmsRetriever } from '@awesome-cordova-plugins/sms-retriever';
+//import { SmsRetriever } from '@awesome-cordova-plugins/sms-retriever';
 import firebase from 'firebase';
 
 
@@ -94,7 +94,7 @@ export class AuthService extends UserService implements OnDestroy {
             this.currentStep.next(2);
             
         }).catch(err => {
-            alert(JSON.stringify(err))
+           // alert(JSON.stringify(err))
             if (err.code === 'auth/invalid-phone-number') {
       
                 this.addError({
@@ -114,21 +114,21 @@ export class AuthService extends UserService implements OnDestroy {
         })
     }
 
-    processSMS(data) {
-        // Design your SMS with App hash so the retriever API can read the SMS without READ_SMS permission
-        // Attach the App hash to SMS from your server, Last 11 characters should be the App Hash
-        // After that, format the SMS so you can recognize the OTP correctly
-        // Here I put the first 6 character as OTP
-        const message = data.Message;
-        if (message != -1) {
-            this.OTP = message.slice(0, 6);
-            alert(this.OTP);
-            //this.OTPmessage = 'OTP received. Proceed to register';
-            this.presentToast('SMS received with correct app hash');
-        }
-    }
+    // processSMS(data) {
+    //     // Design your SMS with App hash so the retriever API can read the SMS without READ_SMS permission
+    //     // Attach the App hash to SMS from your server, Last 11 characters should be the App Hash
+    //     // After that, format the SMS so you can recognize the OTP correctly
+    //     // Here I put the first 6 character as OTP
+    //     const message = data.Message;
+    //     if (message != -1) {
+    //         this.OTP = message.slice(0, 6);
+    //         alert(this.OTP);
+    //         //this.OTPmessage = 'OTP received. Proceed to register';
+    //         this.presentToast('SMS received with correct app hash');
+    //     }
+    // }
 
-    verifyPhoneCode(codeForm) {
+    verifyPhoneCode(codeForm, confirmationResult) {
         let code = codeForm.value.code.toString().trim() + "";
 
         if (typeof code === 'string') {
@@ -146,7 +146,7 @@ export class AuthService extends UserService implements OnDestroy {
             this.isLoadingSubject.next(true);
 
 
-            this.confirmationResult.confirm(code).then(res => {
+            confirmationResult.confirm(code).then(res => {
                 this.userService.getById(res.user.uid).subscribe((user: any) => {
 
                     if (user) {
@@ -177,7 +177,7 @@ export class AuthService extends UserService implements OnDestroy {
                 });
             }).catch(err => {
                 this.isLoadingSubject.next(false);
-
+                this.errors.next([]);
                 if (err.code === 'auth/argument-error' || err.code === 'auth/invalid-verification-code') {
                     this.addError({
                         message: 'קוד לא תקין',

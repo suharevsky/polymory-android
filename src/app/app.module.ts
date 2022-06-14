@@ -33,6 +33,8 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import {IonicInputMaskModule} from "@thiagoprz/ionic-input-mask";
 import { AuthGuard } from './guard/auth/auth.guard';
 import { FilterPageModule } from './pages/filter/filter.module';
+import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -68,6 +70,7 @@ import { FilterPageModule } from './pages/filter/filter.module';
     SplashScreen,
     TapticEngine,
     AuthGuard,
+    Clipboard,
     Crop,
     Camera,
     File,

@@ -183,22 +183,30 @@ export class HighlightsPage implements OnInit, OnDestroy {
                     result[key + '_showed_splash'] = true;
                     this.userService.closeSplash(result)
                     let matchedProfileId = result[key] === result.uid1 ? result.uid2 : result.uid1;
-                    this.userService.getItemById(matchedProfileId).pipe(delay(500)).subscribe(user => this.showSplashMatch(user));
+                    this.userService.getItemById(matchedProfileId).subscribe(user => this.showSplashMatch(user));
                 }
             }
         })
     }
 
     async showSplashMatch(user) {
-        const modal = await this.modalCtrl.create({
-            component: MatchedModalPage,
-            enterAnimation: modalEnterZoomOut,
-            leaveAnimation: modalLeaveZoomIn,
-            componentProps: {
-                user
-            }
-        })
-        modal.present();
+        console.log(user);
+
+    const modal = await this.modalCtrl.create({
+        component: MatchedModalPage,
+        //enterAnimation: modalEnterZoomOut,
+        leaveAnimation: modalLeaveZoomIn,
+        componentProps: {
+          user
+        }
+    });
+      return await modal.present();
+
+        // const modal = await this.modalCtrl.create({
+        //     component: PhotosPage,
+        // });
+                console.log(user);
+
     }
 
 

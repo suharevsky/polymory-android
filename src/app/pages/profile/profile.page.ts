@@ -50,6 +50,7 @@ export class ProfilePage implements OnInit  {
     ngOnInit() {
         this.profile = this.navParams.get('profile');
         this.images = this.userService.getAllPhotos(this.profile, this.profile.id !== this.userService.user.id);
+        this.viewedProfile();
     }
 
     async getImage(img) {
@@ -84,7 +85,8 @@ export class ProfilePage implements OnInit  {
         this.getListData('likes');
         this.profileILikedFn();
         this.profileLikedMeFn();
-        // this.userService.viewed(this.profile.id).subscribe();
+        //this.userService.viewed(this.profile.id).subscribe();
+        //this.getListData('views');
         this.getListData('favorites');
     }
 
@@ -125,6 +127,9 @@ export class ProfilePage implements OnInit  {
 
     getListData(type) {
         this.userService.getListData(type, this.profile.id).subscribe((res: any) => {
+            if(type ==='blockList') {
+                console.log(res);
+            }
             this.setListLabel(type, res.body.label)
         });
     }

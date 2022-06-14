@@ -6,7 +6,7 @@ export const environment = {
     production: false,
     
     apiUrl: 'https://us-central1-polymatch-d1996.cloudfunctions.net/app',
-    // apiUrl: 'http://localhost:8100/joyme-19532/us-central1/app',
+    //apiUrl: 'http://localhost:8101/polymatch-d1996/us-central1/app',
     firebase: {
         apiKey: "AIzaSyCkMYsglRs-HVZdh6zn32LzeNQukpTAw6g",
         authDomain: "polymatch-d1996.firebaseapp.com",

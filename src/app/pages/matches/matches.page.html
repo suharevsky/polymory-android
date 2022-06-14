@@ -61,18 +61,16 @@
   <ion-grid *ngIf="isLoaded">
       <ng-container *ngFor="let message of inboxList">
         <ng-container *ngIf="message | async as message">
-          <ion-row *ngIf="message.messages[message.messages.length - 1].user.status === 1" (click)="goToChat(message.id, userService.user.id !== message.uid1 ? message.uid1 : message.uid2)" class="ion-align-items-center">
-              <div [class.active] = "message.uid1 === activeTab || message.uid2 === activeTab" class="bg-tab"></div>
-                <ion-col size="auto">
+          <ion-row *ngIf="message.messages[message.messages.length - 1].user.status === 1" class="ion-align-items-center">
+                <ion-col (click)="goToChat(message.id, userService.user.id !== message.uid1 ? message.uid1 : message.uid2)" size="auto">
                     <random-avatar [user]="message.messages[message.messages.length - 1].user"
                             photo="{{userService.getMainPhoto(message.messages[message.messages.length - 1].user,'s',message.messages[message.messages.length - 1].user.username)}}"
                             [size]="'lg'"></random-avatar>
                 </ion-col>
-                <ion-col class="message-item-text">
+                <ion-col (click)="goToChat(message.id, userService.user.id !== message.uid1 ? message.uid1 : message.uid2)" class="message-item-text">
                     <div>
                         <div class="user-name"
-                             *ngIf="!message.adminExists">{{message.messages[message.messages.length - 1].user.username}} {{userService.getAge(message.messages[message.messages.length - 1].user.birthday)}}
-                            <span *ngIf="userService.getAge(message.messages[message.messages.length - 1].user.birthday1)">, {{userService.getAge(message.messages[message.messages.length - 1].user.birthday1)}}</span>
+                             *ngIf="!message.adminExists">{{message.messages[message.messages.length - 1].user.username}}
                         </div>
                         <ion-badge class="user-name"
                                    *ngIf="message.adminExists && !userService.user.isAdmin">{{message.messages[message.messages.length - 1].user.username}}
@@ -83,14 +81,15 @@
                                 <ng-container *ngIf="message.messages[message.messages.length - 1].type === 'image'"><div class="picture-message"><span class="label">תמונה</span><span><ion-icon name="image-outline"></ion-icon></span></div></ng-container>
                                 <ng-container *ngIf="message.messages[message.messages.length - 1].type !== 'image'">{{message.messages[message.messages.length - 1].content}}</ng-container>
                         </ion-text>
-                        <ion-text
-                                color="medium"> {{ message.messages[message.messages.length - 1].time }}
-                            ,{{ message.messages[message.messages.length - 1].date }}</ion-text>
+                        <ion-text class="date-time"
+                                color="medium"> {{ message.messages[message.messages.length - 1].date }}
+                            ,{{ message.messages[message.messages.length - 1].time }}</ion-text>
                         <ion-badge
                                 *ngIf="message.messages[message.messages.length - 1].unreadCounter > 0"
                                 class="counter">{{ message.messages[message.messages.length - 1].unreadCounter }}</ion-badge>
                     </div>
                 </ion-col>
+                  <div (click)="presentActionSheet(message.messages[message.messages.length - 1].user,message)" class="edit-btn"><ion-icon name="ellipsis-vertical-outline"></ion-icon></div>
               </ion-row>
         </ng-container>
   </ng-container>

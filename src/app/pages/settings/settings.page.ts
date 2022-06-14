@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AlertController, ModalController, NavController} from '@ionic/angular';
+import {AlertController, ModalController, NavController, Platform} from '@ionic/angular';
 import {ThemeService} from '../../services/theme/theme.service';
 import {AuthService} from '../../services/auth/auth.service';
 import { AppVersion } from '@awesome-cordova-plugins/app-version/ngx';
@@ -8,6 +8,7 @@ import {UserModel} from '../../models/user.model';
 import {SettingsService} from '../../services/user/settings/settings.service';
 import {PagePage} from '../page/page.page';
 import { GeneralService } from 'src/app/services/general/general.service';
+import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
 
 @Component({
     selector: 'app-settings',
@@ -29,22 +30,26 @@ export class SettingsPage implements OnInit {
     constructor(public modalCtrl: ModalController,
                 public settingsService: SettingsService,
                 private navCtrl: NavController,
+                private clipboard: Clipboard,
                 private themeService: ThemeService,
                 private authService: AuthService,
                 public alertController: AlertController,
                 public generalService: GeneralService,
                 public appVersion: AppVersion,
+                public platform: Platform,
                 public userService: UserService) {
     }
 
     async ngOnInit() {
-
-        this.appVersionNuber = await this.appVersion.getVersionNumber();
-
-        this.settingsService.getByUserId(this.userService.getId()).subscribe(settings => {
+        this.settingsService.getByUserId(this.userService.user.id).subscribe(settings => {
+            console.log(settings);
             this.settings = settings;
         });
 
+
+    if(this.platform.is('android') || this.platform.is('ios')) {
+        this.appVersionNuber = await this.appVersion.getVersionNumber();
+    }
         this.isDark = await this.themeService.getCurrentSetting()
 
     }
@@ -54,7 +59,7 @@ export class SettingsPage implements OnInit {
     }
 
     done() {
-        this.settingsService.setByUserId(this.userService.getId(), this.settings);
+        this.settingsService.setByUserId(this.userService.user.id, this.settings);
         this.modalCtrl.dismiss();
     }
 

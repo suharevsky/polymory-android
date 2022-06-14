@@ -6,6 +6,19 @@
     border-bottom: 1px solid var(--border-color-rgb);
   }
 
+  .edit-btn{
+    display: block;
+    padding: 16px 4px;
+    font-size: 24px;
+    ion-icon {
+      color: rgb(146, 148, 156);
+    }
+  }
+
+  .date-time{ 
+    font-size: 12px;
+  }
+
   .safe-area-bottom {
       height: auto;
   }
@@ -263,6 +276,7 @@ ion-row {
     .message-item-text {
       padding: 16px;
       border-bottom: 1px solid var(--border-color-rgb);
+      width: 0%;
       ion-text {
         .picture-message {
           display: flex;
@@ -276,7 +290,7 @@ ion-row {
         }
         display: block;
         white-space: nowrap;
-        width: 12em;
+        //width: 12em;
         overflow: hidden;
         text-overflow: ellipsis;
       }

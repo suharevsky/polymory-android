@@ -30,9 +30,6 @@
   }
 }
 
-ion-datetime{ 
-  --background: #fff;
-}
 
 app-code-verification {
   height: 100%;
@@ -55,7 +52,6 @@ ion-searchbar {
 
 
 ion-item,
-.birthday-field,
 .cities-list,
 .item-option {
   --inner-border-width: 0;
@@ -175,12 +171,18 @@ h2 {
   justify-content: space-between;
 
   .day, .month, .year {
+    ion-select {
+      background: rgb(242,242,242);
+      width: 100%;
+    }
+    flex-direction: column;
     display: flex;
     align-items: center;
-    padding: 0 20px;
     border-radius: 200px;
-    margin: 0 2px;
-    background: #f2f2f2;
+    margin: 0 4px;
+    width: 100px;
+    flex-grow: 1;
+    box-sizing: border-box;
   }
 }
 
@@ -190,11 +192,7 @@ ion-button.ion-focusable {
   --background-hover: #7774c5;
 }
 
-ion-datetime {
-  width: 100%;
-  --padding-start: 10px;
-    background: #f2f2f2 !important;
-}
+
 
 ion-footer { 
   display: flex;
@@ -229,9 +227,7 @@ ion-footer {
     top: -89px;
   }
 
-  .birthday-field {
-    width: 100%;
-  }
+
 
   // .smile-item {
   //   margin: 8px 3px;

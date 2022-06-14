@@ -20,7 +20,8 @@
   <ion-list>
 
     <ion-item *ngFor="let item of filteredArray">
-      <div (click)="choose(item)">{{ item.title }}<ion-icon *ngIf="multiple && item.chosen" name="checkmark-outline"></ion-icon></div>
+     
+      <div (click)="choose(item)">{{ item.title }}<ion-icon *ngIf="item.chosen" name="checkmark-outline"></ion-icon></div>
     </ion-item>
 
   </ion-list>

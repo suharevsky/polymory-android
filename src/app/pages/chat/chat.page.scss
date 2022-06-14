@@ -19,6 +19,16 @@
   }
 }
 
+.blocked-message {
+  text-align: center;
+  ion-icon {
+    color: rgb(255, 87, 34);
+    font-size: 32px;
+    display:  block;
+    margin: 0 auto;
+  }
+}
+
 .progress-bar {
   position: relative;
   &__percentage {

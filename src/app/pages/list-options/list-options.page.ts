@@ -33,7 +33,11 @@ export class ListOptionsPage implements OnInit {
 
         if (this.multiple) {
             this.object.options.map(el => el.chosen = this.currentValue.includes(el.value));
+        }else{
+            //console.log()
+            this.object.options.map(el => el.chosen = this.currentValue  === el.value);
         }
+
 
         if (this.enableList) {
             this.filteredArray = this.object.options;

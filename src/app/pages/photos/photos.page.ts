@@ -131,22 +131,14 @@ export class PhotosPage implements OnInit {
         console.log('Load failed');
     }
 
-    rotateRight() {
-        this.canvasRotation++;
-        this.flipAfterRotate();
-    }
-
-    public rasterize() {
-        this.defaultImage = '';
-        this.defaultImage = this.croppedImage;
-        let src = '';
-        src = this.croppedImage;
-
+    public async rasterize() {
+        let src = await this.fileUploadService.preview_image(this.croppedImage);
+        //@ts-ignore
+        this.defaultImage = src;
         this.uploadFile(src);
     }
 
-
-    uploadFile(src) {
+    async uploadFile(src) {
 
         this.uploadingProcess = true;
         // create a random id
@@ -161,6 +153,7 @@ export class PhotosPage implements OnInit {
             contentType: 'image/jpeg'
         });
 
+
         // AngularFireUploadTask provides observable
         // to get uploadProgress value
         this.uploadProgress = this.task.snapshotChanges()
@@ -168,6 +161,7 @@ export class PhotosPage implements OnInit {
 
         // observe upload progress
         this.uploadProgress = this.task.percentageChanges();
+
         // get notified when the download URL is available
         this.task.snapshotChanges().pipe(
             finalize(() => {
@@ -184,15 +178,14 @@ export class PhotosPage implements OnInit {
                 this.userService.user.allPhotosApproved = this.userService.allPhotosApproved();
                 this.userService.user.mainPhotoApproved = this.userService.mainPhotoApproved();
                 this.uploadingProcess = false;
+                // Close crop area
                 this.cancelUpload();
-
                 this.userService.save(this.userService.user).subscribe(() => {},
                 err => console.log(err),
                 () => {
-                    setTimeout(() =>{
-                        this.userService.user.photos = photos;
-                        //console.log(this.userService.user.photos);
-                    },900)
+                    // setTimeout(() =>{
+                    //     this.userService.user.photos = photos;
+                    // },900)
                 });
 
                 // this.downloadURL = this.ref.getDownloadURL();
@@ -229,7 +222,6 @@ export class PhotosPage implements OnInit {
             // imageData is either a base64 encoded string or a file URI
             this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
             this.imageChangedEvent = this.imageBase64;
-
         }, (err) => {
             // Handle error
         });
@@ -307,12 +299,34 @@ export class PhotosPage implements OnInit {
                 
 
             } else if(!photo.main) {
+
                 const buttonOptions = {
-                    header: 'העלאת תמונה מ...',
                     buttons: [{
                         text: 'למחוק את התמונה',
                         handler: () => {
                             this.delete(photo);
+                        }
+                    },
+                    {
+                        text: photo?.isPrivate ? 'מוגדר כציבורי' : 'מוגדר כפרטי',
+                        handler: () => {
+                            // this.delete(photo);
+                            this.userService.user.photos.map(photoEl => {
+                                if(photoEl.id === photo.id ) {
+                                    photoEl.isPrivate = photoEl.isPrivate ? false : true;
+                                }
+                                return photoEl;
+                            });
+
+                            this.privatePhotos = this.userService.user.photos.filter(photoEl => {
+                                return photoEl.isPrivate;
+                            });
+
+                            this.publicPhotos = this.userService.user.photos.filter(photoEl => {
+                                return !photoEl.isPrivate;
+                            });
+
+                            this.userService.save(this.userService.user).subscribe();
                         }
                     },
 
@@ -372,13 +386,4 @@ export class PhotosPage implements OnInit {
         });
     }
 
-    private flipAfterRotate() {
-        const flippedH = this.transform.flipH;
-        const flippedV = this.transform.flipV;
-        this.transform = {
-            ...this.transform,
-            flipH: flippedV,
-            flipV: flippedH
-        };
-    }
 }

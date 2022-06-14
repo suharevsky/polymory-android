@@ -11,6 +11,7 @@ import {TableService} from '../../crud-table';
 import {environment} from '../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { Platform } from '@ionic/angular';
+import { CounterService } from '../counter/counter.service';
 
 @Injectable({
     providedIn: 'root'
@@ -33,6 +34,7 @@ export class ChatService extends TableService<UserModel> {
         private db: AngularFirestore,
         public userService: UserService,
         public authService: AuthService,
+        public counterService: CounterService,
         public platform: Platform
     ) {
         super(http);
@@ -101,19 +103,21 @@ export class ChatService extends TableService<UserModel> {
             platform: this.platform.is('android') ? 'android' : 'web',
         };
 
+        console.log(data);
+
         this.http.post(this.API_URL + '/send', data).subscribe();
     }
 
     messagesNotReceived(messages, user) {
         return messages.messages.map(el => {
-            return (el.uid !== user.id) && !el.delivered;
+            return (el.uid !== user.id) && !el.delivered && el.createdAt >= messages.uid1TimeDeleted && el.createdAt >= messages.uid2TimeDeleted;
         });
     }
-
+ 
     setMessagesAsReceived(messages, user, chatId) {
         if (this.messagesNotReceived(messages, user).includes(true)) {
             const result = messages.messages.map(el => {
-                if (el.uid !== user.id) {
+                if (el.uid !== user.id && el.createdAt >= messages.uid1TimeDeleted && el.createdAt >= messages.uid2TimeDeleted) {
                     el.delivered = true;
                 }
                 delete el.user;
@@ -124,6 +128,23 @@ export class ChatService extends TableService<UserModel> {
                 .doc(chatId)
                 .set({messages: result}, {merge: true});
         }
+    }
+
+    async updateAllChats() {
+        let querySnapshot: any;
+
+        querySnapshot = await this.db.collection('chats', ref=> ref.limit(1)).get();
+
+        console.log(querySnapshot);
+        querySnapshot.forEach((doc: any) => {
+            doc.docs.forEach(element => {
+                console.log(element.id)
+                this.db.collection('chats')
+                .doc(element.id)
+                .set({uid1IsDeleted: false, uid2IsDeleted: false, uid2TimeDeleted: 0, uid1TimeDeleted: 0}, {merge: true});
+                //await this.db.collection('chats', ref=> ref.where('id', '==', element.id)).set();
+            });
+        });
     }
 
     removeImageRequestMessage(messages, chatId) {
@@ -147,8 +168,6 @@ export class ChatService extends TableService<UserModel> {
                 // Firestore User Doc Reads
                 const userDocs = uids.map(u => {
                     return this.db.doc(`users/${u}`).valueChanges()
-
-                    //return this.db.collection('users', ref => ref.where('uid', '==', u)).valueChanges()
                 }
                 );
 
@@ -157,9 +176,7 @@ export class ChatService extends TableService<UserModel> {
             map(arr => {
 
                 arr.forEach(v => {
-                    //if(typeof v !== 'undefined') {
-                        return joinKeys[(v as any).id] = v;
-                    //}
+                    return joinKeys[(v as any).id] = v;
                 });
                 chat.messages = chat.messages.map(v => {
                     const uid = this.userService.user.id === chat.uid1 ? chat.uid2 : chat.uid1;
@@ -182,13 +199,33 @@ export class ChatService extends TableService<UserModel> {
         });
     }
 
-  
+  async deleteInboxById(inbox){
+
+    const key = Object.keys(inbox).find(key => inbox[key] === this.userService.user.id)
+    let timeDeleted = key + 'TimeDeleted';
+
+     const unreadMyCounter = inbox.messages[inbox.messages.length - 1].unreadCounter;
+     this.counterService.setByUserId(this.userService.user.id, - unreadMyCounter, 'newMessages');
+     let unreadInterlocutorCounter = inbox.messages.filter(message => message.uid === this.userService.user.id && !message.delivered && message.createdAt >= inbox[timeDeleted]).length;
+     this.counterService.setByUserId(inbox.uid1 === this.userService.user.id ? inbox.uid2 : inbox.uid1, - parseInt(unreadInterlocutorCounter), 'newMessages');
+
+    let isDeleted =  key + 'IsDeleted';
+    let data = {};
+    data[timeDeleted] = new Date().getTime();
+    data[isDeleted] = true;
+    data = {...inbox, ...data}
+    console.log(data)
+
+    //@ts-ignore
+     this.update(data).subscribe();
+  }
 
     async getInbox(): Promise<Observable<any>> {        
 
-        const uid1Messages = this.db.collection('chats', ref => ref.where('uid1', '==', this.userService.user.id)).snapshotChanges();
-        const uid2Messages = this.db.collection('chats', ref => ref.where('uid2', '==', this.userService.user.id)).snapshotChanges();
+        const uid1Messages = this.db.collection('chats', ref => ref.where('uid1', '==', this.userService.user.id).where('uid1IsDeleted', '==',false).orderBy('lastModified', 'desc')).snapshotChanges();
+        const uid2Messages = this.db.collection('chats', ref => ref.where('uid2', '==', this.userService.user.id).where('uid2IsDeleted', '==',false).orderBy('lastModified', 'desc')).snapshotChanges();
 
+        
         return combineLatest(uid1Messages, uid2Messages).pipe(
             map(([one, two]) => [...one, ...two])
         ).pipe(
@@ -213,8 +250,11 @@ export class ChatService extends TableService<UserModel> {
                     return inboxItem
                         .pipe(map(item => {
                             if (item.messages.length) {
+                                // const key = Object.keys(item.messages).find(key => item.messages[key] === this.userService.user.id)
+                                // let timeDeleted = key + 'TimeDeleted';
+                                
                                 const unreadCounter = item.messages
-                                    .filter(message => !message.delivered && message.uid !== this.userService.user.id);
+                                    .filter(message => (!message.delivered && message.uid !== this.userService.user.id) && (message.createdAt >= item.uid1TimeDeleted && message.createdAt >= item.uid2TimeDeleted));
                                 item.messages[item.messages.length - 1].unreadCounter = unreadCounter.length;
 
                                 item.messages.map(message => {
@@ -226,7 +266,7 @@ export class ChatService extends TableService<UserModel> {
                             }
                         }));
                 });
-            }), // take(1)
+            }),
         )
     }
 }

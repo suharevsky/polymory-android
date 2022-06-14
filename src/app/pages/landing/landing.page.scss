@@ -73,11 +73,11 @@ ion-button {
     }
   }
   img {
-    width: 1.25em;
     position: absolute;
-    left: -6px;
+    left: 4px;
     top: 50%;
     transform: translateY(-50%);
+    height: 18px;
   }
 }
 
@@ -100,9 +100,9 @@ ion-button {
   justify-content: center;
   align-items: center;
   .logo{
-    position: absolute;
     margin-top: 30vh;
     text-align: center;
+    z-index: 9999
   }
 }
 
@@ -111,9 +111,6 @@ ion-button {
   text-align: center;
 }
 
-.safe-area-bottom, .segment-view {
-  //height: 100%;
-}
 
 .logo {
   font-size: 54px;
@@ -148,8 +145,5 @@ ion-button {
   }
   &__name {
     font-size: 26px;
-  }
-  &__image {
-    height: 48px;
   }
 }

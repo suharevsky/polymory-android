@@ -26,7 +26,8 @@
         "profile",
         "email"
       ],
-      "serverClientId": "817722655258-mo6tgeu3ai24ivaen21cfddbjkhf9o90.apps.googleusercontent.com",
+                        
+     "serverClientId": "793648489294-e0sbpo0le6bsejj61l2npjrs7ul7ql5c.apps.googleusercontent.com",
       "forceCodeForRefreshToken": true
     }
   }

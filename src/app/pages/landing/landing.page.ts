@@ -7,10 +7,10 @@ import {UserService} from '../../services/user/user.service';
 import {PagePage} from '../page/page.page';
 import { RegisterStepsPage } from '../register-steps/register-steps.page';
 import { WindowService } from 'src/app/services/window/window.service';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+//import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 
 @Component({
     selector: 'app-landing',
@@ -27,7 +27,7 @@ export class LandingPage implements OnInit {
     loading;
     isLoading$: Observable<boolean>;
     @ViewChild(IonContent, {static: false}) content: IonContent;
-    recaptchaVerifier: firebase.auth.RecaptchaVerifier;
+    public windowRef: any;
 
 
     constructor(
@@ -48,14 +48,15 @@ export class LandingPage implements OnInit {
         this.createPhoneForm();
 
         this.authService.errors
-        .pipe(map(errors => errors[0]?.phone.message))
+        .pipe(map(errors => errors[0]?.message))
         .subscribe(errorMessage => errorMessage ? this.presentToast(errorMessage) : "" );
         
     }
 
     ngOnInit() {
         this.authService.currentStep.subscribe(step => this.currentStep = step)
-        this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
+        this.windowRef = this.win.windowRef;
+        this.windowRef.recaptchaVerifier= new firebase.auth.RecaptchaVerifier('sign-in-button', {
             size: 'invisible',
         });
 
@@ -143,15 +144,17 @@ export class LandingPage implements OnInit {
     }
 
     loginPhone(phone:FormGroup) {
-        this.authService.loginPhone(phone,this.recaptchaVerifier);
-        this.authService.appVerifier.subscribe(appVerifier => this.authService.confirmationResult = appVerifier )
+
+        this.authService.loginPhone(phone,this.windowRef.recaptchaVerifier);
+        this.authService.appVerifier.subscribe(appVerifier => this.windowRef.confirmationResult = appVerifier )
     }
 
     verifyPhoneCode(codeForm: FormGroup) {
-        this.authService.verifyPhoneCode(codeForm)
+        this.authService.verifyPhoneCode(codeForm,this.windowRef.confirmationResult)
+
     }
 
     ionViewDidEnter() {
-        GoogleAuth.initialize();
+        //GoogleAuth.initialize();
     }
 }

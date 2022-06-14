@@ -54,6 +54,26 @@ export class ProfileEditPage implements OnInit {
         this.navCtrl.back();
     }
 
+    async openSexualOrientation() {
+        const modal = await this.modalCtrl.create({
+            component: ListOptionsPage,
+            componentProps: {
+                object: this.userService.getSexualOrientation(),
+                currentValue: this.userService.user.sexualOrientation,
+            }
+        });
+
+        modal.onDidDismiss()
+            .then((res) => {
+                console.log(res);
+                if (res.data) {
+                    this.userService.user.sexualOrientation = [res.data];
+                }
+            });
+
+        return await modal.present();
+    }
+
     async openAreasList() {
         const modal = await this.modalCtrl.create({
             component: ListOptionsPage,
@@ -84,8 +104,9 @@ export class ProfileEditPage implements OnInit {
 
         modal.onDidDismiss()
             .then((res) => {
+                console.log(res);
+
                 if (res.data) {
-                    console.log(res);
                     this.userService.user.city = res.data;
                 }
             });
@@ -108,27 +129,6 @@ export class ProfileEditPage implements OnInit {
                 console.log(res);
                 if (res.data) {
                     this.userService.user.preference = res.data.split(',');
-                }
-            });
-
-        return await modal.present();
-    }
-
-    async openSexualOrientation() {
-        const modal = await this.modalCtrl.create({
-            component: ListOptionsPage,
-            componentProps: {
-                object: this.userService.getSexualOrientation(),
-                currentValue: this.userService.user.preference,
-                multiple: true,
-            }
-        });
-
-        modal.onDidDismiss()
-            .then((res) => {
-                console.log(res);
-                if (res.data) {
-                    this.userService.user.sexualOrientation = res.data.split(',');
                 }
             });
 

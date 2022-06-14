@@ -8,7 +8,6 @@
     </ion-toolbar>
 </ion-header>
 
-
 <ion-content>
     
     <!-- <app-sign-in *ngIf="tab === 'sign-in'"></app-sign-in>
@@ -18,6 +17,7 @@
          #slides>
         <!-- {{myForm.value | json}} -->
         <div class="ion-slide" *ngIf="currentIndexSlide === 0">
+            
             <form [formGroup]="registrationForm"
                   (ngSubmit)="submit()">
                 <input type="text" name="gender" formControlName="gender"/>
@@ -37,9 +37,7 @@
                   (ngSubmit)="submit()">
                 <input type="text" name="sexualOrientation" formControlName="sexualOrientation"/>
                 <div class="options">
-                   
                         <h2>{{userService.getSexualOrientation().label}}</h2>
-                        <p>ניתן לבחור ביותר מאפשרות אחת</p>
                         <ion-list class="sexualOrientation">
                             <div *ngFor="let sexualOrientation of sexualOrientations; let i = index" (click)="chooseSexualOrientation(i)"
                                  [ngClass]="{'active': sexualOrientation.chosen}" class="item-option">
@@ -83,38 +81,39 @@
 
         <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 4">
             <form [formGroup]="registrationForm">
-                <!-- <div class="pos-center">
-                <div no-lines class="birthday-field margin-center">
-                    <ion-label position="stacked"><h2>
+                <div no-lines class="options">
+                    <h2>
                         {{ user?.gender == 'זוג' ? userService.getBirthday().label3 :
                         userService.getBirthday().label}}
-                    </h2></ion-label>
-                        <ion-datetime #focusable cancel-text="ביטול" done-text="בוצע" name="birthday" formControlName="birthday"></ion-datetime>
-                </div>
-                <div class="birthday-field margin-center" *ngIf="user?.gender === 'זוג'">
-                <ion-label position="stacked"><h2>{{userService.getBirthday1().label3}}</h2></ion-label>
-                    <ion-datetime cancel-text="ביטול" done-text="בוצע" name="birthday1" formControlName="birthday1"></ion-datetime>
+                    </h2>
+                    <div class="date">
+                        <div class="day">
+                            <ion-label>יום</ion-label>
+                            <ion-select value="{{user?.birthday?.split('-')[0]}}"  (ionChange)="setDay($event,'birthday')" interface="popover">
+                                <ion-select-option *ngFor="let date of dateRange.date" value="{{addZero(date)}}">
+                                    {{addZero(date)}}
+                                </ion-select-option>
+                            </ion-select>
+                        </div>
+                        <div class="month">
+                            <ion-label>חודש</ion-label>
+                            <ion-select value="{{user?.birthday?.split('-')[1]}}" (ionChange)="setMonth($event,'birthday')" interface="popover">
+                                <ion-select-option *ngFor="let month of dateRange.month.values; index as indexOfelement;" value="{{addZero(month)}}">
+                                    {{dateRange.month.names[indexOfelement]}}
+                                </ion-select-option>
+                            </ion-select>
+                        </div>
+
+                        <div class="year">
+                            <ion-label>שנה</ion-label>
+                            <ion-select value="{{user?.birthday?.split('-')[2]}}"  (ionChange)="setYear($event,'birthday')" interface="popover">
+                                <ion-select-option *ngFor="let year of dateRange.year" value="{{year}}">
+                                    {{year}}
+                                </ion-select-option>
+                            </ion-select>
+                        </div>
                     </div>
-                </div> -->
-                <ion-item id="open-modal" class="pos-center margin-center" no-lines>
-                    <ion-label position="stacked"><h2>{{ user?.gender == 'זוג' ? userService.getBirthday().label3 :
-                        userService.getBirthday().label}}</h2></ion-label>
-                    <ion-input #focusable
-                            maxLength="25"
-                            [value]="formattedString"
-                            class="name-input"
-                            type="disabled"
-                    ></ion-input>
-                </ion-item>
-    
-                <ion-modal class="ion-datetime" mode="md" trigger="open-modal">
-                    <ng-template>
-                        <ion-content>
-                            <ion-datetime locale="he-HE" size="cover" #date showDefaultButtons="true" max="{{dateValue}}" [value]="dateValue" (ionChange)="dateChanged(date.value)" [presentation]="date" cancel-text="ביטול" done-text="בוצע">
-                            </ion-datetime>
-                        </ion-content>
-                    </ng-template>
-                </ion-modal>
+                </div>
             </form>
         </div>
         <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 5">
@@ -158,41 +157,13 @@
                 </ion-item>
             </form>
         </div>
-        <!--<div class="register-success ion-slide" *ngIf="currentIndexSlide === 7">
-            <div class="done-icon">
-                <ion-icon name="checkmark-circle-outline"></ion-icon>
-            </div>
-            <h1>ההרשמה הושלמה בהצלחה</h1>
-            
-            <h1>אנא אמת את כתובת המייל שלך</h1>
-            <p>על מנת להמשיך את תהליך ההרשמה יש לאמת את כתובת המייל שלך.</p>
-            <p>
-                <strong>שלחנו מייל עם הוראות לאימות לכתובת הדוא״ל שאיתה נרשמת.</strong>
-            </p>
-            <p>במידה ואינך רואה את המייל אנא בדוק את תיבת הספאם.</p>
-            <p>
-                אם בכל זאת לא קיבלת את המייל, אנא צור קשר עם תמיכת האתר בכתובת
-                <a href="mailto:contact@polymatch.co.il">contact@polymatch.co.il</a>
-            </p>
-            
-            <ion-button
-                    expand="block"
-                    fill="outline"
-                    shape="round"
-                    (click)="goToPhotos()"
-            >
-                המשך
-            </ion-button>
-        </div>-->
     </div>
 </ng-container>
 
 </ion-content>
 
-<ng-container>
 <ion-footer *ngIf="currentIndexSlide != 8 && authService.tab === 'registration'">
     <ion-button  *ngIf="currentIndexSlide != 8 && currentIndexSlide > 0" (click)="back()" class="btn-form btn-back">חזרה</ion-button>
     <ion-button [class.btn-full] = "currentIndexSlide === 0"
     [disabled]="registrationForm.errors" type="submit" (click)="submit()" class="btn-form">המשך</ion-button>
 </ion-footer>
-</ng-container>

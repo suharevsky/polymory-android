@@ -184,12 +184,10 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
             map(([one, two]) => [...one, ...two])
         ).pipe(
             map((arr:any) => {
-                console.log(arr)
                 return arr.sort((a, b) => (a.created < b.created) ? 1 : -1)
             })
         );
         
-
         return matches$.pipe(
             switchMap(l => {
                 const userDocs = l.map((u:any) =>{
@@ -198,7 +196,6 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                 });
                 return userDocs.length ? combineLatest(userDocs) : of([]);
             }), map(arr => {
-                console.log(arr);
                 return arr.filter((el:any) => el.status === 1);
             }),
             take(1)
@@ -287,7 +284,10 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         return this.http.post<UserModel[]>(this.API_URL + '/list', data);
     }
 
-    getListData(type, userId) {
+    getListData(type, userId,reverse = false) {
+        if(reverse) {
+            return this.http.get<any>(this.API_URL + '/list/' + type + '/' + userId + '/' + this.user.id);
+        }
         return this.http.get<any>(this.API_URL + '/list/' + type + '/' + this.user.id + '/' + userId);
     }
 
@@ -304,7 +304,9 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
  
     public getCities() {
 
-        const cities =  this.db.collection('cities').valueChanges().pipe(map((el: any) => JSON.parse(el[0].options)));
+        const cities =  this.db.collection('cities', ref => ref.where('type','==','json')).valueChanges().pipe(map((el: any) => { 
+            return JSON.parse(el[0].options)
+        }));
         
         return {
             label: 'עיר',
@@ -342,26 +344,36 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         }
     }
 
-    public getSexualOrientation(currentValue = []) {
+    public getSexualOrientation() {
 
         const options = {
             options: [
                 {title: 'סטרייט/ית', value: 'סטרייט/ית', chosen: false},
-                {title: 'הומו', value: 'הומו', chosen: false},
-                {title: 'לסבית', value: 'לסבית', chosen: false},
+                {title: 'לסביט', value: 'לסביט', chosen: false},
+                {title: 'גיי', value: 'גיי', chosen: false},
                 {title: 'ביסקסואל/ית', value: 'ביסקסואל/ית', chosen: false},
                 {title: 'אסקסואל/ית', value: 'אסקסואל/ית', chosen: false},
                 {title: 'פאנסקסואל/ית', value: 'פאנסקסואל/ית', chosen: false},
-                {title: 'קוויר', value: 'קוויר', chosen: false},
                 {title: 'לא ברור', value: 'לא ברור', chosen: false}
             ]
         };
+        
+        if(this.user.gender === 'גבר') {
+            options.options = options.options.filter(el => el.value !== 'לסביט');
+        }
+
+        if(this.user.gender === 'אישה') {
+            options.options = options.options.filter(el => el.value !== 'גיי');  
+        }
+
 
         options.options.map(el => {
-            if (currentValue.includes(el.title)) {
+            console.log(this.user?.sexualOrientation);
+            if (this.user?.sexualOrientation && this.user?.sexualOrientation.includes(el.title)) {
                 el.chosen = true;
                 return el;
             }
+            return el;
         });
 
         return {
@@ -389,23 +401,23 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         }
     }
 
-    public getLookingFor() {
-        return {
-            value: this.user ? this.user.lookingFor : '',
-            label: 'אני מחפש/ת...',
-            label3: 'אנחנו מחפשים...',
-            class: 'lookingFor',
-            options: [
-                {title: 'אהבה', value: 'אהבה', chosen: false},
-                {title: 'סקס רגיל', value: 'סקס רגיל', chosen: false},
-                {title: 'סטיות', value: 'סטיות', chosen: false},
-                {title: 'קשר רציני', value: 'קשר רציני', chosen: false},
-                {title: 'סקס', value: 'סקס', chosen: false},
-                {title: 'בילויים משותפים', value: 'בילויים משותפים', chosen: false},
-                {title: 'יחסי עבד ושליט', value: 'יחסי עבד ושליט', chosen: false},
-            ],
-        }
-    }
+    // public getLookingFor() {
+    //     return {
+    //         value: this.user ? this.user.lookingFor : '',
+    //         label: 'אני מחפש/ת...',
+    //         label3: 'אנחנו מחפשים...',
+    //         class: 'lookingFor',
+    //         options: [
+    //             {title: 'אהבה', value: 'אהבה', chosen: false},
+    //             {title: 'סקס רגיל', value: 'סקס רגיל', chosen: false},
+    //             {title: 'סטיות', value: 'סטיות', chosen: false},
+    //             {title: 'קשר רציני', value: 'קשר רציני', chosen: false},
+    //             {title: 'סקס', value: 'סקס', chosen: false},
+    //             {title: 'בילויים משותפים', value: 'בילויים משותפים', chosen: false},
+    //             {title: 'יחסי עבד ושליט', value: 'יחסי עבד ושליט', chosen: false},
+    //         ],
+    //     }
+    // }
 
     public getPreference(currentValue = []) {
 
@@ -648,6 +660,9 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                         for (let item of response.docs) {
                             results.push(item.data());
                           }
+
+                          console.log(results);
+
 
                           if (filterData.ageRange) {
                             results = results.filter((el: any) => {

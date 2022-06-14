@@ -6,12 +6,15 @@ import {UserService} from '../../services/user/user.service';
 import {Subscription} from 'rxjs';
 import {first} from 'rxjs/operators';
 import {AuthService} from '../../services/auth/auth.service';
-//import {UniqueUsernameValidator} from '../../validators/unique-username.validator';
 import {PhotosPage} from '../photos/photos.page';
 import { GeneralService } from 'src/app/services/general/general.service';
 import { FilterService } from 'src/app/services/filter/filter.service';
 import { format } from 'date-fns';
 import { parseISO } from 'date-fns/esm';
+import { ArrayHelper } from 'src/app/helpers/array.helper';
+import { DateHelper } from 'src/app/helpers/date.helper';
+import {BirthdayValidator} from '../../validators/birthday.validator';
+
 
 @Component({
     selector: 'app-register-steps',
@@ -29,7 +32,7 @@ export class RegisterStepsPage implements OnInit {
     public steps: any = [];
     public cities: any;
     public filteredCities: any;
-    public areas = [];
+    public areas = [];                                    
     public genders: any;
     public sexualOrientations: any;
     public preferences: any;
@@ -41,9 +44,17 @@ export class RegisterStepsPage implements OnInit {
         isValid: false,
     };
     public currentIndexSlide = 0;
+    public addZero = DateHelper.addZero;
     // private fields
     private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
-
+    public dateRange = {
+        date: ArrayHelper.range(1,31),
+        month: {
+            values: ArrayHelper.range(1,12),
+            names: ['ינואר', 'פברואר', 'מרץ','אפריל','מאי', 'יוני','יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'],
+        },
+        year: ArrayHelper.range(1960,new Date().getFullYear() - 18),
+    }
     constructor(
         private navCtrl: NavController,
         private loadingCtrl: LoadingController,
@@ -54,27 +65,14 @@ export class RegisterStepsPage implements OnInit {
         public generalService: GeneralService,
         private modalCtrl: ModalController,
         public filterService: FilterService,
+        private birthdayValidator: BirthdayValidator,
+
         //private uniqueUsernameValidator: UniqueUsernameValidator,
-    ) {
-        this.setDefaultDate();
-        //this.user = this.userService.user;
-    }
+    ) {}
 
     // convenience getter for easy access to form fields
     get f() {
         return this.registrationForm.controls;
-    }
-
-    setDefaultDate() {
-        const date = new Date();
-        date.setFullYear(date.getFullYear() - 18);
-        this.dateValue = format(parseISO(format(date,'yyyy-MM-dd')), 'yyyy-MM-dd');
-        this.formattedString = format(parseISO(format(date,'yyyy-MM-dd')), 'yyyy MM dd');
-    }
-
-    dateChanged(value) {
-        this.dateValue = value;
-        this.formattedString = format(parseISO(format(new Date(value),'yyyy-MM-dd')), 'yyyy MM dd');
     }
 
     ngOnInit() {
@@ -82,7 +80,7 @@ export class RegisterStepsPage implements OnInit {
         this.areas = this.userService.getArea().options;
         this.cities = this.userService.getCities().options;
         this.genders = this.userService.getGender().options;
-        this.sexualOrientations = this.userService.getSexualOrientation().options;
+        //this.sexualOrientations = this.userService.getSexualOrientation().options;
         this.preferences = this.userService.getPreference().options;
     }
 
@@ -116,7 +114,7 @@ export class RegisterStepsPage implements OnInit {
 
         this.steps[2] = {
             username: [
-                this.user.username ? this.user.username : '',
+                this.user?.username ? this.user?.username : '',
                 Validators.compose([
                     Validators.required,
                     Validators.minLength(2)
@@ -130,12 +128,12 @@ export class RegisterStepsPage implements OnInit {
             ]
         }
 
-        this.steps[4] = {
+           this.steps[4] = {
             birthday: [
-                this.user?.birthday ? this.user?.birthday : this.dateValue,
+                this.user?.birthday ? this.user?.birthday : '00-00-0000',
                 Validators.compose([
                     Validators.required,
-                ])
+                ]), [this.birthdayValidator.adultValidator()]
             ]
         };
 
@@ -173,6 +171,7 @@ export class RegisterStepsPage implements OnInit {
     }
 
     submit() {
+
         let errorMessage: string;
 
         if (this.currentIndexSlide === 6) {
@@ -204,7 +203,11 @@ export class RegisterStepsPage implements OnInit {
             const result = {};
             Object.keys(this.f).forEach(key => {
                 result[key] = this.f[key].value;
+                this.userService.user[key] = this.f[key].value;
             });
+
+            this.sexualOrientations = this.userService.getSexualOrientation().options;
+
 
             Object.keys(this.f).reverse().forEach(key => {
                 if (this.f[key].errors?.required || this.f[key].errors?.email) {
@@ -213,6 +216,10 @@ export class RegisterStepsPage implements OnInit {
 
                 if (this.f[key].errors?.minlength) {
                     errorMessage = '"' + errorFields[key] + '"' + ' נדרש מינימום ' + this.f[key].errors?.minlength.requiredLength + ' אותיות';
+                }
+
+                if (this.f[key].errors?.notAdult) {
+                    errorMessage = 'הגיל שלך מתחת לגיל 18';
                 }
 
                 /*if (this.f[key].errors?.valueExists) {
@@ -230,6 +237,31 @@ export class RegisterStepsPage implements OnInit {
                 this.slideNext();
             }
         }
+    }
+
+   setDay(e,field) {
+        const arr = this.f[field].value.split('-');
+        const res = arr[0] + "-" + e.target.value + "-" + arr[2];
+        //this.user[field] = res;
+        console.log(res);
+        this.f[field].setValue(res);
+    }
+
+    setMonth(e,field) {
+        const arr = this.f[field].value.split('-');
+        const res = e.target.value + "-" + arr[1] + "-" + arr[2];
+        //this.user[field] = res;
+        console.log(res);
+        this.f[field].setValue(res);
+    }
+
+
+    setYear(e,field) {
+        const arr = this.f[field].value.split('-');
+        const res = arr[0] + "-" + arr[1] + "-" + e.target.value;
+        //his.user[field] = res;
+        console.log(res);
+        this.f[field].setValue(res);
     }
 
     close() {
@@ -366,23 +398,17 @@ export class RegisterStepsPage implements OnInit {
     }
 
     chooseSexualOrientation(i: number) {
-        if (this.sexualOrientations[i].chosen) {
-            this.sexualOrientations[i].chosen = false;
-            const arr = this.f.sexualOrientation.value.filter((el) => {
-                return el !== this.sexualOrientations[i].title;
-            });
-            this.f.sexualOrientation.setValue(arr);
-        } else {
-            const arr = this.f.sexualOrientation.value;
-            arr.push(this.sexualOrientations[i].title);
-            this.f.sexualOrientation.setValue(arr);
-            this.sexualOrientations[i].chosen = true;
-        }
+        this.sexualOrientations.map((el) => {
+            el.chosen = false;
+            return el
+        });
+        this.sexualOrientations[i].chosen = true;
 
+        this.f.sexualOrientation.setValue([this.sexualOrientations[i].title]);
     }
 
     chooseGender(i: number) {
-        this.genders = this.genders.map((el) => {
+        this.genders.map((el) => {
             el.chosen = false;
             return el
         });
@@ -431,7 +457,7 @@ export class RegisterStepsPage implements OnInit {
         this.cities.subscribe((cities) => {
                 this.filteredCities = cities.filter(
                     el => el.title.startsWith((target as HTMLInputElement).value)
-                );
+                ).slice(0,20);
             }
         );
     }

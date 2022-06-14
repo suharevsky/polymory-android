@@ -9,14 +9,12 @@ import {CounterService} from '../../services/counter/counter.service';
 import {FcmService} from '../../services/fcm/fcm.service';
 import {ProfilePage} from '../profile/profile.page';
 import { map, take } from 'rxjs/operators';
-
 import { ImageModalPage } from 'src/app/components/image-modal/image-modal.page';
 import { GeneralService } from 'src/app/services/general/general.service';
-import { ActivatedRoute } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { StateChange } from 'ng-lazyload-image';
 import { Camera, CameraOptions } from '@awesome-cordova-plugins/camera/ngx';
 import { TinderGoldPage } from '../tinder-gold/tinder-gold.page';
+import { FileUploadService } from 'src/app/services/file-upload/file-upload.service';
 
 
 @Component({
@@ -33,7 +31,6 @@ export class ChatPage implements OnInit {
     chatId: string;
     //messages: any[];
     errMessage: string;
-    updatedDialogue = true;
     imagesError = []; 
 
     //typingMessage = '';
@@ -63,13 +60,11 @@ export class ChatPage implements OnInit {
         private alertController: AlertController,
         public toastController: ToastController,
         public fcmService: FcmService,
+        public fileUploadService: FileUploadService,
         public navParams: NavParams,
         public generalService: GeneralService,
         private afStorage: AngularFireStorage,
-        private route: ActivatedRoute,
         private camera: Camera,
-        
-
     ) {
         this.chatId = this.navParams.get('chatId');
         this.dialogueExists = this.navParams.get('chatExists');
@@ -93,8 +88,8 @@ export class ChatPage implements OnInit {
         this.subscription.unsubscribe();
     }
 
-    getListData(type, userId) {
-        return this.userService.getListData(type, userId);
+    getListData(type, userId, reverse = false) {
+        return this.userService.getListData(type, userId,reverse);
     }
 
     async openPreview(img) {
@@ -107,11 +102,9 @@ export class ChatPage implements OnInit {
         });
 
         modal.present();
-
     }
 
     chooseImage() {
-       
         const options: CameraOptions = {
             quality: 100,
             destinationType: this.camera.DestinationType.DATA_URL,
@@ -137,7 +130,7 @@ export class ChatPage implements OnInit {
 
         this.scrollToBottom(500,true)
 
-        let src = event;
+        let src = await this.fileUploadService.reduce_image_file_size(event);
              // create a random id
         const randomId = Math.random().toString(36).substring(2);
         // create a reference to the storage bucket location
@@ -159,7 +152,7 @@ export class ChatPage implements OnInit {
         // observe upload progress
         uploadProgress = task.percentageChanges().subscribe(percentage => {
             //@ts-ignore
-            this.uploadPercentage = percentage === 100 ? 1 :  "0." + parseInt((Math.round(percentage * 100) / 100));
+            this.uploadPercentage = "" + percentage.toString().split('.')[0]
         });
         // get notified when the download URL is available
 
@@ -167,14 +160,12 @@ export class ChatPage implements OnInit {
             if(res.state === 'success') {
                 setTimeout(_=> {
                     console.log('Fire');
-                    //this.currentMessage.base64 = this.getImageSrc(randomId, 'small');
                     this.currentMessage.content = randomId;
                     this.uploadPercentage = 0;
                     this.sendMessage();
-                },600);
+               },600);
             }
         });
-        
     }
 
     getImageSrc(src,size) {
@@ -239,10 +230,11 @@ export class ChatPage implements OnInit {
 
         this.chat$ = this.chatService.joinUsers(source);
 
-        this.subscription = this.chat$.pipe().subscribe(chat => {
+        this.subscription = this.chat$.subscribe(chat => {
 
+            console.log(chat);
+      
             this.currentMessage.type = '';
-            this.updatedDialogue = true;
 
             if (chat.messages.length > 0) {
                 this.imageRequestMessage = chat.messages.filter(msg => msg.imageRequest && !msg.delivered && this.userService.user.id !== msg.uid);
@@ -252,7 +244,8 @@ export class ChatPage implements OnInit {
                     this.imageConfirmation();
                 }
 
-                let unreadMessagesCount = chat.messages.filter(msg => !msg.delivered && this.userService.user.id !== msg.uid).length;
+                let unreadMessagesCount = chat.messages.filter(
+                    msg => !msg.delivered && this.userService.user.id !== msg.uid && msg.createdAt >= chat.uid2TimeDeleted && msg.createdAt >= chat.uid1TimeDeleted).length;
                 this.chatService.setMessagesAsReceived(chat, this.userService.user, this.chatId);
                 this.counterService.setByUserId(this.userService.user.id, - unreadMessagesCount, 'newMessages');
 
@@ -294,7 +287,8 @@ export class ChatPage implements OnInit {
             this.generalService.activeInboxTab.next(this.interlocutorId);
             this.chatService.interlocutor = user;
 
-            this.getListData('blockList', this.chatService.interlocutor.id).subscribe((res: any) => {
+
+            this.getListData('blockList', this.chatService.interlocutor.id,true).subscribe((res: any) => {
                 if (!res.empty) {
                     this.blockedMessage = 'המשתמש הוסיף אותך לרשימה השחורה';
                 } else {
@@ -336,7 +330,6 @@ export class ChatPage implements OnInit {
             return;
         }
 
-        this.updatedDialogue = false;
         this.temporaryMessage = this.currentMessage.content;
         this.currentMessage.content = '';
         setTimeout(() => {
@@ -363,9 +356,6 @@ export class ChatPage implements OnInit {
              setTimeout(() => {
                  this.scrollToBottom();
              }, 300);
-
-
-            //this.currentMessage.content = '';
         });
         
     }
@@ -396,39 +386,6 @@ export class ChatPage implements OnInit {
         setTimeout(() => {
             this.scrollToBottom();
         }, 0);
-    }
-
-    lazyLoadCallback(event: StateChange, src = '',index) {
-        switch (event.reason) {
-            case 'setup':
-              // The lib has been instantiated but we have not done anything yet.
-              break;
-            case 'observer-emit':
-              // The image observer (intersection/scroll/custom observer) has emit a value so we
-              // should check if the image is in the viewport.
-              // `event.data` is the event in this case.
-              break;
-            case 'start-loading':
-              // The image is in the viewport so the image will start loading
-              break;
-            case 'mount-image':
-              // The image has been loaded successfully so lets put it into the DOM
-              break;
-            case 'loading-succeeded':
-                this.scrollToBottom(500,true);
-              // The image has successfully been loaded and placed into the DOM
-              break;
-            case 'loading-failed':
-                console.log(event);
-                this.imagesError[index] = src;
-
-              // The image could not be loaded for some reason.
-              // `event.data` is the error in this case
-              break;
-            case 'finally':
-              // The last event before cleaning up
-              break;
-          }
     }
 
     nl2br(text: string) {

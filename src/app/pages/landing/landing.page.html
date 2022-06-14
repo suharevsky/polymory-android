@@ -15,22 +15,6 @@
                 </div>
                  
             <div *ngIf="currentStep === 0">
-                <!-- <ion-button
-                appGoogleSignin
-                expand="block"
-                fill="outline"
-                shape="round"
-                class="button-landing ion-margin-bottom">
-                Login with Google
-        </ion-button> -->
-                <ion-button
-                        expand="block"
-                        fill="outline"
-                        shape="round"
-                        class="button-landing ion-margin-bottom"
-                        (click)="codeFormStatus(1)">
-                    הרשמה חינם
-                </ion-button>
                 <ion-button
                         expand="block"
                         fill="outline"
@@ -38,8 +22,19 @@
                         class="button-landing ion-margin-bottom"
                         (click)="codeFormStatus(1)"
                 >
-                    כניסה
+                כניסה באמצעות מספר טלפון <ion-icon name="chatbubble"></ion-icon>
                 </ion-button>
+                <ion-button
+                appGoogleSignin
+                expand="block"
+                fill="outline"
+                shape="round"
+                class="button-landing ion-margin-bottom">
+                כניסה באמצעות Google
+                <img src="/assets/img/google-icon.png">
+        </ion-button>
+                
+                
             </div>
 
             <form class="phone-form" *ngIf="currentStep === 1" [formGroup]="phoneForm"
