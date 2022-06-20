@@ -85,8 +85,6 @@ export class ProfilePage implements OnInit  {
         this.getListData('likes');
         this.profileILikedFn();
         this.profileLikedMeFn();
-        //this.userService.viewed(this.profile.id).subscribe();
-        //this.getListData('views');
         this.getListData('favorites');
     }
 

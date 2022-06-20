@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "793648489294-p44rsf03qcajbsjfndmpc97n8ojqarv4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "il.co.polymory",
+            "certificate_hash": "ce64dff2bdab8fd304241e615977e6d202f68bb9"
+          }
+        },
+        {
           "client_id": "793648489294-e0sbpo0le6bsejj61l2npjrs7ul7ql5c.apps.googleusercontent.com",
           "client_type": 3
         }

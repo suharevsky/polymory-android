@@ -1,13 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {UserService} from '../../services/user/user.service';
-import {ModalController, NavController} from '@ionic/angular';
+import { NavController} from '@ionic/angular';
 import {UserModel} from '../../models/user.model';
 import {CounterService} from '../../services/counter/counter.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {counterSubject} from '../../components/tabs/tabs.page';
-import {ArrayHelper} from '../../helpers/array.helper';
-import {ProfilePage} from '../profile/profile.page';
 import { GeneralService } from 'src/app/services/general/general.service';
 import { ActivatedRoute } from '@angular/router';
 

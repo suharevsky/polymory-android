@@ -95,6 +95,7 @@ export class AuthService extends UserService implements OnDestroy {
             
         }).catch(err => {
            // alert(JSON.stringify(err))
+           // appVerifier.
             if (err.code === 'auth/invalid-phone-number') {
       
                 this.addError({
@@ -225,7 +226,8 @@ export class AuthService extends UserService implements OnDestroy {
     logout() {
         this.fireAuth.signOut().then(_ => {
             localStorage.removeItem(this.authLocalStorageToken);
-            this.router.navigate(['/']);
+            //reload in order to remove the captcha
+            window.location.href = "/";
         });
     }
 

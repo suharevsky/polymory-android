@@ -308,7 +308,7 @@ export class PhotosPage implements OnInit {
                         }
                     },
                     {
-                        text: photo?.isPrivate ? 'מוגדר כציבורי' : 'מוגדר כפרטי',
+                        text: photo?.isPrivate ? 'הגדר כציבורי' : 'הגדר כפרטי',
                         handler: () => {
                             // this.delete(photo);
                             this.userService.user.photos.map(photoEl => {

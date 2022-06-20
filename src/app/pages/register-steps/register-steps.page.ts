@@ -10,7 +10,6 @@ import {PhotosPage} from '../photos/photos.page';
 import { GeneralService } from 'src/app/services/general/general.service';
 import { FilterService } from 'src/app/services/filter/filter.service';
 import { format } from 'date-fns';
-import { parseISO } from 'date-fns/esm';
 import { ArrayHelper } from 'src/app/helpers/array.helper';
 import { DateHelper } from 'src/app/helpers/date.helper';
 import {BirthdayValidator} from '../../validators/birthday.validator';
@@ -80,7 +79,6 @@ export class RegisterStepsPage implements OnInit {
         this.areas = this.userService.getArea().options;
         this.cities = this.userService.getCities().options;
         this.genders = this.userService.getGender().options;
-        //this.sexualOrientations = this.userService.getSexualOrientation().options;
         this.preferences = this.userService.getPreference().options;
     }
 
@@ -207,7 +205,6 @@ export class RegisterStepsPage implements OnInit {
             });
 
             this.sexualOrientations = this.userService.getSexualOrientation().options;
-
 
             Object.keys(this.f).reverse().forEach(key => {
                 if (this.f[key].errors?.required || this.f[key].errors?.email) {

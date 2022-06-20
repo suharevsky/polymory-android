@@ -109,6 +109,7 @@
         <ion-button (click)="setList('favorites')" color="white" class="button-custom button-favorite button-lg">
             <span>{{profileFavoriteLabel}}</span>
         </ion-button>
+        
         <ion-button (click)="setList('likes', false)" color="white" class="button-custom button-icon button-like">
             <ion-icon *ngIf="!profileILiked" name="heart-outline"></ion-icon>
             <ion-icon *ngIf="profileILiked" name="heart"></ion-icon>

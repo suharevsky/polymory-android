@@ -201,12 +201,6 @@ export class HighlightsPage implements OnInit, OnDestroy {
         }
     });
       return await modal.present();
-
-        // const modal = await this.modalCtrl.create({
-        //     component: PhotosPage,
-        // });
-                console.log(user);
-
     }
 
 

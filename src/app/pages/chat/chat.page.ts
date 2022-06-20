@@ -287,7 +287,6 @@ export class ChatPage implements OnInit {
             this.generalService.activeInboxTab.next(this.interlocutorId);
             this.chatService.interlocutor = user;
 
-
             this.getListData('blockList', this.chatService.interlocutor.id,true).subscribe((res: any) => {
                 if (!res.empty) {
                     this.blockedMessage = 'המשתמש הוסיף אותך לרשימה השחורה';

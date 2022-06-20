@@ -82,9 +82,8 @@
         </ion-grid>
 
         <ion-grid *ngIf="userService.user.photos.length > 0">
-            <h2>פרטיות</h2>
             <ion-row>
-                <ion-col size="4" size-md="2" class="photo-item no-photo"
+                <ion-col size="4" size-md="3" class="photo-item no-photo"
                          *ngFor="let i of [0,1,2,3,4,5]" [attr.data-index]="i">
                     <div *ngIf="privatePhotos[i]" (click)="selectImage($event, false, privatePhotos[i])"
                          class="photo-image background-img select-image"

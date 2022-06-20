@@ -37,7 +37,6 @@ export class FcmService {
             // On success, we should be able to receive notifications
            PushNotifications.addListener('registration',
             (token: Token) => {
-
                 // token.value
                 this.setToken(token.value);
             }

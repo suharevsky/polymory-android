@@ -48,7 +48,7 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         lastKey: 0,
         finishLoad: false,
     };
-    settings : {
+    public settings : {
         onlineDuration: 0,
         paymentActive: true
     }
@@ -501,10 +501,8 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         }
     }
 
-
     public isPremium():boolean {
         var d = new Date();
-
 
         if(!this.settings.paymentActive ) {
             return true;
@@ -512,10 +510,10 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         return (new Date(this.user.registrationDate).getTime() > d.setDate(d.getDate()-2)) || 
         this.getPayed() || this.user.gender === 'אישה' || this.user.isFake;
     }
+
     public getDefaultPhotoPlaceholder(user):string {
         return '../../../assets/media/users/default_' + user.gender + '.png'
     }
-
 
     getAllPhotos(user, approvedOnly = false) {
 
@@ -556,7 +554,6 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     public getPayed(): boolean {
         return this.payed;
     }
-
 
     public setPayed(prop:boolean) {
         this.payed = prop

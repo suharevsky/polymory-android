@@ -6,13 +6,15 @@
             <div class="logo">
                 <img alt="logo" class="logo__image" src="/assets/img/logo.png">
                 <div class="logo__name">Polymory</div>
-                <div class="logo__subtitle">אתר ההכרויות לקהילה הפוליאמורית בישראל</div>
+                <div class="logo__subtitle">ההכרויות הפוליאמורית
+                    למערכת יחסים פתוחים בישראל</div>
             </div>
         </div> 
         <div class="section-buttons ion-padding">
                 <div *ngIf="currentStep === 0" class="ion-padding">
                     לחיצה על כפתור כניסה או הרשמה מהווה את הסכמתך <span (click)="getPage('terms-and-conditions')" class="link">לתנאים</span> שלנו
                 </div>
+
                  
             <div *ngIf="currentStep === 0">
                 <ion-button
