@@ -34,6 +34,7 @@ import {IonicInputMaskModule} from "@thiagoprz/ionic-input-mask";
 import { AuthGuard } from './guard/auth/auth.guard';
 import { FilterPageModule } from './pages/filter/filter.module';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
+import { ContactPageModule } from './pages/contact/contact.module';
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
     PhotosPageModule,
     SettingsPageModule,
     ProfileEditPageModule,
+    ContactPageModule,
     FilterPageModule,
     TinderGoldPageModule,
     ImageModalPageModule,

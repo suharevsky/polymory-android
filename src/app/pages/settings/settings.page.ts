@@ -9,6 +9,7 @@ import {SettingsService} from '../../services/user/settings/settings.service';
 import {PagePage} from '../page/page.page';
 import { GeneralService } from 'src/app/services/general/general.service';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
+import { ContactPage } from '../contact/contact.page';
 
 @Component({
     selector: 'app-settings',
@@ -84,13 +85,15 @@ export class SettingsPage implements OnInit {
         await alert.present();
     }
 
-    contactUs() {
-        window.location.href = "mailto:aliksui.ua@gmail.com?subject=" + this.userService.user.id;
+    async contactUs() {
+        const modal = await this.modalCtrl.create({
+            component: ContactPage,
+        });
+        return await modal.present();
     }
 
     getContact() {
         this.done();
-        // this.navCtrl.navigateForward('/contact');
     }
 
     toggleDarkTheme(isDark: boolean) {

@@ -45,7 +45,9 @@ export class AppComponent {
           this.statusBar.styleDefault();
           this.themeService.toggleDarkMode(true);
           this.splashScreen.hide();
-          this.paymentService.init();
+          if(this.userService.user) {
+            this.paymentService.init();
+          }
             /*Network.addListener('networkStatusChange', (status) => {
               this.ngZone.run(() => {
                   // This code will run in Angular's execution context

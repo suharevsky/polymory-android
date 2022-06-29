@@ -8,7 +8,6 @@
             </ion-button>
         </ion-buttons>
     </div>
-
     <div class="profile-info border-bottom">
         <div class="profile-title">
       <span class="profile-user-name">
@@ -60,19 +59,36 @@
                 </div>
             </div>
         </div>
-        
         <div class="section-title">מגדר</div>
         <div class="passion-list">
         <span>
             {{profile?.gender}}
         </span>
         </div>
+        <div class="section-title">מזל</div>
+        <div class="passion-list">
+        <span>
+            {{zodicSignService.getSignByDate(profile?.birthday)}}
+        </span>
+        </div>
         <div class="section-title">נטייה מינית</div>
         <div class="passion-list">
-      <span *ngFor="let sexualOrientation of profile?.sexualOrientation">
-        {{sexualOrientation}}
-      </span>
+            <span *ngFor="let sexualOrientation of profile?.sexualOrientation">
+                {{sexualOrientation}}
+            </span>
         </div>
+        <ng-container *ngIf="profile?.smoking">
+        <div class="section-title">הרגלי עישון</div>
+        <div class="passion-list">
+            {{profile?.smoking}}
+        </div>
+        </ng-container>
+        <ng-container *ngIf="profile?.drinking">
+            <div class="section-title">הרגלי שתיה</div>
+            <div class="passion-list">
+                {{profile?.drinking}}
+            </div>
+        </ng-container>
         <div class="section-title">רוצה להכיר</div>
         <div class="passion-list">
       <span *ngFor="let preference of profile?.preference">

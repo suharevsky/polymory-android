@@ -8,6 +8,7 @@ import {ProfilePageRoutingModule} from './profile-routing.module';
 
 import {ProfilePage} from './profile.page';
 import {SharedModule} from '../../components/sharedModule';
+import { ZodicSignService } from 'src/app/services/zodiac-sign/zodic-sign.service';
 
 @NgModule({
     imports: [
@@ -18,7 +19,8 @@ import {SharedModule} from '../../components/sharedModule';
         SharedModule,
     ],
     providers: [
-        NavParams
+        NavParams,
+        ZodicSignService
     ],
     declarations: [ProfilePage]
 })

@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar class="toolbar-no-border">
+      <ion-title class="page-title">צור קשר</ion-title>
+      <ion-buttons slot="end">
+          <ion-button (click)="done()">
+              בוצע
+          </ion-button>
+      </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">צור קשר</ion-title>
+    </ion-toolbar>
+  </ion-header>
+    <div *ngIf="data?.status ==='success'" class="success-box">
+      <div class="wrap">
+        <h2 class="success-message">ההודעה נשלחה בהצלחה! 💜</h2>
+        <div (click)="close()" class="btn">לחזור לדף הבית</div>
+      </div>
+    </div>
+  <form *ngIf="data?.status !=='success'" [formGroup]="nodeMailerForm" class="form-container">
+  <ion-item lines="none">
+    <ion-label position="floating">* אימייל</ion-label>
+    <ion-input [class.error]="errors.includes('email')" formControlName="email" type="email"></ion-input>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-label position="floating">* נושא הפניה</ion-label>
+    <ion-input [class.error]="errors.includes('subject')"  formControlName="subject"></ion-input>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-label position="floating">* הודעה</ion-label>
+    <ion-textarea [class.error]="errors.includes('text')" formControlName="text" rows="6"></ion-textarea>
+  </ion-item>
+  <ion-item lines="none">
+    <div (click)="sendMail()" class="btn">שלח</div>
+  </ion-item>
+  </form>
+</ion-content>
+

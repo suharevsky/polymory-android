@@ -11,6 +11,7 @@ import { FileUploadService } from 'src/app/services/file-upload/file-upload.serv
 import { ImageRequestService } from 'src/app/services/image-request/image-request.service';
 import { ImageModalPage } from 'src/app/components/image-modal/image-modal.page';
 import { Location } from '@angular/common';
+import { ZodicSignService } from 'src/app/services/zodiac-sign/zodic-sign.service';
 
 @Component({
     selector: 'app-profile',
@@ -42,6 +43,7 @@ export class ProfilePage implements OnInit  {
         public generalService: GeneralService,
         public imageRequestService: ImageRequestService,
         public location: Location,
+        public zodicSignService: ZodicSignService,
         public router: Router,
         public userService: UserService) {
 
