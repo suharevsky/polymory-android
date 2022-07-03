@@ -54,6 +54,46 @@ export class ProfileEditPage implements OnInit {
         this.navCtrl.back();
     }
 
+    async openSmokingList() {
+        const modal = await this.modalCtrl.create({
+            component: ListOptionsPage,
+            componentProps: {
+                object: this.userService.getSmoking(),
+                currentValue: this.userService.user.smoking,
+            }
+        });
+
+        modal.onDidDismiss()
+            .then((res) => {
+                console.log(res);
+                if (res.data) {
+                    this.userService.user.smoking = [res.data];
+                }
+            });
+
+        return await modal.present();
+    }
+
+    async openDrinkingList() {
+        const modal = await this.modalCtrl.create({
+            component: ListOptionsPage,
+            componentProps: {
+                object: this.userService.getDrinking(),
+                currentValue: this.userService.user.drinking,
+            }
+        });
+
+        modal.onDidDismiss()
+            .then((res) => {
+                console.log(res);
+                if (res.data) {
+                    this.userService.user.drinking = [res.data];
+                }
+            });
+
+        return await modal.present();
+    }
+
     async openSexualOrientation() {
         const modal = await this.modalCtrl.create({
             component: ListOptionsPage,

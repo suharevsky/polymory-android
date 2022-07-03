@@ -65,6 +65,22 @@
                             <ion-label>{{userService.user.preference.join()}}</ion-label>
                         </ion-item>
                 </ion-list>
+                <ion-list class="link list-custom">
+                    <ion-list-header>
+                        <ion-label>{{userService.getSmoking().label}}</ion-label>
+                    </ion-list-header>
+                        <ion-item lines="none" detail="true" (click)="openSmokingList()">
+                            <ion-label>{{userService.user?.smoking}}</ion-label>
+                        </ion-item>
+                </ion-list>
+                <ion-list class="link list-custom">
+                    <ion-list-header>
+                        <ion-label>{{userService.getDrinking().label}}</ion-label>
+                    </ion-list-header>
+                        <ion-item lines="none" detail="true" (click)="openDrinkingList()">
+                            <ion-label>{{userService.user?.drinking}}</ion-label>
+                        </ion-item>
+                </ion-list>
                 <ion-list class="list-custom">
                     <ion-list-header>
                         <ion-label>מעט עלי</ion-label>

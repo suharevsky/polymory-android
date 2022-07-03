@@ -33,10 +33,11 @@ export class ListOptionsPage implements OnInit {
 
         if (this.multiple) {
             this.object.options.map(el => el.chosen = this.currentValue.includes(el.value));
-        }else{
-            //console.log()
-            this.object.options.map(el => el.chosen = this.currentValue  === el.value);
         }
+        // }else{
+        //     //console.log()
+        //     this.object.options.map(el => el.chosen = this.currentValue  === el.value);
+        // }
 
 
         if (this.enableList) {
@@ -87,7 +88,22 @@ export class ListOptionsPage implements OnInit {
     }
 
     search(target: EventTarget) {
-        this.object.options.filter(el => el.value.startsWith((target as HTMLInputElement).value));
-        this.filteredArray = this.object.options.filter(el => el.value.startsWith((target as HTMLInputElement).value));
+
+        const currrentValue = (target as HTMLInputElement).value;
+
+        if(currrentValue.length > 1) {
+            this.object.options.filter(el => {
+                return el.value.startsWith(currrentValue)
+            });
+    
+           this.filteredArray = this.object.options.filter((el, i) => {
+               console.log(this.filteredArray?.length);
+               if(this.filteredArray?.length <= 10) {
+                return el.value.startsWith(currrentValue)
+               }
+           });
+        }else{
+            this.filteredArray = [];
+        }
     }
 }

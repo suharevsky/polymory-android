@@ -30,6 +30,8 @@ export class RegisterStepsPage implements OnInit {
     public registrationForm: FormGroup;
     public steps: any = [];
     public cities: any;
+    public smokingList: any;
+    public drinkingList: any;
     public filteredCities: any;
     public areas = [];                                    
     public genders: any;
@@ -80,6 +82,8 @@ export class RegisterStepsPage implements OnInit {
         this.cities = this.userService.getCities().options;
         this.genders = this.userService.getGender().options;
         this.preferences = this.userService.getPreference().options;
+        this.smokingList = this.userService.getSmoking().options;
+        this.drinkingList = this.userService.getDrinking().options;
     }
 
     async presentToast(errorMessage: string) {
@@ -121,12 +125,22 @@ export class RegisterStepsPage implements OnInit {
         };
 
         this.steps[3] = {
+            email: [
+                this.user?.email,
+                Validators.compose([
+                    Validators.required,
+                    Validators.email
+                ],)/*, [this.uniqueUsernameValidator.usernameValidator()]*/
+            ],
+        };
+
+        this.steps[4] = {
             preference: [
                 this.user?.preference ? this.user?.preference : [],
             ]
         }
 
-           this.steps[4] = {
+           this.steps[5] = {
             birthday: [
                 this.user?.birthday ? this.user?.birthday : '00-00-0000',
                 Validators.compose([
@@ -136,7 +150,7 @@ export class RegisterStepsPage implements OnInit {
         };
 
 
-        this.steps[5] = {
+        this.steps[6] = {
             area: [
                 this.user?.area,
                 Validators.compose([
@@ -145,7 +159,7 @@ export class RegisterStepsPage implements OnInit {
             ],
         };
 
-        this.steps[6] = {
+        this.steps[7] = {
             city: [
                 this.user?.city,
                 Validators.compose([
@@ -154,7 +168,22 @@ export class RegisterStepsPage implements OnInit {
             ],
         };
 
-        this.steps[7] = {
+        this.steps[8] = {
+            smoking: [
+                this.user?.smoking,
+                Validators.compose([
+                    Validators.required,
+                ]),
+            ],
+            drinking: [
+                this.user?.drinking,
+                Validators.compose([
+                    Validators.required,
+                ]),
+            ],
+        };
+
+        this.steps[9] = {
             about: [
                 this.user?.about,
                 Validators.compose([
@@ -172,7 +201,7 @@ export class RegisterStepsPage implements OnInit {
 
         let errorMessage: string;
 
-        if (this.currentIndexSlide === 6) {
+        if (this.currentIndexSlide === 7) {
 
             this.cities.subscribe(cities => {
                 const res = cities.filter(el => el.title === this.f.city.value);
@@ -415,10 +444,8 @@ export class RegisterStepsPage implements OnInit {
     }
 
     slideNext() {
-        console.log(this.user)
-        console.log(this.userService.user)
 
-        if(this.currentIndexSlide === 7) {
+        if(this.currentIndexSlide === 9) {
             this.goToPhotos();
         }else{
             this.currentIndexSlide++;

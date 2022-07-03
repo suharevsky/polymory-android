@@ -1,3 +1,24 @@
+.in-toolbar {
+  --background: #fff;
+}
+
+.progress-bar {
+  background: #bab9cd7d;
+  width: 50%;
+  height: 4px;
+  border-radius: 50px;
+  margin: 0 auto;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 20px;
+  span {
+    background-color: #7774c5;
+    position: absolute;
+    height: 4px;
+    border-radius: 50px;
+  }
+}
 
 .ion-slides {
 

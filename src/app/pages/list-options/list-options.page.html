@@ -16,7 +16,7 @@
       <ion-title size="large">{{object.label}}</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-searchbar placeholder="חפש" (ionInput)="search($event.target)" ngModel="{{chosenItem}}"></ion-searchbar>
+  <ion-searchbar placeholder="חפש" (ionChange)="search($event.target)" ngModel="{{chosenItem}}"></ion-searchbar>
   <ion-list>
 
     <ion-item *ngFor="let item of filteredArray">

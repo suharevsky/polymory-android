@@ -94,7 +94,46 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
 
         this.db.collection("matches").doc(uid1 + uid2).set(data);
     }
+    
+    public getSmoking() {
+        
+        const options = {
+            options: [
+                {title: 'לא מעשנ/ת', value: 'לא מעשנ/ת', chosen: false},
+                {title: 'מעשנ/ת לפעמים', value: 'מעשנ/ת לפעמים', chosen: false},
+                {title: 'מעשנ/ת', value: 'מעשנ/ת', chosen: false},
+                {title: 'מעשנ/ת פלוס', value: 'מעשנ/ת פלוס', chosen: false}
+            ]
+        };
 
+        return {
+            label: 'הרגלי עישון',
+            value: this.user ? this.user.smoking : '',
+            class: '',
+            icons: [],
+            options: options.options,
+        }
+    }
+
+    public getDrinking() {
+        
+        const options = {
+            options: [
+                {title: 'לעיתים קרובות', value: 'לעיתים קרובות', chosen: false},
+                {title: 'שותה בחברה', value: 'שותה בחברה', chosen: false},
+                {title: 'לא נוהגת לשתות', value: 'לא נוהגת לשתות', chosen: false},
+            ]
+        };
+
+        return {
+            label: 'הרגלי שתיה',
+            value: this.user ? this.user.drinking : '',
+            class: '',
+            icons: [],
+            options: options.options,
+        }
+    }
+    
     public closeSplash(data) {
         this.db.collection('matches').doc(data.eventId).set(data,{merge: true})
     }
@@ -622,6 +661,27 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
         this.subscriptions.forEach(sb => sb.unsubscribe());
     }
 
+    public getEmail() {
+        return {
+            label: 'אימייל',
+            placeholder: 'הכנס את אימייל שלך',
+            value: this.user ? this.user.email : '',
+        };
+    }
+
+    checkApprovedPhotos(users) {
+
+        return users.map(user => {
+            if(user.mainPhotoApproved === 0 && user.photos.filter(photo => photo.main && photo.status === 1).length > 0) {
+                this.update({...user, ...{mainPhotoApproved: 1}}).subscribe();
+            }
+
+            if(user.mainPhotoApproved === 1 && user.photos.filter(photo => photo.main && photo.status === 1).length === 0) {
+                this.update({...user, ...{mainPhotoApproved: 0}}).subscribe();
+            }
+        });
+    }
+
     loadHighlights(filterData) {
           return this.db.collection<any>('users', ref => {
                 let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
@@ -634,8 +694,12 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                 }
     
                 query = query.where('gender', 'in', this.user.preference);
-                    
-                if (filterData?.typeUsers === 'online' || filterData?.typeUsers === 'all') {
+                
+                if(filterData?.typeUsers === 'withPhoto') {
+                    query = query.where('mainPhotoApproved', '==', 1);
+                }
+
+                //if (filterData?.typeUsers === 'online' || filterData?.typeUsers === 'all') {
                     if (this.highlights.lastKey) {
                         query = query.orderBy('lastTimeActive', 'desc')
                             .startAfter((this.highlights.lastKey as any).lastTimeActive || 0)
@@ -644,22 +708,20 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
                         query = query.orderBy('lastTimeActive', 'desc')
                             .limit(20);
                     }
-                }
+                //}
 
                 return query;
             })
                 .get()
                 .pipe(
-                    map((response: any) => {
+                        map((response: any) => {
                         let results = [];
-
     
                         for (let item of response.docs) {
                             results.push(item.data());
                           }
 
-                          console.log(results);
-
+                        this.checkApprovedPhotos(results);
 
                           if (filterData.ageRange) {
                             results = results.filter((el: any) => {
@@ -670,12 +732,6 @@ export class UserService extends TableService<UserModel> implements OnDestroy {
     
                             });
                         }
-
-                          if (filterData?.typeUsers === 'withPhoto') {
-                            let allUsers = results;
-                            results = allUsers.filter((user: any) => user.mainPhotoApproved === 1);
-                            Array.prototype.push.apply(this.highlights.restResults,allUsers.filter((user: any) => user.mainPhotoApproved === 0 && user.id !== this.user?.id)); 
-                          }
 
                         //if (filterData?.online) {
                             if ((results[results.length - 1]?.id === (this.highlights.lastKey as any)?.id) && typeof results[results.length - 1]?.id !== 'undefined' ) {    

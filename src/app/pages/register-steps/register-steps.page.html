@@ -1,5 +1,10 @@
-<ion-header *ngIf="authService.tab === 'registration'">
+<!-- <ion-header *ngIf="authService.tab === 'registration'"> -->
+<ion-header>
     <ion-toolbar>
+  
+        <div class="progress-bar">
+            <span [ngStyle]="{'width': 10 * currentIndexSlide + '%'}"></span>
+        </div>
         <ion-buttons slot="start">
             <ion-button *ngIf="currentIndexSlide === 0" (click)="back()">
                 <ion-icon name="chevron-back-outline"></ion-icon>
@@ -63,7 +68,23 @@
             </form>
         </div>
 
-        <div class="ion-slide" *ngIf="currentIndexSlide === 3">
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 3">
+            <form [formGroup]="registrationForm">
+                <ion-item class="pos-center margin-center" no-lines>
+                    <ion-label position="stacked"><h2>{{userService.getEmail().label}}</h2></ion-label>
+                    <ion-input #focusable
+                            maxLength="25"
+                            [value]="user?.email"
+                            formControlName="email"
+                            class="name-input"
+                            name="email"
+                            type="email"
+                    ></ion-input>
+                </ion-item>
+            </form>
+        </div>
+
+        <div class="ion-slide" *ngIf="currentIndexSlide === 4">
             <form [formGroup]="registrationForm"
                   (ngSubmit)="submit()">
                 <div class="options">
@@ -79,7 +100,7 @@
             </form>
         </div>
 
-        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 4">
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 5">
             <form [formGroup]="registrationForm">
                 <div no-lines class="options">
                     <h2>
@@ -116,7 +137,7 @@
                 </div>
             </form>
         </div>
-        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 5">
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 6">
             <form [formGroup]="registrationForm">
                 <input name="area" formControlName="area">
                 <div class="options pos-center">
@@ -134,7 +155,7 @@
                 </div>
             </form>
         </div>
-        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 6">
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 7">
             <form [formGroup]="registrationForm" class="form__city">
                 <ion-item class="margin-center" no-lines>
                     <ion-label position="stacked"><h2>{{ userService.getCities().label }}</h2></ion-label>
@@ -146,7 +167,31 @@
                 </ion-list>
             </form>
         </div>
-        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 7">
+
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 8">
+            <form [formGroup]="registrationForm">
+            <div class="margin-center">
+                <ion-list>
+                    <ion-item>
+                        <ion-label>{{ userService.getSmoking().label }}</ion-label>
+                      <ion-select formControlName="smoking" interface="popover">
+                        <ion-select-option *ngFor="let smoking of smokingList" [value]="smoking.title">{{smoking.title}}</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                  </ion-list>
+                  <ion-list>
+                    <ion-item>
+                        <ion-label>{{ userService.getDrinking().label }}</ion-label>
+                        <ion-select formControlName="drinking" interface="popover">
+                        <ion-select-option *ngFor="let drinking of drinkingList" [value]="drinking.title">{{drinking.title}}</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                  </ion-list>
+                </div>
+            </form>
+        </div>
+
+        <div class="input-slide ion-slide" *ngIf="currentIndexSlide === 9">
             <form [formGroup]="registrationForm">
                 <ion-item no-lines class="margin-center pos-center">
                     <ion-label position="stacked"><h2>
@@ -162,8 +207,8 @@
 
 </ion-content>
 
-<ion-footer *ngIf="currentIndexSlide != 8 && authService.tab === 'registration'">
-    <ion-button  *ngIf="currentIndexSlide != 8 && currentIndexSlide > 0" (click)="back()" class="btn-form btn-back">חזרה</ion-button>
+<ion-footer *ngIf="currentIndexSlide != 10 && authService.tab === 'registration'">
+    <ion-button  *ngIf="currentIndexSlide != 10 && currentIndexSlide > 0" (click)="back()" class="btn-form btn-back">חזרה</ion-button>
     <ion-button [class.btn-full] = "currentIndexSlide === 0"
     [disabled]="registrationForm.errors" type="submit" (click)="submit()" class="btn-form">המשך</ion-button>
 </ion-footer>
